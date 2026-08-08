@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oman NOC Training Simulator</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #fff5fa;
+            color: #4a3040;
+        }
+
+        .header {
+            background: white;
+            padding: 25px;
+            text-align: center;
+            border-bottom: 3px solid #f7b6d2;
+        }
+
+        .header h1 {
+            color: #e86fa8;
+            font-size: 32px;
+        }
+
+        .header p {
+            margin-top: 8px;
+            color: #8b6578;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        .welcome {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(220, 120, 160, 0.15);
+            text-align: center;
+        }
+
+        .welcome h2 {
+            color: #e86fa8;
+            margin-bottom: 15px;
+        }
+
+        .welcome p {
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background: #e86fa8;
+            color: white;
+            border: none;
+            padding: 13px 25px;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #d95792;
+        }
+
+        .modules {
+            display: none;
+            margin-top: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(220, 120, 160, 0.12);
+            text-align: center;
+        }
+
+        .card h3 {
+            color: #e86fa8;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>🌸 Oman NOC Training Simulator 🌸</h1>
+        <p>Network Operations Center Training Platform</p>
+    </div>
+
+    <div class="container">
+
+        <div class="welcome">
+            <h2>Welcome to Your NOC Training! 💗</h2>
+
+            <p>
+                Explore the different NOC departments, learn about network
+                operations, practice troubleshooting, and test your knowledge.
+            </p>
+
+            <button class="btn" onclick="startTraining()">
+                Start Training ✨
+            </button>
+        </div>
+
+        <div class="modules" id="modules">
+
+            <div class="card">
+                <h3>🌐 IP Core</h3>
+                <p>
+                    Learn about IP topology, routing, network equipment,
+                    alerts, and core network operations.
+                </p>
+                <button class="btn">Enter</button>
+            </div>
+
+            <div class="card">
+                <h3>📡 Transmission</h3>
+                <p>
+                    Learn about microwave, VSAT, fiber optics,
+                    interfaces, ports, and transmission systems.
+                </p>
+                <button class="btn">Enter</button>
+            </div>
+
+            <div class="card">
+                <h3>📶 RAN</h3>
+                <p>
+                    Explore Radio Access Network concepts,
+                    mobile networks, KPIs, and troubleshooting.
+                </p>
+                <button class="btn">Enter</button>
+            </div>
+
+            <div class="card">
+                <h3>🛡️ SOC</h3>
+                <p>
+                    Learn about security monitoring, incidents,
+                    alerts, and cybersecurity operations.
+                </p>
+                <button class="btn">Enter</button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        function startTraining() {
+            document.getElementById("modules").style.display = "grid";
+        }
+    </script>
+
+</body>
+</html>
