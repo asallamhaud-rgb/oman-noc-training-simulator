@@ -5,6 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Oman NOC Training Simulator</title>
     <style>
+        :root {
+            --primary: #ff4d88;
+            --primary-dark: #d63384;
+            --primary-light: #fff0f3;
+            --border-color: #ffd7e9;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --bg-main: #f8f9fa;
+            --white: #ffffff;
+            --critical: #dc3545;
+            --major: #fd7e14;
+            --minor: #ffc107;
+            --warning: #17a2b8;
+            --success: #28a745;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -15,29 +31,30 @@
         body {
             display: flex;
             height: 100vh;
-            background-color: #fff0f3;
-            color: #333;
+            background-color: var(--primary-light);
+            color: var(--text-main);
             overflow: hidden;
         }
 
-        /* Sidebar Styling */
+        /* Sidebar */
         .sidebar {
-            width: 240px;
-            background: #ff4d88;
+            width: 260px;
+            background: var(--primary);
             display: flex;
             flex-direction: column;
             padding: 20px 15px;
-            gap: 6px;
-            color: white;
+            gap: 4px;
+            color: var(--white);
             flex-shrink: 0;
             overflow-y: auto;
             z-index: 100;
+            box-shadow: 4px 0 15px rgba(255, 77, 136, 0.2);
         }
 
         .sidebar-brand {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: bold;
-            color: white;
+            color: var(--white);
             margin-bottom: 2px;
             display: flex;
             align-items: center;
@@ -48,13 +65,24 @@
             font-size: 11px;
             color: #ffe6ee;
             margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            padding-bottom: 8px;
+        }
+
+        .nav-category {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #ffe6ee;
+            margin: 10px 0 4px 6px;
+            font-weight: bold;
         }
 
         .nav-btn {
             background: transparent;
             border: none;
-            color: white;
-            padding: 9px 12px;
+            color: var(--white);
+            padding: 8px 12px;
             border-radius: 8px;
             display: flex;
             align-items: center;
@@ -71,8 +99,8 @@
         }
 
         .badge {
-            background: #d63384;
-            color: white;
+            background: var(--primary-dark);
+            color: var(--white);
             padding: 2px 6px;
             border-radius: 10px;
             font-size: 11px;
@@ -85,7 +113,7 @@
             display: flex;
             flex-direction: column;
             overflow-y: auto;
-            background: #f8f9fa;
+            background: var(--bg-main);
             padding: 25px;
             position: relative;
             z-index: 10;
@@ -95,32 +123,45 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         h1 {
-            color: #d63384;
+            color: var(--primary-dark);
             font-size: 24px;
         }
 
         .search-box {
             padding: 10px 15px;
-            border: 1px solid #ffd7e9;
+            border: 1px solid var(--border-color);
             border-radius: 20px;
-            width: 380px;
+            width: 350px;
             outline: none;
-            background: white;
+            background: var(--white);
             font-size: 13px;
-            color: #666;
+            color: var(--text-muted);
         }
 
         .header-subtitle {
             font-size: 13px;
-            color: #666;
+            color: var(--text-muted);
             margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        /* Page Layouts */
+        .trainee-profile-bar {
+            background: var(--white);
+            padding: 6px 15px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--primary-dark);
+        }
+
+        /* Pages */
         .page {
             display: none;
         }
@@ -130,70 +171,66 @@
         }
 
         /* Grid Cards */
-        .cards {
+        .cards-grid {
             display: grid;
-            grid-template-columns: repeat(5, minmax(0, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 15px;
             margin-bottom: 20px;
         }
 
         .card {
-            background: white;
-            border: 1px solid #ffd7e9;
+            background: var(--white);
+            border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 18px;
             box-shadow: 0 4px 12px rgba(255, 105, 180, 0.05);
         }
 
-        .score-card {
-            width: 200px;
-            margin-bottom: 25px;
-        }
-
         .card h3 {
-            font-size: 13px;
-            color: #d63384;
-            margin-bottom: 12px;
+            font-size: 12px;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
             font-weight: bold;
+            text-transform: uppercase;
         }
 
         .card .value {
-            font-size: 26px;
+            font-size: 24px;
             font-weight: bold;
-            color: #d63384;
+            color: var(--primary-dark);
         }
 
-        /* Control Center Card */
         .control-card {
-            background: white;
-            border: 1px solid #ffd7e9;
+            background: var(--white);
+            border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 22px;
             box-shadow: 0 4px 12px rgba(255, 105, 180, 0.05);
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .control-card h2 {
             font-size: 16px;
-            color: #d63384;
+            color: var(--primary-dark);
             margin-bottom: 8px;
         }
 
         .control-card p {
             font-size: 13px;
-            color: #666;
+            color: var(--text-muted);
             margin-bottom: 15px;
+            line-height: 1.4;
         }
 
         .action-buttons {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             flex-wrap: wrap;
         }
 
         .action-btn {
             background: #ffd1dc;
-            color: #d63384;
+            color: var(--primary-dark);
             border: none;
             padding: 8px 16px;
             border-radius: 20px;
@@ -207,27 +244,14 @@
             background: #ffb6c1;
         }
 
-        .status-card {
-            background: white;
-            border: 1px solid #ffd7e9;
-            border-radius: 16px;
-            padding: 22px;
-            box-shadow: 0 4px 12px rgba(255, 105, 180, 0.05);
-        }
-
-        .status-card h2 {
-            font-size: 15px;
-            color: #d63384;
-        }
-
-        /* Interactive Tables & Lists */
+        /* Tables */
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            background: white;
+            background: var(--white);
             border-radius: 12px;
             overflow: hidden;
-            border: 1px solid #ffd7e9;
+            border: 1px solid var(--border-color);
             margin-top: 15px;
         }
 
@@ -239,8 +263,8 @@
         }
 
         .data-table th {
-            background: #fff0f3;
-            color: #d63384;
+            background: var(--primary-light);
+            color: var(--primary-dark);
             font-weight: bold;
         }
 
@@ -248,108 +272,229 @@
             background: #fafafa;
         }
 
-        .badge-critical { background: #dc3545; color: white; padding: 3px 8px; border-radius: 6px; font-size: 11px; }
-        .badge-major { background: #fd7e14; color: white; padding: 3px 8px; border-radius: 6px; font-size: 11px; }
-        .badge-minor { background: #ffc107; color: #333; padding: 3px 8px; border-radius: 6px; font-size: 11px; }
-        
+        .badge-critical { background: var(--critical); color: white; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; }
+        .badge-major { background: var(--major); color: white; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; }
+        .badge-minor { background: var(--minor); color: #333; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; }
+        .badge-warning { background: var(--warning); color: white; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; }
+        .badge-success { background: var(--success); color: white; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; }
+
         .btn-sm {
             padding: 5px 10px;
             font-size: 11px;
             border-radius: 6px;
             cursor: pointer;
             border: none;
-            background: #d63384;
+            background: var(--primary-dark);
             color: white;
+            font-weight: bold;
+            transition: background 0.2s;
         }
         .btn-sm:hover { background: #b0236a; }
+
+        /* Modal & Split Layouts */
+        .split-view {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .chat-container, .email-container {
+            display: flex;
+            flex-direction: column;
+            height: 450px;
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background: #fafafa;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .chat-bubble {
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            max-width: 80%;
+            line-height: 1.4;
+        }
+
+        .chat-incoming {
+            background: #e9ecef;
+            color: #333;
+            align-self: flex-start;
+        }
+
+        .chat-outgoing {
+            background: var(--primary-dark);
+            color: white;
+            align-self: flex-end;
+        }
+
+        .chat-input-area {
+            display: flex;
+            padding: 10px;
+            background: white;
+            border-top: 1px solid var(--border-color);
+            gap: 10px;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            outline: none;
+            font-size: 13px;
+        }
+
+        .notes-area {
+            width: 100%;
+            height: 350px;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 13px;
+            outline: none;
+            background: white;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        /* Timer display */
+        .timer-alert {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
 
     <!-- Sidebar Navigation -->
     <div class="sidebar">
-        <div class="sidebar-brand">🌸 NOC SIM</div>
-        <div class="sidebar-subtitle">Training Environment</div>
+        <div class="sidebar-brand">🌸 Oman NOC Sim</div>
+        <div class="sidebar-subtitle">Network Operations Training</div>
         
+        <div class="nav-category">Operations</div>
         <button class="nav-btn active" onclick="showPage('dashboard', this)"><span>🏠 Dashboard</span></button>
         <button class="nav-btn" onclick="showPage('alarms', this)"><span>🚨 Alarms</span> <span class="badge" id="alarmBadge">0</span></button>
-        <button class="nav-btn" onclick="showPage('tickets', this)"><span>🎫 Tickets / SMA</span> <span class="badge" id="ticketBadge">0</span></button>
+        <button class="nav-btn" onclick="showPage('tickets', this)"><span>🎫 Tickets / Incidents</span> <span class="badge" id="ticketBadge">0</span></button>
         <button class="nav-btn" onclick="showPage('workorders', this)"><span>🔧 Work Orders</span></button>
-        <button class="nav-btn" onclick="showPage('emails', this)"><span>📧 Emails</span> <span class="badge" id="emailBadge">0</span></button>
-        <button class="nav-btn" onclick="showPage('topology', this)"><span>🌐 Topology</span></button>
-        <button class="nav-btn" onclick="showPage('tasks', this)"><span>📋 My Tasks</span></button>
-        <button class="nav-btn" onclick="showPage('departments', this)"><span>🏢 Departments</span></button>
+        <button class="nav-btn" onclick="showPage('emails', this)"><span>📧 Shared Mailbox</span> <span class="badge" id="emailBadge">0</span></button>
+        <button class="nav-btn" onclick="showPage('chat', this)"><span>💬 Team Chat</span> <span class="badge" id="chatBadge">0</span></button>
+        <button class="nav-btn" onclick="showPage('notifications', this)"><span>🔔 Notifications</span> <span class="badge" id="notifBadge">0</span></button>
+
+        <div class="nav-category">Network & Assets</div>
+        <button class="nav-btn" onclick="showPage('topology', this)"><span>🌐 Network Topology</span></button>
+        <button class="nav-btn" onclick="showPage('sites', this)"><span>🏢 Site Explorer</span></button>
+        <button class="nav-btn" onclick="showPage('devices', this)"><span>💻 Device Inventory</span></button>
         <button class="nav-btn" onclick="showPage('search', this)"><span>🔍 Global Search</span></button>
-        <button class="nav-btn" onclick="showPage('activity', this)"><span>📊 Activity Log</span></button>
-        <button class="nav-btn" onclick="showPage('modules', this)"><span>📚 Training Modules</span></button>
+
+        <div class="nav-category">Training & Courses</div>
+        <button class="nav-btn" onclick="showPage('modules', this)"><span>📚 Learning Modules</span></button>
+        <button class="nav-btn" onclick="showPage('troubleshoot', this)"><span>🛠️ Troubleshooting Lab</span></button>
+        <button class="nav-btn" onclick="showPage('kb', this)"><span>📖 Knowledge Base</span></button>
+
+        <div class="nav-category">Audit & Admin</div>
+        <button class="nav-btn" onclick="showPage('handover', this)"><span>📝 Shift Handover</span></button>
+        <button class="nav-btn" onclick="showPage('notes', this)"><span>📋 Personal Notes</span></button>
+        <button class="nav-btn" onclick="showPage('reports', this)"><span>📊 Training Reports</span></button>
+        <button class="nav-btn" onclick="showPage('activity', this)"><span>📊 Activity & Audit Log</span></button>
     </div>
 
     <!-- Main Content Area -->
     <div class="main">
         <div class="header-top">
-            <h1 id="pageTitle">Oman NOC Training Simulator</h1>
-            <input type="text" id="globalSearchInput" class="search-box" placeholder="🔍 Search alarm, SMA, WO, email, site..." oninput="globalSearch(this.value)">
+            <h1 id="pageTitle">Trainee Dashboard</h1>
+            <input type="text" id="globalSearchInput" class="search-box" placeholder="🔍 Search alarms, tickets, sites, IPs..." oninput="executeGlobalSearch(this.value)">
         </div>
-        <div class="header-subtitle" id="pageSubtitle">Network Operations Control Center</div>
+        <div class="header-subtitle">
+            <span id="pageSubtitleDesc">Welcome back, Trainee Engineer. Monitor and resolve telecom network incidents across Oman.</span>
+            <div class="trainee-profile-bar">
+                Level <span id="traineeLevel">1</span> | XP: <span id="traineeXP">0</span> | Score: <span id="traineeScore">100</span>
+            </div>
+        </div>
 
         <div class="content">
-            <!-- Dashboard Page -->
+            <!-- DASHBOARD PAGE -->
             <section id="dashboard" class="page active">
-                <div class="cards">
-                    <div class="card">
-                        <h3>🚨 Active Alarms</h3>
-                        <div class="value" id="alarmCount">0</div>
-                    </div>
-                    <div class="card">
-                        <h3>✅ Acknowledged</h3>
-                        <div class="value" id="ackCount">0</div>
-                    </div>
-                    <div class="card">
-                        <h3>🎫 SMA / Tickets</h3>
-                        <div class="value" id="ticketCount">0</div>
-                    </div>
-                    <div class="card">
-                        <h3>🔧 Work Orders</h3>
-                        <div class="value" id="woCount">0</div>
-                    </div>
-                    <div class="card">
-                        <h3>📧 Unread Emails</h3>
-                        <div class="value" id="emailCount">0</div>
-                    </div>
+                <div id="criticalTimerBanner" style="display: none;" class="timer-alert">
+                    <span>🚨 CRITICAL INCIDENT ACTIVE: Response SLA Countdown</span>
+                    <span id="countdownDisplay" style="font-size: 16px; color: var(--critical);">05:00</span>
                 </div>
 
-                <div class="card score-card">
-                    <h3>🏆 Score & XP</h3>
-                    <div class="value" id="scoreCount">100</div>
+                <div class="cards-grid">
+                    <div class="card">
+                        <h3>Active Alarms</h3>
+                        <div class="value" id="dashAlarmCount">0</div>
+                    </div>
+                    <div class="card">
+                        <h3>Active Incidents</h3>
+                        <div class="value" id="dashTicketCount">0</div>
+                    </div>
+                    <div class="card">
+                        <h3>Unread Emails</h3>
+                        <div class="value" id="dashEmailCount">0</div>
+                    </div>
+                    <div class="card">
+                        <h3>Completed Modules</h3>
+                        <div class="value" id="dashModuleCount">0 / 12</div>
+                    </div>
+                    <div class="card">
+                        <h3>Simulator Progress</h3>
+                        <div class="value" id="dashProgress">0%</div>
+                    </div>
                 </div>
 
                 <div class="control-card">
-                    <h2>🌸 NOC Control Center</h2>
-                    <p>Monitor alarms, investigate topology, process tickets, manage work orders and communicate through the shared mailbox.</p>
+                    <h2>🌸 Oman NOC Control Center Quick Actions</h2>
+                    <p>Simulate realistic network fault events, trigger automated NOC emails, or jump directly into guided troubleshooting scenarios across Muscat, Salalah, Sohar, and Duqm infrastructure.</p>
                     <div class="action-buttons">
-                        <button class="action-btn" type="button" onclick="triggerAction('alarm')">🚨 Generate Alarm</button>
-                        <button class="action-btn" type="button" onclick="triggerAction('email')">📧 Generate NOC Email</button>
-                        <button class="action-btn" type="button" onclick="triggerAction('topology')">🌐 Network Topology</button>
+                        <button class="action-btn" onclick="triggerRandomAlarm('Critical')">🚨 Generate Critical Alarm</button>
+                        <button class="action-btn" onclick="triggerRandomAlarm('Major')">⚠️ Generate Major Alarm</button>
+                        <button class="action-btn" onclick="simulateIncomingEmail()">📧 Simulate NOC Email</button>
+                        <button class="action-btn" onclick="showPage('troubleshoot', document.querySelector('[onclick*=\'troubleshoot\']'))">🛠️ Launch Troubleshooting Lab</button>
                     </div>
                 </div>
 
-                <div class="status-card">
-                    <h2>Live Network Status</h2>
-                    <p style="margin-top: 8px; color: #666; font-size: 13px;">All core routing nodes in Muscat, Salalah, and Sohar are operating under nominal parameters.</p>
+                <div class="control-card">
+                    <h2>Live Network Status Overview</h2>
+                    <p>Backbone optical transport rings (DWDM), IP Core BGP routers, and microwave aggregation sites are currently reporting telemetry. Inspect active alerts in the Alarm Center or explore the Topology map.</p>
                 </div>
             </section>
 
-            <!-- Alarms Page -->
+            <!-- ALARMS PAGE -->
             <section id="alarms" class="page">
                 <h1>Alarm Management Center</h1>
                 <div class="control-card">
-                    <p>Inspect incoming fault events across Omani network infrastructure.</p>
-                    <table class="data-table" id="alarmTable">
+                    <p>Monitor, acknowledge, investigate, and convert network alarms into tickets. Critical alarms trigger real-time SLA response timers.</p>
+                    <div class="action-buttons" style="margin-bottom: 15px;">
+                        <button class="action-btn" onclick="triggerRandomAlarm('Critical')">Generate Critical Fault</button>
+                        <button class="action-btn" onclick="triggerRandomAlarm('Major')">Generate Major Fault</button>
+                        <button class="action-btn" onclick="triggerRandomAlarm('Minor')">Generate Minor Fault</button>
+                    </div>
+                    <table class="data-table">
                         <thead>
                             <tr>
                                 <th>Alarm ID</th>
                                 <th>Severity</th>
-                                <th>Device / Site</th>
+                                <th>Device</th>
+                                <th>Site</th>
                                 <th>Technology</th>
                                 <th>Time</th>
                                 <th>Status</th>
@@ -357,337 +502,797 @@
                             </tr>
                         </thead>
                         <tbody id="alarmTableBody">
-                            <tr>
-                                <td colspan="7" style="text-align: center; color: #666;">No active alarms in queue. Click "Generate Alarm" from Dashboard.</td>
-                            </tr>
+                            <tr><td colspan="8" style="text-align: center; color: var(--text-muted);">No alarms in queue. Generate an alarm to begin.</td></tr>
                         </tbody>
                     </table>
                 </div>
             </section>
 
-            <!-- Tickets Page -->
+            <!-- TICKETS / INCIDENTS PAGE -->
             <section id="tickets" class="page">
-                <h1>Tickets & SMA Queue</h1>
+                <h1>Incident & Trouble Ticket Management</h1>
                 <div class="control-card">
-                    <p>Manage operational trouble tickets escalated from alarms.</p>
-                    <table class="data-table" id="ticketTable">
+                    <p>Manage escalated alarms through the operational lifecycle: Investigation → Troubleshooting → Resolution → Verification → Closure.</p>
+                    <table class="data-table">
                         <thead>
                             <tr>
                                 <th>Ticket ID</th>
                                 <th>Priority</th>
-                                <th>Related Alarm</th>
-                                <th>Site Location</th>
+                                <th>Alarm Ref</th>
+                                <th>Site / Device</th>
                                 <th>SLA Status</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ticketTableBody">
+                            <tr><td colspan="7" style="text-align: center; color: var(--text-muted);">No active tickets. Convert acknowledged alarms into tickets.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- WORK ORDERS PAGE -->
+            <section id="workorders" class="page">
+                <h1>Field Engineering Work Orders</h1>
+                <div class="control-card">
+                    <p>Track field dispatch requests sent to regional engineering teams in Muscat, Sohar, Salalah, and Nizwa.</p>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>WO ID</th>
+                                <th>Site Location</th>
+                                <th>Assigned Team</th>
+                                <th>Task Description</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="woTableBody">
+                            <tr><td colspan="5" style="text-align: center; color: var(--text-muted);">No active field work orders dispatched.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- EMAILS PAGE -->
+            <section id="emails" class="page">
+                <h1>Shared NOC Mailbox</h1>
+                <div class="control-card">
+                    <p>Read incoming operational dispatches, supervisor updates, and field reports. Required actions may be linked to active incidents.</p>
+                    <div id="emailInboxContainer">
+                        <p style="color: var(--text-muted); text-align: center; padding: 20px;">Inbox is empty.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CHAT PAGE -->
+            <section id="chat" class="page">
+                <h1>Internal Team Chat & Escalation</h1>
+                <div class="split-view">
+                    <div class="control-card" style="margin-bottom: 0;">
+                        <h2>NOC Channels</h2>
+                        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 15px;">
+                            <button class="action-btn" style="text-align: left;" onclick="switchChat('IP Core')">🌐 IP Core & Routing Team</button>
+                            <button class="action-btn" style="text-align: left;" onclick="switchChat('Transmission')">📡 Transport & DWDM Team</button>
+                            <button class="action-btn" style="text-align: left;" onclick="switchChat('RAN')">📶 RAN Engineering Team</button>
+                            <button class="action-btn" style="text-align: left;" onclick="switchChat('Field')">👷 Regional Field Engineers</button>
+                            <button class="action-btn" style="text-align: left;" onclick="switchChat('Supervisor')">⭐ NOC Supervisor</button>
+                        </div>
+                    </div>
+                    <div class="chat-container">
+                        <div style="background: var(--primary-light); padding: 12px; font-weight: bold; color: var(--primary-dark); border-bottom: 1px solid var(--border-color);" id="activeChatTitle">
+                            Chat: IP Core & Routing Team
+                        </div>
+                        <div class="chat-messages" id="chatMessagesBox">
+                            <div class="chat-bubble chat-incoming">Hello NOC trainee, let us know if you spot any BGP peer flapping on the Muscat core routers.</div>
+                        </div>
+                        <div class="chat-input-area">
+                            <input type="text" id="chatInputBox" placeholder="Type message or question to team..." onkeypress="if(event.key==='Enter')sendChatMessage()">
+                            <button class="btn-sm" onclick="sendChatMessage()">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NOTIFICATIONS PAGE -->
+            <section id="notifications" class="page">
+                <h1>Operational Notification Center</h1>
+                <div class="control-card">
+                    <p>Real-time system events, SLA warnings, and team responses. Click any notification to navigate directly to the relevant entity.</p>
+                    <div id="notificationsContainer" style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                        <p style="color: var(--text-muted);">No recent notifications.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TOPOLOGY PAGE -->
+            <section id="topology" class="page">
+                <h1>Oman Telecom Network Topology</h1>
+                <div class="control-card">
+                    <p>Visual backbone connectivity map linking Muscat Core, Sohar DWDM rings, Salalah microwave links, and Duqm submarine landing stations.</p>
+                    <div style="background: var(--primary-light); padding: 25px; border-radius: 12px; border: 2px dashed var(--primary); text-align: center; margin-top: 15px;">
+                        <h3 style="color: var(--primary-dark); margin-bottom: 8px;">Oman National Backbone Architecture</h3>
+                        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">Click nodes to inspect operational status and active alarms.</p>
+                        <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+                            <button class="action-btn" onclick="inspectNode('Muscat-Core-01')">Muscat Core Router</button>
+                            <button class="action-btn" onclick="inspectNode('Sohar-DWDM-02')">Sohar DWDM Transport</button>
+                            <button class="action-btn" onclick="inspectNode('Salalah-MW-03')">Salalah Microwave Site</button>
+                            <button class="action-btn" onclick="inspectNode('Duqm-VSAT-04')">Duqm VSAT Hub</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SITES PAGE -->
+            <section id="sites" class="page">
+                <h1>Fictional Oman Telecommunication Sites</h1>
+                <div class="control-card">
+                    <p>Select regional sites across the Sultanate to review installed equipment, IP subnets, and active fault conditions.</p>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Site Code</th>
+                                <th>Location</th>
+                                <th>Technologies</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody id="ticketTableBody">
+                        <tbody>
                             <tr>
-                                <td colspan="7" style="text-align: center; color: #666;">No active tickets in queue.</td>
+                                <td>MCT-CORE-01</td>
+                                <div></div>
+                                <td>Muscat (Al Khuwair)</td>
+                                <td>IP Core, DWDM, Router</td>
+                                <td><span class="badge-success">Nominal</span></td>
+                                <td><button class="btn-sm" onclick="alert('Site MCT-CORE-01 inspected. 14 devices operational.')">Inspect Site</button></td>
+                            </tr>
+                            <tr>
+                                <td>SHR-TRN-02</td>
+                                <td>Sohar Industrial Port</td>
+                                <td>DWDM Transport, Fiber Rings</td>
+                                <td><span class="badge-success">Nominal</span></td>
+                                <td><button class="btn-sm" onclick="alert('Site SHR-TRN-02 inspected. Optical power levels normal.')">Inspect Site</button></td>
+                            </tr>
+                            <tr>
+                                <td>SLL-MW-03</td>
+                                <td>Salalah City Center</td>
+                                <td>Microwave Link, RAN Backhaul</td>
+                                <td><span class="badge-success">Nominal</span></td>
+                                <td><button class="btn-sm" onclick="alert('Site SLL-MW-03 inspected. Antenna azimuth aligned.')">Inspect Site</button></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </section>
 
-            <!-- Work Orders Page -->
-            <section id="workorders" class="page">
-                <h1>Work Orders</h1>
+            <!-- DEVICES PAGE -->
+            <section id="devices" class="page">
+                <h1>Network Device Inventory</h1>
                 <div class="control-card">
-                    <p>Field engineering and maintenance dispatch logs.</p>
+                    <p>Repository of simulated routers, switches, optical multiplexers, microwave transceivers, and power units.</p>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Device ID</th>
+                                <th>Type</th>
+                                <th>Site Location</th>
+                                <th>Management IP</th>
+                                <th>Operational State</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Muscat-Core-RT01</td>
+                                <td>Core Router (BGP/OSPF)</td>
+                                <td>MCT-CORE-01</td>
+                                <td>10.200.1.1</td>
+                                <td><span class="badge-success">Online</span></td>
+                            </tr>
+                            <tr>
+                                <td>Sohar-DWDM-MUX02</td>
+                                <td>Optical Multiplexer</td>
+                                <td>SHR-TRN-02</td>
+                                <td>10.200.44.12</td>
+                                <td><span class="badge-success">Online</span></td>
+                            </tr>
+                            <tr>
+                                <td>Salalah-MW-ODU03</td>
+                                <td>Microwave ODU Radio</td>
+                                <td>SLL-MW-03</td>
+                                <td>10.200.80.5</td>
+                                <td><span class="badge-success">Online</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </section>
 
-            <!-- Emails Page -->
-            <section id="emails" class="page">
-                <h1>Shared Mailbox & Emails</h1>
-                <div class="control-card" id="emailListContainer">
-                    <p>No new notification emails received.</p>
-                </div>
-            </section>
-
-            <!-- Topology Page -->
-            <section id="topology" class="page">
-                <h1>Network Topology & Transport</h1>
+            <!-- GLOBAL SEARCH PAGE -->
+            <section id="search" class="page">
+                <h1>Global Database Search</h1>
                 <div class="control-card">
-                    <p>Interactive Omani backbone links (Muscat IP Core, Salalah Microwave, Sohar DWDM Fiber Rings).</p>
-                    <div style="background: #fff0f3; padding: 20px; border-radius: 12px; text-align: center; border: 1px dashed #d63384; margin-top: 15px;">
-                        <h3 style="color: #d63384; margin-bottom: 10px;">Muscat Core Ring ↔ Sohar Transmission Link</h3>
-                        <p style="font-size: 13px; color: #666;">Status: <span id="topoStatus" style="color: green; font-weight: bold;">Operational (100Gbps DWDM)</span></p>
+                    <p>Search across alarms, tickets, device inventory, sites, and IP addresses in real time.</p>
+                    <div id="globalSearchResults" style="margin-top: 15px; font-size: 13px; color: var(--text-muted);">
+                        Type query in the top header search bar to view results.
                     </div>
                 </div>
             </section>
 
-            <!-- Tasks Page -->
-            <section id="tasks" class="page">
-                <h1>My Assigned Tasks</h1>
+            <!-- TRAINING MODULES PAGE -->
+            <section id="modules" class="page">
+                <h1>NOC Training Curriculum & Modules</h1>
                 <div class="control-card">
-                    <p>Pending shift assignments and operational checklists.</p>
+                    <p>Complete theoretical modules and knowledge checks to earn XP and advance your NOC trainee level.</p>
+                    <div style="display: grid; gap: 15px; margin-top: 15px;" id="modulesGridContainer">
+                        <!-- Module items populated by JS -->
+                    </div>
                 </div>
             </section>
 
-            <!-- Departments Page -->
-            <section id="departments" class="page">
-                <h1>NOC Departments & Escalation</h1>
+            <!-- TROUBLESHOOTING LAB -->
+            <section id="troubleshoot" class="page">
+                <h1>Interactive Troubleshooting Simulator</h1>
                 <div class="control-card">
-                    <p>Internal escalation matrix: IP Core, Transmission, RAN, SOC, and Field Operations.</p>
+                    <p>Practice end-to-end incident resolution: Identify symptom → Inspect device → Communicate → Troubleshoot → Escalate → Resolve → Verify → Close.</p>
+                    <div id="troubleshootScenarioBox" style="background: var(--primary-light); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color);">
+                        <h3 style="color: var(--primary-dark); margin-bottom: 10px;" id="tsScenarioTitle">Scenario 1: Sohar Optical Fiber Cut</h3>
+                        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;" id="tsScenarioDesc">A critical LOS alarm triggered on Sohar-DWDM-MUX02. Customers report high latency on international circuits. What is your first step?</p>
+                        <div class="action-buttons" id="tsActionButtons">
+                            <button class="action-btn" onclick="handleTroubleshootStep(1, 'ack')">1. Acknowledge Alarm & Create Ticket</button>
+                            <button class="action-btn" onclick="handleTroubleshootStep(1, 'ignore')">2. Ignore and wait</button>
+                        </div>
+                    </div>
                 </div>
             </section>
 
-            <!-- Global Search Page -->
-            <section id="search" class="page">
-                <h1>Global Search Engine</h1>
+            <!-- KNOWLEDGE BASE -->
+            <section id="kb" class="page">
+                <h1>Technical Knowledge Base</h1>
                 <div class="control-card">
-                    <p>Enter query in the top search bar to scan database entities across sites, devices, and alarms.</p>
-                    <div id="searchResults" style="margin-top: 15px; font-size: 13px; color: #666;">Ready for search...</div>
+                    <p>Reference documentation for IP Core routing, DWDM optical transport, microwave attenuation, fiber optic splicing, BGP, OSPF, and NOC escalation workflows.</p>
+                    <input type="text" class="search-box" placeholder="Search knowledge base articles..." style="width: 100%; margin-bottom: 15px;" oninput="filterKB(this.value)">
+                    <div id="kbContentContainer" style="display: flex; flex-direction: column; gap: 12px;">
+                        <div style="background: var(--primary-light); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color);">
+                            <h3 style="color: var(--primary-dark); font-size: 14px; margin-bottom: 6px;">BGP Route Flapping & Mitigation</h3>
+                            <p style="font-size: 13px; color: var(--text-muted);">Border Gateway Protocol (BGP) instability causes frequent route withdrawals. Investigate upstream ASN peering links and check interface CRC errors.</p>
+                        </div>
+                        <div style="background: var(--primary-light); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color);">
+                            <h3 style="color: var(--primary-dark); font-size: 14px; margin-bottom: 6px;">DWDM Optical Power Budget Analysis</h3>
+                            <p style="font-size: 13px; color: var(--text-muted);">Loss of Signal (LOS) on transport links typically stems from fiber attenuation exceeding -28dBm due to physical cable damage or dirty patch cords.</p>
+                        </div>
+                    </div>
                 </div>
             </section>
 
-            <!-- Activity Log Page -->
+            <!-- SHIFT HANDOVER -->
+            <section id="handover" class="page">
+                <h1>Shift Handover Log</h1>
+                <div class="control-card">
+                    <p>Prepare operational handover reports for incoming NOC shift engineers.</p>
+                    <textarea class="notes-area" id="handoverInput" placeholder="Enter active incidents, pending escalations, and critical maintenance notes for the next shift..."></textarea>
+                    <div style="margin-top: 10px;">
+                        <button class="action-btn" onclick="saveHandover()">Submit Shift Handover</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NOTES -->
+            <section id="notes" class="page">
+                <h1>Trainee Personal Notes</h1>
+                <div class="control-card">
+                    <p>Record notes, troubleshooting steps, and important IP configurations during your training session. Persists automatically.</p>
+                    <textarea class="notes-area" id="traineeNotes" placeholder="Type your personal shift notes here..." oninput="saveNotes()"></textarea>
+                </div>
+            </section>
+
+            <!-- REPORTS -->
+            <section id="reports" class="page">
+                <h1>Trainee Performance Evaluation Report</h1>
+                <div class="control-card">
+                    <p>Comprehensive assessment of technical accuracy, alarm handling speed, ticket closure verification, and communication competency.</p>
+                    <div id="reportSummaryBox" style="font-size: 13px; line-height: 1.6; color: var(--text-main);">
+                        <p><b>Trainee Name:</b> NOC Trainee Engineer (Oman)</p>
+                        <p><b>Current Level:</b> <span id="repLevel">1</span></p>
+                        <p><b>Total XP Accumulated:</b> <span id="repXP">0</span></p>
+                        <p><b>Overall Performance Score:</b> <span id="repScore">100</span> / 100</p>
+                        <p><b>Completed Modules:</b> <span id="repModules">0</span> / 12</p>
+                        <p><b>SLA Compliance Rate:</b> 100%</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ACTIVITY LOG -->
             <section id="activity" class="page">
                 <h1>Activity & Audit Log</h1>
                 <div class="control-card">
+                    <p>Chronological audit trail recording all actions performed across the training simulator.</p>
                     <table class="data-table">
                         <thead>
                             <tr>
                                 <th>Timestamp</th>
-                                <th>Action Performed</th>
                                 <th>Category</th>
+                                <th>Action Performed</th>
                             </tr>
                         </thead>
                         <tbody id="activityLogBody">
-                            <tr>
-                                <td>09:47 AM</td>
-                                <td>Simulator session initialized successfully.</td>
-                                <td>System</td>
-                            </tr>
+                            <tr><td>09:49 AM</td><td>System</td><td>Oman NOC Training Simulator initialized successfully.</td></tr>
                         </tbody>
                     </table>
-                </div>
-            </section>
-
-            <!-- Training Modules Page -->
-            <section id="modules" class="page">
-                <h1>NOC Training Modules</h1>
-                <div class="control-card">
-                    <p>Study modules covering IP Core, Transmission, Microwave, VSAT, Fiber Optics, RAN, and Agile Ops.</p>
-                    <div style="margin-top: 15px; display: grid; gap: 10px;">
-                        <div style="background: #fff0f3; padding: 12px; border-radius: 8px; border: 1px solid #ffd7e9;">
-                            <h3 style="color: #d63384; font-size: 14px;">1. IP Core & BGP/OSPF Routing</h3>
-                            <p style="font-size: 12px; color: #666; margin-top: 4px;">Learn Autonomous System routing, convergence, and packet forwarding.</p>
-                        </div>
-                        <div style="background: #fff0f3; padding: 12px; border-radius: 8px; border: 1px solid #ffd7e9;">
-                            <h3 style="color: #d63384; font-size: 14px;">2. Transport, DWDM & Microwave Links</h3>
-                            <p style="font-size: 12px; color: #666; margin-top: 4px;">Understand optical attenuation, SONET/SDH, and high-capacity radio links.</p>
-                        </div>
-                    </div>
                 </div>
             </section>
         </div>
     </div>
 
     <script>
-        let state = {
+        // State Management & Persistence
+        let simState = {
             score: 100,
-            activeAlarmsCount: 0,
-            ackedCount: 0,
-            ticketsCount: 0,
-            woCount: 0,
-            emailCount: 0,
+            xp: 0,
+            level: 1,
             alarms: [],
             tickets: [],
             emails: [],
-            logs: []
+            notifications: [],
+            logs: [{ time: new Date().toLocaleTimeString(), category: 'System', action: 'Simulator initialized.' }],
+            notes: '',
+            handover: '',
+            completedModules: 0,
+            criticalTimerActive: false,
+            criticalTimerSeconds: 300,
+            activeChatTeam: 'IP Core'
         };
+
+        function saveState() {
+            localStorage.setItem('oman_noc_sim_state', JSON.stringify(simState));
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem('oman_noc_sim_state');
+            if (saved) {
+                try {
+                    simState = JSON.parse(saved);
+                } catch(e) { console.error(e); }
+            }
+        }
 
         function logActivity(action, category = 'Operations') {
             const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            state.logs.unshift({ time: timeStr, action, category });
+            simState.logs.unshift({ time: timeStr, category, action });
             updateActivityTable();
+            saveState();
+        }
+
+        function addNotification(title, message, linkPage = 'dashboard') {
+            simState.notifications.unshift({ title, message, linkPage, time: new Date().toLocaleTimeString() });
+            updateNotificationsUI();
+            saveState();
         }
 
         function updateActivityTable() {
             const tbody = document.getElementById('activityLogBody');
-            tbody.innerHTML = state.logs.map(l => `
+            if (!tbody) return;
+            tbody.innerHTML = simState.logs.map(l => `
                 <tr>
                     <td>${l.time}</td>
+                    <td><b>${l.category}</b></td>
                     <td>${l.action}</td>
-                    <td>${l.category}</td>
                 </tr>
             `).join('');
         }
 
+        function updateNotificationsUI() {
+            const container = document.getElementById('notificationsContainer');
+            const badge = document.getElementById('notifBadge');
+            if (badge) badge.innerText = simState.notifications.length;
+            if (!container) return;
+            if (simState.notifications.length === 0) {
+                container.innerHTML = `<p style="color: var(--text-muted);">No recent notifications.</p>`;
+                return;
+            }
+            container.innerHTML = simState.notifications.map((n, idx) => `
+                <div style="background: var(--primary-light); padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); cursor: pointer;" onclick="showPage('${n.linkPage}', null)">
+                    <h3 style="color: var(--primary-dark); font-size: 13px; margin-bottom: 4px;">${n.title} <span style="font-size: 10px; color: var(--text-muted); float: right;">${n.time}</span></h3>
+                    <p style="font-size: 12px; color: var(--text-main);">${n.message}</p>
+                </div>
+            `).join('');
+        }
+
         window.showPage = function(pageId, element) {
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
-
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-
-            const targetPage = document.getElementById(pageId);
-            if (targetPage) {
-                targetPage.classList.add('active');
-            }
-
-            if (element) {
-                element.classList.add('active');
-            }
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            
+            const target = document.getElementById(pageId);
+            if (target) target.classList.add('active');
+            if (element) element.classList.add('active');
+            
             logActivity(`Navigated to section: ${pageId}`, 'Navigation');
         };
 
-        window.globalSearch = function(query) {
-            const resultsDiv = document.getElementById('searchResults');
-            if (!query.trim()) {
-                resultsDiv.innerHTML = "Ready for search...";
-                return;
-            }
-            resultsDiv.innerHTML = `Searching database for <b>"${query}"</b>... Found matching devices in Muscat IP Core and Sohar Transmission link.`;
-        };
+        window.triggerRandomAlarm = function(severity) {
+            const id = 'ALM-OMAN-' + Math.floor(1000 + Math.random() * 9000);
+            const devices = ['Muscat-Core-RT01', 'Sohar-DWDM-MUX02', 'Salalah-MW-ODU03', 'Duqm-VSAT-HUB01', 'Nizwa-RAN-BS04'];
+            const techs = ['IP Core / BGP', 'DWDM Transport', 'Microwave Link', 'VSAT Satellite', 'RAN 5G'];
+            const device = devices[Math.floor(Math.random() * devices.length)];
+            const tech = techs[Math.floor(Math.random() * techs.length)];
+            
+            simState.alarms.push({
+                id,
+                severity,
+                device,
+                site: device.split('-')[0] + ' Site',
+                tech,
+                time: new Date().toLocaleTimeString(),
+                status: 'Active',
+                ticketId: null
+            });
 
-        window.triggerAction = function(type) {
-            if (type === 'alarm') {
-                state.activeAlarmsCount++;
-                const alarmId = 'ALM-2026-' + Math.floor(1000 + Math.random() * 9000);
-                state.alarms.push({
-                    id: alarmId,
-                    severity: 'Critical',
-                    device: 'Muscat-Core-RT01',
-                    tech: 'IP Core / BGP',
-                    time: new Date().toLocaleTimeString(),
-                    status: 'Active'
-                });
-                updateCounters();
-                updateAlarmTable();
-                logActivity(`Generated new critical alarm: ${alarmId}`, 'Fault Management');
-                alert('🚨 New simulated critical alarm generated in Muscat Core!');
-            } else if (type === 'email') {
-                state.emailCount++;
-                state.emails.push({
-                    sender: 'SOC Supervisor',
-                    subject: 'SLA Escalation Warning - Muscat Node',
-                    time: new Date().toLocaleTimeString(),
-                    content: 'Please check pending critical alarms immediately to avoid SLA breach.'
-                });
-                updateCounters();
-                updateEmailList();
-                logActivity('Received simulated NOC supervisory email.', 'Communication');
-                alert('📧 New NOC operational email received!');
-            } else if (type === 'topology') {
-                window.showPage('topology', document.querySelector('[onclick*="topology"]'));
+            if (severity === 'Critical' && !simState.criticalTimerActive) {
+                simState.criticalTimerActive = true;
+                simState.criticalTimerSeconds = 300;
+                document.getElementById('criticalTimerBanner').style.display = 'flex';
             }
+
+            updateCounters();
+            updateAlarmTable();
+            addNotification(`New ${severity} Alarm (${id})`, `Fault detected on ${device} (${tech}).`, 'alarms');
+            logActivity(`Generated ${severity} alarm ${id} on ${device}`, 'Fault Management');
+            alert(`🚨 New ${severity} Alarm Generated: ${id} on ${device}!`);
         };
 
         function updateCounters() {
-            document.getElementById('alarmCount').innerText = state.activeAlarmsCount;
-            document.getElementById('alarmBadge').innerText = state.activeAlarmsCount;
-            document.getElementById('ackCount').innerText = state.ackedCount;
-            document.getElementById('ticketCount').innerText = state.ticketsCount;
-            document.getElementById('ticketBadge').innerText = state.ticketsCount;
-            document.getElementById('woCount').innerText = state.woCount;
-            document.getElementById('emailCount').innerText = state.emailCount;
-            document.getElementById('emailBadge').innerText = state.emailCount;
-            document.getElementById('scoreCount').innerText = state.score;
+            document.getElementById('alarmBadge').innerText = simState.alarms.filter(a => a.status === 'Active').length;
+            document.getElementById('dashAlarmCount').innerText = simState.alarms.filter(a => a.status === 'Active').length;
+            document.getElementById('ticketBadge').innerText = simState.tickets.length;
+            document.getElementById('dashTicketCount').innerText = simState.tickets.length;
+            document.getElementById('emailBadge').innerText = simState.emails.filter(e => !e.read).length;
+            document.getElementById('dashEmailCount').innerText = simState.emails.filter(e => !e.read).length;
+            document.getElementById('traineeScore').innerText = simState.score;
+            document.getElementById('traineeXP').innerText = simState.xp;
+            document.getElementById('traineeLevel').innerText = simState.level;
+            document.getElementById('repScore').innerText = simState.score;
+            document.getElementById('repXP').innerText = simState.xp;
+            document.getElementById('repLevel').innerText = simState.level;
+            document.getElementById('dashProgress').innerText = Math.min(100, Math.floor((simState.xp / 200) * 100)) + '%';
+            saveState();
         }
 
         function updateAlarmTable() {
             const tbody = document.getElementById('alarmTableBody');
-            if (state.alarms.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #666;">No active alarms in queue.</td></tr>`;
+            if (!tbody) return;
+            if (simState.alarms.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted);">No alarms in queue.</td></tr>`;
                 return;
             }
-            tbody.innerHTML = state.alarms.map((a, index) => `
+            tbody.innerHTML = simState.alarms.map((a, idx) => `
                 <tr>
                     <td>${a.id}</td>
-                    <td><span class="badge-critical">${a.severity}</span></td>
+                    <td><span class="badge-${a.severity.toLowerCase()}">${a.severity}</span></td>
                     <td>${a.device}</td>
+                    <td>${a.site}</td>
                     <td>${a.tech}</td>
                     <td>${a.time}</td>
-                    <td>${a.status}</td>
+                    <td><b>${a.status}</b></td>
                     <td>
-                        <button class="btn-sm" onclick="acknowledgeAlarm(${index})">Ack</button>
-                        <button class="btn-sm" style="background:#28a745; margin-left: 4px;" onclick="createTicket(${index})">Ticket</button>
+                        ${a.status === 'Active' ? `<button class="btn-sm" onclick="ackAlarm(${idx})">Ack</button>` : ''}
+                        ${!a.ticketId ? `<button class="btn-sm" style="background:var(--success); margin-left:4px;" onclick="convertToTicket(${idx})">Ticket</button>` : ''}
                     </td>
                 </tr>
             `).join('');
         }
 
-        window.acknowledgeAlarm = function(index) {
-            if (state.alarms[index].status === 'Active') {
-                state.alarms[index].status = 'Acknowledged';
-                state.ackedCount++;
-                state.score += 10;
-                updateCounters();
-                updateAlarmTable();
-                logActivity(`Acknowledged alarm ${state.alarms[index].id}`, 'Fault Management');
-                alert(`Alarm ${state.alarms[index].id} acknowledged successfully (+10 XP)`);
-            }
+        window.ackAlarm = function(idx) {
+            simState.alarms[idx].status = 'Acknowledged';
+            simState.xp += 10;
+            updateCounters();
+            updateAlarmTable();
+            logActivity(`Acknowledged alarm ${simState.alarms[idx].id}`, 'Fault Management');
+            alert(`Alarm ${simState.alarms[idx].id} acknowledged (+10 XP).`);
         };
 
-        window.createTicket = function(index) {
-            const alm = state.alarms[index];
-            state.ticketsCount++;
-            state.tickets.push({
-                id: 'TKT-' + Math.floor(1000 + Math.random() * 9000),
-                priority: 'P1 - Critical',
-                alarmId: alm.id,
-                site: alm.device,
+        window.convertToTicket = function(idx) {
+            const a = simState.alarms[idx];
+            const tId = 'TKT-' + Math.floor(1000 + Math.random() * 9000);
+            a.ticketId = tId;
+            a.status = 'Investigating';
+            
+            simState.tickets.push({
+                id: tId,
+                priority: a.severity === 'Critical' ? 'P1 - Critical' : 'P2 - Major',
+                alarmId: a.id,
+                device: a.device,
+                site: a.site,
                 sla: '45 mins remaining',
-                status: 'Open'
+                status: 'Investigating'
             });
+
             updateCounters();
+            updateAlarmTable();
             updateTicketTable();
-            logActivity(`Converted alarm ${alm.id} into operational ticket.`, 'Incident Management');
-            alert(`Trouble ticket generated from alarm ${alm.id}`);
+            logActivity(`Converted alarm ${a.id} into incident ticket ${tId}`, 'Incident Management');
+            alert(`Incident ticket ${tId} created successfully.`);
         };
 
         function updateTicketTable() {
             const tbody = document.getElementById('ticketTableBody');
-            if (state.tickets.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #666;">No active tickets in queue.</td></tr>`;
+            if (!tbody) return;
+            if (simState.tickets.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted);">No active tickets.</td></tr>`;
                 return;
             }
-            tbody.innerHTML = state.tickets.map(t => `
+            tbody.innerHTML = simState.tickets.map(t => `
                 <tr>
                     <td>${t.id}</td>
                     <td><span class="badge-critical">${t.priority}</span></td>
                     <td>${t.alarmId}</td>
-                    <td>${t.site}</td>
+                    <td>${t.device}</td>
                     <td>${t.sla}</td>
-                    <td>${t.status}</td>
-                    <td><button class="btn-sm" style="background:#007bff;" onclick="resolveTicket('${t.id}')">Resolve</button></td>
+                    <td><b>${t.status}</b></td>
+                    <td>
+                        <button class="btn-sm" style="background:#007bff;" onclick="resolveTicket('${t.id}')">Resolve & Verify</button>
+                    </td>
                 </tr>
             `).join('');
         }
 
-        window.resolveTicket = function(ticketId) {
-            state.tickets = state.tickets.filter(t => t.id !== ticketId);
-            state.ticketsCount = Math.max(0, state.ticketsCount - 1);
-            state.score += 25;
-            updateCounters();
-            updateTicketTable();
-            logActivity(`Resolved ticket ${ticketId}`, 'Incident Management');
-            alert(`Ticket ${ticketId} resolved successfully (+25 XP)!`);
-        };
+        window.resolveTicket = function(tId) {
+            const ticket = simState.tickets.find(t => t.id === tId);
+            if (!ticket) return;
 
-        function updateEmailList() {
-            const container = document.getElementById('emailListContainer');
-            if (state.emails.length === 0) {
-                container.innerHTML = `<p>No new notification emails received.</p>`;
+            const verified = confirm(`Verification Check:\nHave you verified network telemetry, cleared the related alarm, and confirmed circuit stability for ${ticket.device}?`);
+            if (!verified) {
+                alert('Closure blocked: Proper network verification is mandatory before closing an incident ticket.');
+                simState.score -= 5;
+                updateCounters();
                 return;
             }
-            container.innerHTML = state.emails.map(e => `
-                <div style="background: #fff0f3; padding: 15px; border-radius: 12px; border: 1px solid #ffd7e9; margin-bottom: 10px;">
-                    <h3 style="color: #d63384; font-size: 14px; margin-bottom: 4px;">${e.subject}</h3>
-                    <p style="font-size: 12px; color: #666; margin-bottom: 8px;">From: ${e.sender} | Time: ${e.time}</p>
-                    <p style="font-size: 13px; color: #333;">${e.content}</p>
+
+            simState.tickets = simState.tickets.filter(t => t.id !== tId);
+            // clear associated alarm
+            simState.alarms = simState.alarms.filter(a => a.ticketId !== tId);
+            simState.xp += 30;
+            simState.score += 15;
+            updateCounters();
+            updateAlarmTable();
+            updateTicketTable();
+            logActivity(`Successfully resolved and verified ticket ${tId}`, 'Incident Management');
+            alert(`Ticket ${tId} successfully resolved, verified, and closed (+30 XP)!`);
+        };
+
+        window.simulateIncomingEmail = function() {
+            const eId = simState.emails.length + 1;
+            simState.emails.unshift({
+                id: eId,
+                sender: 'SOC Operations Supervisor',
+                subject: 'Operational Dispatch / Maintenance Notice #' + eId,
+                time: new Date().toLocaleTimeString(),
+                content: 'Please verify optical power levels on the Sohar-Muscat transmission path following recent weather alerts in Al Batinah.',
+                read: false
+            });
+            updateCounters();
+            updateEmailInbox();
+            addNotification('New NOC Email Received', 'SOC Supervisor sent an operational dispatch.', 'emails');
+            logActivity('Received simulated NOC email.', 'Communication');
+            alert('📧 New NOC email received in Shared Mailbox.');
+        };
+
+        function updateEmailInbox() {
+            const container = document.getElementById('emailInboxContainer');
+            if (!container) return;
+            if (simState.emails.length === 0) {
+                container.innerHTML = `<p style="color: var(--text-muted); text-align: center; padding: 20px;">Inbox is empty.</p>`;
+                return;
+            }
+            container.innerHTML = simState.emails.map(e => `
+                <div style="background: ${e.read ? 'var(--white)' : 'var(--primary-light)'}; padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 10px; cursor: pointer;" onclick="readEmail(${e.id})">
+                    <h3 style="color: var(--primary-dark); font-size: 14px; margin-bottom: 4px;">${e.subject} <span style="font-size: 11px; color: var(--text-muted); float: right;">${e.time}</span></h3>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px;">From: ${e.sender}</p>
+                    <p style="font-size: 13px; color: var(--text-main);">${e.content}</p>
                 </div>
             `).join('');
         }
 
-        logActivity('System initialized and ready for training.', 'System');
+        window.readEmail = function(id) {
+            const email = simState.emails.find(e => e.id === id);
+            if (email) {
+                email.read = true;
+                updateCounters();
+                updateEmailInbox();
+            }
+        };
+
+        // Chat functionality
+        window.switchChat = function(team) {
+            simState.activeChatTeam = team;
+            document.getElementById('activeChatTitle').innerText = `Chat: ${team} Team`;
+            const box = document.getElementById('chatMessagesBox');
+            box.innerHTML = `<div class="chat-bubble chat-incoming">Connected to ${team} team channel. How can we assist with your NOC investigation?</div>`;
+            logActivity(`Switched team chat channel to ${team}`, 'Communication');
+        };
+
+        window.sendChatMessage = function() {
+            const input = document.getElementById('chatInputBox');
+            const txt = input.value.trim();
+            if (!txt) return;
+
+            const box = document.getElementById('chatMessagesBox');
+            box.innerHTML += `<div class="chat-bubble chat-outgoing">${txt}</div>`;
+            input.value = '';
+            box.scrollTop = box.scrollHeight;
+
+            // Automated team response
+            setTimeout(() => {
+                let reply = `Acknowledged. Our engineers are checking telemetry for ${simState.activeChatTeam}.`;
+                if (txt.toLowerCase().includes('fiber') || txt.toLowerCase().includes('cut')) {
+                    reply = `Field team dispatched to inspect optical splice closures. Expect update in 15 minutes.`;
+                } else if (txt.toLowerCase().includes('bgp') || txt.toLowerCase().includes('router')) {
+                    reply = `BGP session reset initiated on peering router. Checking route convergence.`;
+                }
+                box.innerHTML += `<div class="chat-bubble chat-incoming">${reply}</div>`;
+                box.scrollTop = box.scrollHeight;
+                simState.xp += 5;
+                updateCounters();
+                logActivity(`Exchanged messages with ${simState.activeChatTeam} team.`, 'Communication');
+            }, 1000);
+        };
+
+        // Notes & Handover
+        window.saveNotes = function() {
+            const val = document.getElementById('traineeNotes').value;
+            simState.notes = val;
+            saveState();
+        };
+
+        window.saveHandover = function() {
+            const val = document.getElementById('handoverInput').value;
+            simState.handover = val;
+            saveState();
+            logActivity('Shift handover report submitted successfully.', 'Operations');
+            alert('Shift handover successfully recorded and saved.');
+        };
+
+        // Global Search
+        window.executeGlobalSearch = function(query) {
+            const container = document.getElementById('globalSearchResults');
+            if (!container) return;
+            const q = query.toLowerCase().trim();
+            if (!q) {
+                container.innerHTML = "Type query in the top header search bar to view results.";
+                return;
+            }
+
+            let results = [];
+            simState.alarms.forEach(a => {
+                if (a.id.toLowerCase().includes(q) || a.device.toLowerCase().includes(q) || a.tech.toLowerCase().includes(q)) {
+                    results.push(`Alarm Match: <b>${a.id}</b> on ${a.device} (${a.severity})`);
+                }
+            });
+            simState.tickets.forEach(t => {
+                if (t.id.toLowerCase().includes(q) || t.device.toLowerCase().includes(q)) {
+                    results.push(`Ticket Match: <b>${t.id}</b> - ${t.device}`);
+                }
+            });
+
+            if (results.length === 0) {
+                results.push(`No active database entities matching "${query}". Try searching for Muscat, Sohar, or active alarm IDs.`);
+            }
+
+            container.innerHTML = results.map(r => `<div style="padding: 8px 0; border-bottom: 1px solid var(--border-color);">${r}</div>`).join('');
+            showPage('search', null);
+        };
+
+        // Training Modules init
+        function initModules() {
+            const container = document.getElementById('modulesGridContainer');
+            if (!container) return;
+            const modules = [
+                { title: '1. IP Core & BGP/OSPF Routing', desc: 'Autonomous system peering, convergence, and packet forwarding across Muscat nodes.' },
+                { title: '2. Transport, DWDM & Optical Links', desc: 'Optical power attenuation, multiplexing, and fiber ring survivability.' },
+                { title: '3. Microwave Backhaul & Antennas', desc: 'Line of sight, fade margin, and Salalah high-capacity radio links.' },
+                { title: '4. VSAT Satellite Communications', desc: 'Hub stations, transponder frequency bands, and remote site connectivity.' },
+                { title: '5. Fiber Optics & Splicing Faults', desc: 'Locating optical cable breaks and interpreting OTDR traces.' },
+                { title: '6. RAN & Mobile Site Integration', desc: 'Cellular base station backhaul and core network interaction.' },
+                { title: '7. Security Operations Center (SOC)', desc: 'Handling cyber threats, DDoS mitigation, and firewall telemetry.' },
+                { title: '8. Agile Ops & Alarm Triage', desc: 'Rapid alert prioritization and operational dispatch workflows.' },
+                { title: '9. Network Performance KPIs', desc: 'Interpreting packet drop, jitter, throughput, and link utilization.' },
+                { title: '10. Interfaces, Ports & Cards', desc: 'SFP transceivers, line cards, and physical port diagnostics.' }
+            ];
+
+            container.innerHTML = modules.map((m, idx) => `
+                <div style="background: var(--primary-light); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h3 style="color: var(--primary-dark); font-size: 14px; margin-bottom: 4px;">${m.title}</h3>
+                        <p style="font-size: 12px; color: var(--text-muted);">${m.desc}</p>
+                    </div>
+                    <button class="btn-sm" onclick="completeModule(${idx})">Complete (+25 XP)</button>
+                </div>
+            `).join('');
+        }
+
+        window.completeModule = function(idx) {
+            simState.xp += 25;
+            simState.completedModules = Math.min(12, simState.completedModules + 1);
+            if (simState.xp >= 150 && simState.level === 1) simState.level = 2;
+            updateCounters();
+            logActivity(`Completed training module #${idx + 1}`, 'Training');
+            alert('Training module completed successfully (+25 XP)!');
+        };
+
+        // Troubleshooting Lab step handling
+        window.handleTroubleshootStep = function(step, action) {
+            const box = document.getElementById('troubleshootScenarioBox');
+            if (action === 'ack') {
+                box.innerHTML = `
+                    <h3 style="color: var(--primary-dark); margin-bottom: 10px;">Step 2: Dispatch & Investigation</h3>
+                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">Alarm acknowledged and ticket generated. Telemetry indicates optical signal loss on Sohar DWDM link. What is your next troubleshooting action?</p>
+                    <div class="action-buttons">
+                        <button class="action-btn" onclick="handleTroubleshootStep(2, 'team')">Contact Transmission Team via Chat</button>
+                        <button class="action-btn" onclick="handleTroubleshootStep(2, 'wrong')">Reboot core router</button>
+                    </div>
+                `;
+                simState.xp += 15;
+                updateCounters();
+            } else if (action === 'team') {
+                box.innerHTML = `
+                    <h3 style="color: var(--primary-dark); margin-bottom: 10px;">Step 3: Verification & Resolution</h3>
+                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">Transmission team confirmed fiber splice repair complete. Optical power restored to -18dBm. Verify network status and close incident.</p>
+                    <div class="action-buttons">
+                        <button class="action-btn" style="background:var(--success); color:white;" onclick="handleTroubleshootStep(3, 'complete')">Verify & Close Incident</button>
+                    </div>
+                `;
+                simState.xp += 25;
+                updateCounters();
+            } else if (action === 'complete') {
+                box.innerHTML = `
+                    <h3 style="color: var(--success); margin-bottom: 10px;">🎉 Scenario Successfully Completed!</h3>
+                    <p style="font-size: 13px; color: var(--text-main); margin-bottom: 15px;">You successfully followed the complete NOC workflow: Alarm → Acknowledge → Ticket → Investigation → Communication → Resolution → Verification → Closure. Excellent work!</p>
+                    <button class="action-btn" onclick="location.reload()">Restart Training Simulation</button>
+                `;
+                simState.xp += 50;
+                simState.score += 20;
+                updateCounters();
+                logActivity('Successfully completed Troubleshooting Scenario.', 'Training');
+            } else {
+                alert('Incorrect troubleshooting step. Review knowledge base and try again (-5 score).');
+                simState.score -= 5;
+                updateCounters();
+            }
+        };
+
+        // Real-time Critical Timer interval
+        setInterval(() => {
+            if (simState.criticalTimerActive) {
+                simState.criticalTimerSeconds--;
+                let m = Math.floor(simState.criticalTimerSeconds / 60);
+                let s = simState.criticalTimerSeconds % 60;
+                let display = `${m < 10 ? '0':''}${m}:${s < 10 ? '0':''}${s}`;
+                const el = document.getElementById('countdownDisplay');
+                if (el) el.innerText = display;
+
+                if (simState.criticalTimerSeconds <= 0) {
+                    simState.criticalTimerActive = false;
+                    simState.score -= 15;
+                    updateCounters();
+                    addNotification('SLA BREACH WARNING', 'Critical incident response timer expired without full resolution.', 'alarms');
+                }
+            }
+        }, 1000);
+
+        // Initialization on Load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadState();
+            updateCounters();
+            updateAlarmTable();
+            updateTicketTable();
+            updateEmailInbox();
+            updateNotificationsUI();
+            updateActivityTable();
+            initModules();
+            if (simState.notes) {
+                const n = document.getElementById('traineeNotes');
+                if (n) n.value = simState.notes;
+            }
+        });
     </script>
 </body>
 </html>
