@@ -380,6 +380,73 @@
             justify-content: space-between;
             align-items: center;
         }
+
+        /* Floating Pixel Mascot Assistant */
+        .pixel-mascot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 25px;
+            display: flex;
+            align-items: flex-end;
+            gap: 12px;
+            z-index: 999;
+            pointer-events: none;
+            animation: mascotFloat 3s ease-in-out infinite;
+        }
+
+        .pixel-mascot-container * {
+            pointer-events: auto;
+        }
+
+        .mascot-speech-bubble {
+            background: var(--white);
+            border: 2px solid var(--primary);
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--primary-dark);
+            box-shadow: 0 4px 15px rgba(255, 77, 136, 0.15);
+            max-width: 200px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .mascot-speech-bubble::after {
+            content: '';
+            position: absolute;
+            right: -8px;
+            bottom: 12px;
+            width: 0;
+            height: 0;
+            border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+            border-left: 8px solid var(--primary);
+        }
+
+        .mascot-img-wrap {
+            width: 85px;
+            height: 110px;
+            cursor: pointer;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+            transition: transform 0.2s ease;
+        }
+
+        .mascot-img-wrap:hover {
+            transform: scale(1.08) translateY(-4px);
+        }
+
+        .mascot-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            image-rendering: pixelated;
+        }
+
+        @keyframes mascotFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
     </style>
 </head>
 <body>
@@ -810,6 +877,16 @@
         </div>
     </div>
 
+    <!-- Floating Pixel Mascot Companion -->
+    <div class="pixel-mascot-container">
+        <div class="mascot-speech-bubble" id="mascotSpeech" onclick="mascotTalkRandom()">
+            Hi! I'm here to help you monitor the Oman network! Click me anytime!
+        </div>
+        <div class="mascot-img-wrap" onclick="mascotTalkRandom()" title="Your NOC Companion">
+            <img src="image_a88f23.png" alt="Pixel Assistant Companion">
+        </div>
+    </div>
+
     <!-- JavaScript Application Logic -->
     <script>
         let state = {
@@ -832,6 +909,22 @@
             currentChannel: 'IP Core'
         };
 
+        const mascotDialogues = [
+            "Keep an eye on those SLA timers! ⏱️",
+            "Muscat core routers are looking stable today! 🌐",
+            "Need XP? Complete a learning module! 📚",
+            "Great job keeping the network online! ✨",
+            "Check the Shared Mailbox for supervisor updates! 📧",
+            "Don't forget to create tickets for active alarms! 🎫",
+            "Salalah microwave links look strong! 📡"
+        ];
+
+        function mascotTalkRandom() {
+            const speechBubble = document.getElementById('mascotSpeech');
+            const randomMsg = mascotDialogues[Math.floor(Math.random() * mascotDialogues.length)];
+            speechBubble.textContent = randomMsg;
+        }
+
         function showPage(pageId, btnElement) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
@@ -841,6 +934,13 @@
                 btnElement.classList.add('active');
             }
             logActivity(`Navigated to page: ${pageId}`);
+
+            // Companion reaction to navigation
+            const speechBubble = document.getElementById('mascotSpeech');
+            if(pageId === 'dashboard') speechBubble.textContent = "Back to the main dashboard! Ready for action?";
+            else if(pageId === 'alarms') speechBubble.textContent = "Uh oh, checking alarms? Let's fix them!";
+            else if(pageId === 'topology') speechBubble.textContent = "Oman's fiber map looks so cool from here!";
+            else if(pageId === 'troubleshoot') speechBubble.textContent = "Time to test your engineering skills!";
         }
 
         function logActivity(message) {
@@ -892,6 +992,9 @@
             renderAlarms();
             updateUI();
             logActivity(`Generated ${severity} alarm: ${alarm.id}`);
+
+            // Mascot reaction to faults
+            document.getElementById('mascotSpeech').textContent = `Yikes! A ${severity} alarm just popped up! Quick, check it!`;
         }
 
         function renderAlarms() {
@@ -939,6 +1042,7 @@
             renderTickets();
             updateUI();
             logActivity(`Converted alarm ${alm.alarmRef || alm.id} to ticket ${ticket.id}`);
+            document.getElementById('mascotSpeech').textContent = "Ticket created! Now let's resolve it!";
         }
 
         function renderTickets() {
@@ -972,6 +1076,7 @@
             updateUI();
             addNotification(`Ticket ${tkt.id} resolved successfully! (+25 XP)`);
             logActivity(`Resolved ticket ${tkt.id}`);
+            document.getElementById('mascotSpeech').textContent = "Awesome job! Ticket resolved! 🎉 (+25 XP)";
         }
 
         function simulateIncomingEmail() {
@@ -987,6 +1092,7 @@
             updateUI();
             addNotification('New NOC email received from Supervisor.');
             logActivity('Simulated incoming email.');
+            document.getElementById('mascotSpeech').textContent = "You've got mail from the supervisor! 📧";
         }
 
         function renderEmails() {
@@ -1059,6 +1165,7 @@
             updateUI();
             addNotification(`Completed Training Module ${num}! (+50 XP)`);
             logActivity(`Completed Training Module ${num}`);
+            document.getElementById('mascotSpeech').textContent = "Module complete! You're getting smarter every day! 🌟";
         }
 
         function resolveTroubleshootStep(step) {
@@ -1073,6 +1180,7 @@
                 state.completedModules = 2;
                 updateUI();
                 logActivity('Completed troubleshooting lab simulation.');
+                document.getElementById('mascotSpeech').textContent = "Troubleshooting lab mastered! You're a pro! 🛠️";
             }
         }
 
