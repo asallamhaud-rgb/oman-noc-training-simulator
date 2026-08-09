@@ -27,7 +27,7 @@
             display: flex;
             flex-direction: column;
             padding: 20px 15px;
-            gap: 8px;
+            gap: 6px;
             color: white;
             flex-shrink: 0;
             overflow-y: auto;
@@ -38,7 +38,7 @@
             font-size: 16px;
             font-weight: bold;
             color: white;
-            margin-bottom: 5px;
+            margin-bottom: 2px;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -47,18 +47,18 @@
         .sidebar-subtitle {
             font-size: 11px;
             color: #ffe6ee;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .nav-btn {
             background: transparent;
             border: none;
             color: white;
-            padding: 10px 12px;
+            padding: 9px 12px;
             border-radius: 8px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: space-between;
             cursor: pointer;
             font-size: 13px;
             text-align: left;
@@ -68,6 +68,15 @@
 
         .nav-btn:hover, .nav-btn.active {
             background: rgba(255, 255, 255, 0.25);
+        }
+
+        .badge {
+            background: #d63384;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: bold;
         }
 
         /* Main Container */
@@ -198,7 +207,6 @@
             background: #ffb6c1;
         }
 
-        /* Live Network Status Card */
         .status-card {
             background: white;
             border: 1px solid #ffd7e9;
@@ -211,6 +219,49 @@
             font-size: 15px;
             color: #d63384;
         }
+
+        /* Interactive Tables & Lists */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #ffd7e9;
+            margin-top: 15px;
+        }
+
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 13px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table th {
+            background: #fff0f3;
+            color: #d63384;
+            font-weight: bold;
+        }
+
+        .data-table tr:hover {
+            background: #fafafa;
+        }
+
+        .badge-critical { background: #dc3545; color: white; padding: 3px 8px; border-radius: 6px; font-size: 11px; }
+        .badge-major { background: #fd7e14; color: white; padding: 3px 8px; border-radius: 6px; font-size: 11px; }
+        .badge-minor { background: #ffc107; color: #333; padding: 3px 8px; border-radius: 6px; font-size: 11px; }
+        
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 11px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: none;
+            background: #d63384;
+            color: white;
+        }
+        .btn-sm:hover { background: #b0236a; }
     </style>
 </head>
 <body>
@@ -220,25 +271,26 @@
         <div class="sidebar-brand">🌸 NOC SIM</div>
         <div class="sidebar-subtitle">Training Environment</div>
         
-        <button class="nav-btn active" onclick="showPage('dashboard', this)">🏠 Dashboard</button>
-        <button class="nav-btn" onclick="showPage('alarms', this)">🚨 Alarms</button>
-        <button class="nav-btn" onclick="showPage('tickets', this)">🎫 Tickets / SMA</button>
-        <button class="nav-btn" onclick="showPage('workorders', this)">🔧 Work Orders</button>
-        <button class="nav-btn" onclick="showPage('emails', this)">📧 Emails</button>
-        <button class="nav-btn" onclick="showPage('topology', this)">🌐 Topology</button>
-        <button class="nav-btn" onclick="showPage('tasks', this)">📋 My Tasks</button>
-        <button class="nav-btn" onclick="showPage('departments', this)">🏢 Departments</button>
-        <button class="nav-btn" onclick="showPage('search', this)">🔍 Global Search</button>
-        <button class="nav-btn" onclick="showPage('activity', this)">📊 Activity Log</button>
+        <button class="nav-btn active" onclick="showPage('dashboard', this)"><span>🏠 Dashboard</span></button>
+        <button class="nav-btn" onclick="showPage('alarms', this)"><span>🚨 Alarms</span> <span class="badge" id="alarmBadge">0</span></button>
+        <button class="nav-btn" onclick="showPage('tickets', this)"><span>🎫 Tickets / SMA</span> <span class="badge" id="ticketBadge">0</span></button>
+        <button class="nav-btn" onclick="showPage('workorders', this)"><span>🔧 Work Orders</span></button>
+        <button class="nav-btn" onclick="showPage('emails', this)"><span>📧 Emails</span> <span class="badge" id="emailBadge">0</span></button>
+        <button class="nav-btn" onclick="showPage('topology', this)"><span>🌐 Topology</span></button>
+        <button class="nav-btn" onclick="showPage('tasks', this)"><span>📋 My Tasks</span></button>
+        <button class="nav-btn" onclick="showPage('departments', this)"><span>🏢 Departments</span></button>
+        <button class="nav-btn" onclick="showPage('search', this)"><span>🔍 Global Search</span></button>
+        <button class="nav-btn" onclick="showPage('activity', this)"><span>📊 Activity Log</span></button>
+        <button class="nav-btn" onclick="showPage('modules', this)"><span>📚 Training Modules</span></button>
     </div>
 
     <!-- Main Content Area -->
     <div class="main">
         <div class="header-top">
-            <h1>Oman NOC Training Simulator</h1>
+            <h1 id="pageTitle">Oman NOC Training Simulator</h1>
             <input type="text" id="globalSearchInput" class="search-box" placeholder="🔍 Search alarm, SMA, WO, email, site..." oninput="globalSearch(this.value)">
         </div>
-        <div class="header-subtitle">Network Operations Control Center</div>
+        <div class="header-subtitle" id="pageSubtitle">Network Operations Control Center</div>
 
         <div class="content">
             <!-- Dashboard Page -->
@@ -267,7 +319,7 @@
                 </div>
 
                 <div class="card score-card">
-                    <h3>🏆 Score</h3>
+                    <h3>🏆 Score & XP</h3>
                     <div class="value" id="scoreCount">100</div>
                 </div>
 
@@ -283,14 +335,33 @@
 
                 <div class="status-card">
                     <h2>Live Network Status</h2>
+                    <p style="margin-top: 8px; color: #666; font-size: 13px;">All core routing nodes in Muscat, Salalah, and Sohar are operating under nominal parameters.</p>
                 </div>
             </section>
 
             <!-- Alarms Page -->
             <section id="alarms" class="page">
-                <h1>Alarm Management</h1>
+                <h1>Alarm Management Center</h1>
                 <div class="control-card">
-                    <p>Active critical alarms queue is operational.</p>
+                    <p>Inspect incoming fault events across Omani network infrastructure.</p>
+                    <table class="data-table" id="alarmTable">
+                        <thead>
+                            <tr>
+                                <th>Alarm ID</th>
+                                <th>Severity</th>
+                                <th>Device / Site</th>
+                                <th>Technology</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="alarmTableBody">
+                            <tr>
+                                <td colspan="7" style="text-align: center; color: #666;">No active alarms in queue. Click "Generate Alarm" from Dashboard.</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </section>
 
@@ -298,7 +369,25 @@
             <section id="tickets" class="page">
                 <h1>Tickets & SMA Queue</h1>
                 <div class="control-card">
-                    <p>Manage and track incoming service management tickets here.</p>
+                    <p>Manage operational trouble tickets escalated from alarms.</p>
+                    <table class="data-table" id="ticketTable">
+                        <thead>
+                            <tr>
+                                <th>Ticket ID</th>
+                                <th>Priority</th>
+                                <th>Related Alarm</th>
+                                <th>Site Location</th>
+                                <th>SLA Status</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ticketTableBody">
+                            <tr>
+                                <td colspan="7" style="text-align: center; color: #666;">No active tickets in queue.</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </section>
 
@@ -306,39 +395,43 @@
             <section id="workorders" class="page">
                 <h1>Work Orders</h1>
                 <div class="control-card">
-                    <p>Field maintenance and operational work orders.</p>
+                    <p>Field engineering and maintenance dispatch logs.</p>
                 </div>
             </section>
 
             <!-- Emails Page -->
             <section id="emails" class="page">
                 <h1>Shared Mailbox & Emails</h1>
-                <div class="control-card">
-                    <p>Communication interface for NOC notifications.</p>
+                <div class="control-card" id="emailListContainer">
+                    <p>No new notification emails received.</p>
                 </div>
             </section>
 
             <!-- Topology Page -->
             <section id="topology" class="page">
-                <h1>Network Topology</h1>
+                <h1>Network Topology & Transport</h1>
                 <div class="control-card">
-                    <p>Interactive network node and link map.</p>
+                    <p>Interactive Omani backbone links (Muscat IP Core, Salalah Microwave, Sohar DWDM Fiber Rings).</p>
+                    <div style="background: #fff0f3; padding: 20px; border-radius: 12px; text-align: center; border: 1px dashed #d63384; margin-top: 15px;">
+                        <h3 style="color: #d63384; margin-bottom: 10px;">Muscat Core Ring ↔ Sohar Transmission Link</h3>
+                        <p style="font-size: 13px; color: #666;">Status: <span id="topoStatus" style="color: green; font-weight: bold;">Operational (100Gbps DWDM)</span></p>
+                    </div>
                 </div>
             </section>
 
             <!-- Tasks Page -->
             <section id="tasks" class="page">
-                <h1>My Tasks</h1>
+                <h1>My Assigned Tasks</h1>
                 <div class="control-card">
-                    <p>Personal checklist and assigned simulator duties.</p>
+                    <p>Pending shift assignments and operational checklists.</p>
                 </div>
             </section>
 
             <!-- Departments Page -->
             <section id="departments" class="page">
-                <h1>Departments</h1>
+                <h1>NOC Departments & Escalation</h1>
                 <div class="control-card">
-                    <p>Cross-functional department directory and escalation paths.</p>
+                    <p>Internal escalation matrix: IP Core, Transmission, RAN, SOC, and Field Operations.</p>
                 </div>
             </section>
 
@@ -346,22 +439,84 @@
             <section id="search" class="page">
                 <h1>Global Search Engine</h1>
                 <div class="control-card">
-                    <p>Advanced filtering across all database entities.</p>
+                    <p>Enter query in the top search bar to scan database entities across sites, devices, and alarms.</p>
+                    <div id="searchResults" style="margin-top: 15px; font-size: 13px; color: #666;">Ready for search...</div>
                 </div>
             </section>
 
             <!-- Activity Log Page -->
             <section id="activity" class="page">
-                <h1>Activity Log</h1>
+                <h1>Activity & Audit Log</h1>
                 <div class="control-card">
-                    <p>Audit trail of user actions and simulator events.</p>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Action Performed</th>
+                                <th>Category</th>
+                            </tr>
+                        </thead>
+                        <tbody id="activityLogBody">
+                            <tr>
+                                <td>09:47 AM</td>
+                                <td>Simulator session initialized successfully.</td>
+                                <td>System</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Training Modules Page -->
+            <section id="modules" class="page">
+                <h1>NOC Training Modules</h1>
+                <div class="control-card">
+                    <p>Study modules covering IP Core, Transmission, Microwave, VSAT, Fiber Optics, RAN, and Agile Ops.</p>
+                    <div style="margin-top: 15px; display: grid; gap: 10px;">
+                        <div style="background: #fff0f3; padding: 12px; border-radius: 8px; border: 1px solid #ffd7e9;">
+                            <h3 style="color: #d63384; font-size: 14px;">1. IP Core & BGP/OSPF Routing</h3>
+                            <p style="font-size: 12px; color: #666; margin-top: 4px;">Learn Autonomous System routing, convergence, and packet forwarding.</p>
+                        </div>
+                        <div style="background: #fff0f3; padding: 12px; border-radius: 8px; border: 1px solid #ffd7e9;">
+                            <h3 style="color: #d63384; font-size: 14px;">2. Transport, DWDM & Microwave Links</h3>
+                            <p style="font-size: 12px; color: #666; margin-top: 4px;">Understand optical attenuation, SONET/SDH, and high-capacity radio links.</p>
+                        </div>
+                    </div>
                 </div>
             </section>
         </div>
     </div>
 
     <script>
-        let activeAlarms = 0;
+        let state = {
+            score: 100,
+            activeAlarmsCount: 0,
+            ackedCount: 0,
+            ticketsCount: 0,
+            woCount: 0,
+            emailCount: 0,
+            alarms: [],
+            tickets: [],
+            emails: [],
+            logs: []
+        };
+
+        function logActivity(action, category = 'Operations') {
+            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            state.logs.unshift({ time: timeStr, action, category });
+            updateActivityTable();
+        }
+
+        function updateActivityTable() {
+            const tbody = document.getElementById('activityLogBody');
+            tbody.innerHTML = state.logs.map(l => `
+                <tr>
+                    <td>${l.time}</td>
+                    <td>${l.action}</td>
+                    <td>${l.category}</td>
+                </tr>
+            `).join('');
+        }
 
         window.showPage = function(pageId, element) {
             document.querySelectorAll('.page').forEach(page => {
@@ -380,25 +535,159 @@
             if (element) {
                 element.classList.add('active');
             }
+            logActivity(`Navigated to section: ${pageId}`, 'Navigation');
         };
 
         window.globalSearch = function(query) {
-            console.log("Searching for:", query);
+            const resultsDiv = document.getElementById('searchResults');
+            if (!query.trim()) {
+                resultsDiv.innerHTML = "Ready for search...";
+                return;
+            }
+            resultsDiv.innerHTML = `Searching database for <b>"${query}"</b>... Found matching devices in Muscat IP Core and Sohar Transmission link.`;
         };
 
         window.triggerAction = function(type) {
             if (type === 'alarm') {
-                activeAlarms++;
-                document.getElementById('alarmCount').innerText = activeAlarms;
-                alert('🚨 New simulated alarm generated!');
+                state.activeAlarmsCount++;
+                const alarmId = 'ALM-2026-' + Math.floor(1000 + Math.random() * 9000);
+                state.alarms.push({
+                    id: alarmId,
+                    severity: 'Critical',
+                    device: 'Muscat-Core-RT01',
+                    tech: 'IP Core / BGP',
+                    time: new Date().toLocaleTimeString(),
+                    status: 'Active'
+                });
+                updateCounters();
+                updateAlarmTable();
+                logActivity(`Generated new critical alarm: ${alarmId}`, 'Fault Management');
+                alert('🚨 New simulated critical alarm generated in Muscat Core!');
             } else if (type === 'email') {
-                let emails = document.getElementById('emailCount');
-                emails.innerText = parseInt(emails.innerText) + 1;
-                alert('📧 Simulated NOC email received!');
+                state.emailCount++;
+                state.emails.push({
+                    sender: 'SOC Supervisor',
+                    subject: 'SLA Escalation Warning - Muscat Node',
+                    time: new Date().toLocaleTimeString(),
+                    content: 'Please check pending critical alarms immediately to avoid SLA breach.'
+                });
+                updateCounters();
+                updateEmailList();
+                logActivity('Received simulated NOC supervisory email.', 'Communication');
+                alert('📧 New NOC operational email received!');
             } else if (type === 'topology') {
                 window.showPage('topology', document.querySelector('[onclick*="topology"]'));
             }
         };
+
+        function updateCounters() {
+            document.getElementById('alarmCount').innerText = state.activeAlarmsCount;
+            document.getElementById('alarmBadge').innerText = state.activeAlarmsCount;
+            document.getElementById('ackCount').innerText = state.ackedCount;
+            document.getElementById('ticketCount').innerText = state.ticketsCount;
+            document.getElementById('ticketBadge').innerText = state.ticketsCount;
+            document.getElementById('woCount').innerText = state.woCount;
+            document.getElementById('emailCount').innerText = state.emailCount;
+            document.getElementById('emailBadge').innerText = state.emailCount;
+            document.getElementById('scoreCount').innerText = state.score;
+        }
+
+        function updateAlarmTable() {
+            const tbody = document.getElementById('alarmTableBody');
+            if (state.alarms.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #666;">No active alarms in queue.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = state.alarms.map((a, index) => `
+                <tr>
+                    <td>${a.id}</td>
+                    <td><span class="badge-critical">${a.severity}</span></td>
+                    <td>${a.device}</td>
+                    <td>${a.tech}</td>
+                    <td>${a.time}</td>
+                    <td>${a.status}</td>
+                    <td>
+                        <button class="btn-sm" onclick="acknowledgeAlarm(${index})">Ack</button>
+                        <button class="btn-sm" style="background:#28a745; margin-left: 4px;" onclick="createTicket(${index})">Ticket</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        window.acknowledgeAlarm = function(index) {
+            if (state.alarms[index].status === 'Active') {
+                state.alarms[index].status = 'Acknowledged';
+                state.ackedCount++;
+                state.score += 10;
+                updateCounters();
+                updateAlarmTable();
+                logActivity(`Acknowledged alarm ${state.alarms[index].id}`, 'Fault Management');
+                alert(`Alarm ${state.alarms[index].id} acknowledged successfully (+10 XP)`);
+            }
+        };
+
+        window.createTicket = function(index) {
+            const alm = state.alarms[index];
+            state.ticketsCount++;
+            state.tickets.push({
+                id: 'TKT-' + Math.floor(1000 + Math.random() * 9000),
+                priority: 'P1 - Critical',
+                alarmId: alm.id,
+                site: alm.device,
+                sla: '45 mins remaining',
+                status: 'Open'
+            });
+            updateCounters();
+            updateTicketTable();
+            logActivity(`Converted alarm ${alm.id} into operational ticket.`, 'Incident Management');
+            alert(`Trouble ticket generated from alarm ${alm.id}`);
+        };
+
+        function updateTicketTable() {
+            const tbody = document.getElementById('ticketTableBody');
+            if (state.tickets.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #666;">No active tickets in queue.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = state.tickets.map(t => `
+                <tr>
+                    <td>${t.id}</td>
+                    <td><span class="badge-critical">${t.priority}</span></td>
+                    <td>${t.alarmId}</td>
+                    <td>${t.site}</td>
+                    <td>${t.sla}</td>
+                    <td>${t.status}</td>
+                    <td><button class="btn-sm" style="background:#007bff;" onclick="resolveTicket('${t.id}')">Resolve</button></td>
+                </tr>
+            `).join('');
+        }
+
+        window.resolveTicket = function(ticketId) {
+            state.tickets = state.tickets.filter(t => t.id !== ticketId);
+            state.ticketsCount = Math.max(0, state.ticketsCount - 1);
+            state.score += 25;
+            updateCounters();
+            updateTicketTable();
+            logActivity(`Resolved ticket ${ticketId}`, 'Incident Management');
+            alert(`Ticket ${ticketId} resolved successfully (+25 XP)!`);
+        };
+
+        function updateEmailList() {
+            const container = document.getElementById('emailListContainer');
+            if (state.emails.length === 0) {
+                container.innerHTML = `<p>No new notification emails received.</p>`;
+                return;
+            }
+            container.innerHTML = state.emails.map(e => `
+                <div style="background: #fff0f3; padding: 15px; border-radius: 12px; border: 1px solid #ffd7e9; margin-bottom: 10px;">
+                    <h3 style="color: #d63384; font-size: 14px; margin-bottom: 4px;">${e.subject}</h3>
+                    <p style="font-size: 12px; color: #666; margin-bottom: 8px;">From: ${e.sender} | Time: ${e.time}</p>
+                    <p style="font-size: 13px; color: #333;">${e.content}</p>
+                </div>
+            `).join('');
+        }
+
+        logActivity('System initialized and ready for training.', 'System');
     </script>
 </body>
 </html>
