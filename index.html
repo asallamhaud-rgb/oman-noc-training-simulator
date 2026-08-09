@@ -1,288 +1,2162 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oman NOC Training Simulator</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, Helvetica, sans-serif;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Oman NOC Training Simulator</title>
 
-        body {
-            display: flex;
-            height: 100vh;
-            background-color: #f4f6f9;
-            color: #333;
-            overflow: hidden;
-        }
+<style>
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+font-family:Arial,Helvetica,sans-serif;
+}
 
-        /* Sidebar Styling */
-        .sidebar {
-            width: 80px;
-            background: #fff0f3;
-            border-right: 1px solid #ffd7e9;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px 0;
-            gap: 15px;
-        }
+body{
+background:#fff7fb;
+color:#513747;
+}
 
-        .sidebar-brand {
-            font-size: 10px;
-            font-weight: bold;
-            color: #d63384;
-            text-align: center;
-            margin-bottom: 10px;
-            writing-mode: vertical-lr;
-            transform: rotate(180deg);
-        }
+.sidebar{
+position:fixed;
+left:0;
+top:0;
+width:235px;
+height:100vh;
+background:linear-gradient(180deg,#ff8fc7,#df639e);
+padding:20px 14px;
+color:white;
+z-index:20;
+overflow-y:auto;
+}
 
-        .nav-btn {
-            background: white;
-            border: 1px solid #ffd7e9;
-            border-radius: 12px;
-            width: 45px;
-            height: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 18px;
-            transition: all 0.2s ease;
-        }
+.logo{
+text-align:center;
+font-size:21px;
+font-weight:bold;
+margin-bottom:25px;
+}
 
-        .nav-btn:hover, .nav-btn.active {
-            background: #ff4d79;
-            color: white;
-            border-color: #ff4d79;
-        }
+.logo small{
+display:block;
+font-size:11px;
+margin-top:5px;
+}
 
-        /* Main Container */
-        .main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
+.nav-btn{
+width:100%;
+border:0;
+background:transparent;
+color:white;
+text-align:left;
+padding:12px;
+border-radius:12px;
+margin-bottom:5px;
+cursor:pointer;
+font-size:14px;
+}
 
-        .topbar {
-            height: 60px;
-            background: white;
-            border-bottom: 1px solid #e0e0e0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 25px;
-        }
+.nav-btn:hover,
+.nav-btn.active{
+background:rgba(255,255,255,.25);
+}
 
-        .search-box {
-            padding: 8px 15px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            width: 300px;
-            outline: none;
-        }
+.main{
+margin-left:235px;
+padding:24px;
+}
 
-        .content {
-            flex: 1;
-            padding: 25px;
-            overflow-y: auto;
-        }
+.topbar{
+background:white;
+border-radius:18px;
+padding:18px 22px;
+margin-bottom:22px;
+box-shadow:0 5px 20px rgba(255,105,180,.12);
+display:flex;
+align-items:center;
+gap:18px;
+}
 
-        /* Page Layouts */
-        .page {
-            display: none;
-        }
+.topbar h1{
+color:#d95794;
+}
 
-        .page.active {
-            display: block;
-        }
+.topbar p{
+margin-top:5px;
+color:#987486;
+}
 
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            margin-bottom: 25px;
-        }
+.global-search{
+flex:1;
+}
 
-        .card {
-            background: white;
-            border: 1px solid #ffd7e9;
-            border-radius: 18px;
-            padding: 20px;
-            box-shadow: 0 5px 18px rgba(255, 105, 180, 0.08);
-        }
+input,select,textarea{
+width:100%;
+padding:12px 14px;
+border:2px solid #ffd7e9;
+border-radius:14px;
+outline:none;
+background:white;
+}
 
-        .card h3 {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 10px;
-        }
+textarea{
+min-height:120px;
+resize:vertical;
+}
 
-        .card .value {
-            font-size: 24px;
-            font-weight: bold;
-            color: #d63384;
-        }
+.clock{
+background:#ffe5f1;
+color:#d95794;
+padding:10px 15px;
+border-radius:20px;
+font-weight:bold;
+white-space:nowrap;
+}
 
-        /* Action Buttons Grid inside Control Center */
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 15px;
-            flex-wrap: wrap;
-        }
+.page{
+display:none;
+}
 
-        .action-btn {
-            background: #ff69b4;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3);
-            transition: background 0.2s ease, transform 0.1s ease;
-        }
+.page.active{
+display:block;
+}
 
-        .action-btn:hover {
-            background: #ff4d79;
-        }
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:16px;
+margin-bottom:20px;
+}
 
-        .action-btn:active {
-            transform: scale(0.98);
-        }
+.card,
+.ticket,
+.workorder,
+.alarm,
+.email-panel,
+.task{
+background:white;
+border:1px solid #ffd7e9;
+border-radius:18px;
+padding:20px;
+box-shadow:0 5px 18px rgba(255,105,180,.08);
+}
 
-        h1, h2 {
-            color: #d63384;
-            margin-bottom: 20px;
-        }
-    </style>
+.card h2,
+.card h3,
+.ticket h3,
+.workorder h3,
+.task h3{
+color:#d95794;
+}
+
+.big-number{
+font-size:30px;
+font-weight:bold;
+color:#e45d9b;
+margin-top:8px;
+}
+
+button{
+cursor:pointer;
+}
+
+.primary,
+.secondary,
+.danger{
+border:0;
+border-radius:20px;
+padding:10px 17px;
+font-weight:bold;
+}
+
+.primary{
+background:#ff83bd;
+color:white;
+}
+
+.secondary{
+background:#ffe3ef;
+color:#c44c83;
+}
+
+.danger{
+background:#ff4f78;
+color:white;
+}
+
+.section-title{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:15px;
+margin-bottom:15px;
+}
+
+.info-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+gap:10px;
+margin:15px 0;
+}
+
+.info{
+background:#fff6fa;
+padding:12px;
+border-radius:12px;
+}
+
+.info small{
+display:block;
+color:#a8758f;
+margin-bottom:5px;
+}
+
+.status{
+display:inline-block;
+padding:6px 11px;
+border-radius:15px;
+font-size:12px;
+font-weight:bold;
+background:#ffe7f1;
+color:#c94e83;
+}
+
+.status.normal{
+background:#def7e8;
+color:#3e9966;
+}
+
+.status.warning{
+background:#fff7d8;
+color:#a87a12;
+}
+
+.status.major{
+background:#fff0d5;
+color:#bd791c;
+}
+
+.status.critical{
+background:#ffe1e7;
+color:#c9274d;
+}
+
+.status.emergency{
+background:#ffd7df;
+color:#a81838;
+}
+
+.alarm{
+border-left:6px solid #63c992;
+margin-bottom:14px;
+}
+
+.alarm.warning{
+border-left-color:#f5c85b;
+}
+
+.alarm.major{
+border-left-color:#f2a33c;
+}
+
+.alarm.critical{
+border-left-color:#e6395d;
+}
+
+.alarm.emergency{
+border-left-color:#a81838;
+animation:alarmPulse 1.5s infinite;
+}
+
+@keyframes alarmPulse{
+50%{
+box-shadow:0 0 20px rgba(168,24,56,.18);
+}
+}
+
+.priority{
+padding:6px 11px;
+border-radius:15px;
+font-size:12px;
+font-weight:bold;
+background:#def7e8;
+color:#3e9966;
+}
+
+.priority.warning{
+background:#fff7d8;
+color:#a87a12;
+}
+
+.priority.major{
+background:#fff0d5;
+color:#bd791c;
+}
+
+.priority.critical{
+background:#ffe1e7;
+color:#c9274d;
+}
+
+.priority.emergency{
+background:#ffd7df;
+color:#a81838;
+}
+
+.alarm-head{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+}
+
+.timer{
+margin-top:10px;
+font-weight:bold;
+color:#d95794;
+}
+
+.empty{
+background:white;
+border:1px solid #ffd7e9;
+border-radius:18px;
+padding:40px;
+text-align:center;
+color:#a8758f;
+}
+
+.tabs{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+margin:15px 0;
+}
+
+.tab{
+border:0;
+padding:8px 14px;
+border-radius:18px;
+background:#ffe5f1;
+color:#c44c83;
+}
+
+.tab.active{
+background:#ff83bd;
+color:white;
+}
+
+/* EMAIL */
+
+.email-layout{
+display:grid;
+grid-template-columns:300px 1fr;
+gap:18px;
+}
+
+.email-list{
+background:white;
+border:1px solid #ffd7e9;
+border-radius:18px;
+overflow:hidden;
+}
+
+.email-item{
+padding:15px;
+border-bottom:1px solid #ffe3ef;
+cursor:pointer;
+position:relative;
+}
+
+.email-item:hover{
+background:#fff4f9;
+}
+
+.email-item.unread{
+background:#fff0f7;
+font-weight:bold;
+}
+
+.email-item strong{
+display:block;
+color:#d95794;
+padding-right:25px;
+}
+
+.email-item small{
+color:#987486;
+}
+
+.star{
+position:absolute;
+right:12px;
+top:12px;
+font-size:20px;
+}
+
+.star.active{
+color:#eab516;
+}
+
+.email-body{
+background:#fff8fb;
+border-radius:15px;
+padding:20px;
+line-height:1.7;
+margin:15px 0;
+}
+
+.thread{
+border-left:4px solid #ff83bd;
+padding-left:15px;
+}
+
+/* TOPOLOGY */
+
+.topology-search{
+display:flex;
+gap:10px;
+margin:18px 0;
+}
+
+.topology-search button{
+white-space:nowrap;
+}
+
+.topology-container{
+background:#fffafd;
+border:1px solid #ffd7e9;
+border-radius:20px;
+padding:25px;
+overflow:auto;
+}
+
+.topology{
+position:relative;
+width:1100px;
+height:720px;
+margin:auto;
+background:
+radial-gradient(#ffd9ea 1px,transparent 1px);
+background-size:25px 25px;
+border-radius:20px;
+}
+
+.node{
+position:absolute;
+width:155px;
+padding:13px;
+background:white;
+border:3px solid #63c992;
+border-radius:17px;
+text-align:center;
+cursor:pointer;
+z-index:3;
+box-shadow:0 5px 16px rgba(255,105,180,.12);
+transition:.25s;
+}
+
+.node:hover{
+transform:scale(1.05);
+}
+
+.node.normal{
+border-color:#63c992;
+}
+
+.node.warning{
+border-color:#f5c85b;
+background:#fffdf1;
+}
+
+.node.major{
+border-color:#f2a33c;
+background:#fff9ef;
+}
+
+.node.critical{
+border-color:#e6395d;
+background:#fff1f4;
+}
+
+.node.emergency{
+border-color:#a81838;
+background:#ffe9ee;
+animation:nodePulse 1.2s infinite;
+}
+
+@keyframes nodePulse{
+50%{
+box-shadow:0 0 25px rgba(168,24,56,.3);
+}
+}
+
+.node .icon{
+font-size:27px;
+}
+
+.node strong{
+display:block;
+color:#d95794;
+margin:4px 0;
+}
+
+.node small{
+display:block;
+color:#987486;
+}
+
+.node .node-status{
+font-size:11px;
+margin-top:6px;
+font-weight:bold;
+}
+
+.connection{
+position:absolute;
+height:5px;
+background:#aee4c5;
+border-radius:10px;
+transform-origin:left center;
+z-index:1;
+}
+
+.connection.warning{
+background:#f5c85b;
+}
+
+.connection.major{
+background:#f2a33c;
+}
+
+.connection.critical{
+background:#e6395d;
+}
+
+.connection.emergency{
+background:#a81838;
+}
+
+.legend{
+display:flex;
+gap:20px;
+flex-wrap:wrap;
+margin-top:15px;
+}
+
+.legend span{
+display:flex;
+align-items:center;
+gap:6px;
+}
+
+.dot{
+width:13px;
+height:13px;
+border-radius:50%;
+}
+
+.dot.normal{background:#63c992}
+.dot.warning{background:#f5c85b}
+.dot.major{background:#f2a33c}
+.dot.critical{background:#e6395d}
+.dot.emergency{background:#a81838}
+
+.search-results{
+margin-top:15px;
+}
+
+.search-result{
+padding:14px;
+border-bottom:1px solid #ffe3ef;
+cursor:pointer;
+}
+
+.search-result:hover{
+background:#fff4f9;
+}
+
+.search-type{
+font-size:11px;
+font-weight:bold;
+color:#d95794;
+text-transform:uppercase;
+margin-bottom:4px;
+}
+
+.department-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+gap:15px;
+}
+
+.department{
+background:white;
+border:2px solid #ffd7e9;
+border-radius:18px;
+padding:20px;
+cursor:pointer;
+}
+
+.department:hover{
+border-color:#ff83bd;
+}
+
+.log{
+background:white;
+border-left:5px solid #ff83bd;
+padding:13px;
+border-radius:12px;
+margin-bottom:8px;
+}
+
+.log small{
+color:#a8758f;
+}
+
+.modal{
+display:none;
+position:fixed;
+inset:0;
+background:rgba(60,30,45,.45);
+align-items:center;
+justify-content:center;
+z-index:100;
+}
+
+.modal.show{
+display:flex;
+}
+
+.modal-box{
+background:white;
+width:92%;
+max-width:750px;
+max-height:90vh;
+overflow:auto;
+border-radius:22px;
+padding:25px;
+}
+
+.close{
+float:right;
+font-size:22px;
+cursor:pointer;
+}
+
+@media(max-width:850px){
+
+.sidebar{
+width:68px;
+padding:15px 7px;
+}
+
+.logo small,
+.nav-btn span{
+display:none;
+}
+
+.nav-btn{
+text-align:center;
+}
+
+.main{
+margin-left:68px;
+padding:15px;
+}
+
+.topbar{
+flex-wrap:wrap;
+}
+
+.global-search{
+order:3;
+width:100%;
+}
+
+.email-layout{
+grid-template-columns:1fr;
+}
+
+}
+
+</style>
 </head>
+
 <body>
 
-    <!-- Sidebar Navigation -->
-    <div class="sidebar">
-        <div class="sidebar-brand">NOC SIM</div>
-        <button class="nav-btn active" onclick="showPage('dashboard', this)">🏠</button>
-        <button class="nav-btn" onclick="showPage('alarms', this)">🚨</button>
-        <button class="nav-btn" onclick="showPage('tickets', this)">🎫</button>
-        <button class="nav-btn" onclick="showPage('tools', this)">🔧</button>
-        <button class="nav-btn" onclick="showPage('reports', this)">📊</button>
-    </div>
+<!-- ================= SIDEBAR ================= -->
 
-    <!-- Main Content Area -->
-    <div class="main">
-        <div class="topbar">
-            <h2>Oman NOC Training Simulator</h2>
-            <input type="text" id="globalSearchInput" class="search-box" placeholder="Global Search..." oninput="globalSearch(this.value)">
-        </div>
+<div class="sidebar">
 
-        <div class="content">
-            <!-- Dashboard Page -->
-            <section id="dashboard" class="page active">
-                <h1>Dashboard Overview</h1>
-                <div class="cards">
-                    <div class="card">
-                        <h3>Active Alarms</h3>
-                        <div class="value" id="alarmCount">0</div>
-                    </div>
-                    <div class="card">
-                        <h3>Acknowledged Tickets</h3>
-                        <div class="value" id="ticketCount">0</div>
-                    </div>
-                    <div class="card">
-                        <h3>Network Status</h3>
-                        <div class="value" style="color: #28a745;">Stable</div>
-                    </div>
-                </div>
+<div class="logo">
+🌸 NOC SIM
+<small>Training Environment</small>
+</div>
 
-                <!-- NOC Control Center Card -->
-                <div class="card">
-                    <h2>🌸 NOC Control Center</h2>
-                    <p style="color: #666; margin-bottom: 10px;">Monitor alarms, investigate topology, process tickets, and simulate events.</p>
-                    <div class="action-buttons">
-                        <button class="action-btn" type="button" onclick="triggerAction('alarm')">🚨 Generate Alarm</button>
-                        <button class="action-btn" type="button" onclick="triggerAction('email')">📧 Generate NOC Email</button>
-                    </div>
-                </div>
-            </section>
+<button class="nav-btn active" onclick="showPage('dashboard',this)">🏠 <span>Dashboard</span></button>
+<button class="nav-btn" onclick="showPage('alarms',this)">🚨 <span>Alarms</span></button>
+<button class="nav-btn" onclick="showPage('tickets',this)">🎫 <span>Tickets / SMA</span></button>
+<button class="nav-btn" onclick="showPage('workorders',this)">🔧 <span>Work Orders</span></button>
+<button class="nav-btn" onclick="showPage('emails',this)">📧 <span>Emails</span></button>
+<button class="nav-btn" onclick="showPage('topology',this)">🗺️ <span>Topology</span></button>
+<button class="nav-btn" onclick="showPage('tasks',this)">📋 <span>My Tasks</span></button>
+<button class="nav-btn" onclick="showPage('departments',this)">🏢 <span>Departments</span></button>
+<button class="nav-btn" onclick="showPage('search',this)">🔎 <span>Global Search</span></button>
+<button class="nav-btn" onclick="showPage('log',this)">📝 <span>Activity Log</span></button>
 
-            <!-- Alarms Page -->
-            <section id="alarms" class="page">
-                <h1>Alarm Management</h1>
-                <div class="card" id="alarmViewContainer">
-                    <p>No active critical alarms in the queue.</p>
-                </div>
-            </section>
+</div>
 
-            <!-- Tickets Page -->
-            <section id="tickets" class="page">
-                <h1>Work Orders & Tickets</h1>
-                <div class="card">
-                    <p>Ticket processing queue is operational.</p>
-                </div>
-            </section>
 
-            <!-- Tools Page -->
-            <section id="tools" class="page">
-                <h1>Diagnostics & Tools</h1>
-                <div class="card">
-                    <p>Run network link budget tests and interface diagnostics here.</p>
-                </div>
-            </section>
+<!-- ================= MAIN ================= -->
 
-            <!-- Reports Page -->
-            <section id="reports" class="page">
-                <h1>Performance Reports</h1>
-                <div class="card">
-                    <p>System metrics and KPI summaries.</p>
-                </div>
-            </section>
-        </div>
-    </div>
+<div class="main">
 
-    <script>
-        const alarmView = document.getElementById('alarmViewContainer');
-        let activeAlarms = 0;
+<div class="topbar">
 
-        window.showPage = function(pageId, element) {
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
+<div>
+<h1>Oman NOC Training Simulator</h1>
+<p>Network Operations Control Center</p>
+</div>
 
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
+<div class="global-search">
+<input
+id="globalSearch"
+placeholder="🔎 Search alarm, SMA, WO, email, site..."
+oninput="globalSearch(this.value)"
+>
+</div>
 
-            const targetPage = document.getElementById(pageId);
-            if (targetPage) {
-                targetPage.classList.add('active');
-            }
+<div class="clock" id="clock"></div>
 
-            if (element) {
-                element.classList.add('active');
-            }
-        };
+</div>
 
-        window.globalSearch = function(query) {
-            console.log("Searching for:", query);
-        };
 
-        window.triggerAction = function(type) {
-            if (type === 'alarm') {
-                activeAlarms++;
-                document.getElementById('alarmCount').innerText = activeAlarms;
-                alert('🚨 New simulated alarm generated and sent to the queue!');
-            } else if (type === 'email') {
-                alert('📧 Simulated NOC ticket notification email sent successfully!');
-            }
-        };
-    </script>
-</body>
-</html>
+<!-- ================= DASHBOARD ================= -->
+
+<section id="dashboard" class="page active">
+
+<div class="cards">
+
+<div class="card">
+<h3>🚨 Active Alarms</h3>
+<div class="big-number" id="activeCount">0</div>
+</div>
+
+<div class="card">
+<h3>✅ Acknowledged</h3>
+<div class="big-number" id="ackCount">0</div>
+</div>
+
+<div class="card">
+<h3>🎫 SMA / Tickets</h3>
+<div class="big-number" id="ticketCount">0</div>
+</div>
+
+<div class="card">
+<h3>🔧 Work Orders</h3>
+<div class="big-number" id="woCount">0</div>
+</div>
+
+<div class="card">
+<h3>📧 Unread Emails</h3>
+<div class="big-number" id="emailCount">0</div>
+</div>
+
+<div class="card">
+<h3>🏆 Score</h3>
+<div class="big-number" id="score">100</div>
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="section-title">
+
+<div>
+<h2>🌸 NOC Control Center</h2>
+<p style="margin-top:8px">
+Monitor alarms, investigate topology, process tickets,
+manage work orders and communicate through the shared mailbox.
+</p>
+</div>
+
+</div>
+
+<br>
+
+<button class="primary" onclick="generateAlarm()">
+🚨 Generate Alarm
+</button>
+
+<button class="secondary" onclick="generateNOCEmail()" style="margin-left:8px">
+📧 Generate NOC Email
+</button>
+
+<button class="secondary" onclick="showPageByName('topology')" style="margin-left:8px">
+🗺️ Network Topology
+</button>
+
+</div>
+
+<br>
+
+<div class="card">
+
+<h3>Live Network Status</h3>
+
+<div id="dashboardNetworkStatus" style="margin-top:15px"></div>
+
+</div>
+
+</section>
+
+
+<!-- ================= ALARMS ================= -->
+
+<section id="alarms" class="page">
+
+<div class="card">
+
+<div class="section-title">
+
+<div>
+<h2>🚨 Alarm Management</h2>
+<p style="margin-top:8px">
+Search alarms by alarm ID, SMA, work order, site, severity or department.
+</p>
+</div>
+
+<button class="primary" onclick="generateAlarm()">
++ New Alarm
+</button>
+
+</div>
+
+<input
+id="alarmSearch"
+placeholder="🔎 Search alarm / SMA / WO / site / severity..."
+oninput="renderAlarms()"
+>
+
+<div class="tabs">
+
+<button class="tab active" onclick="setAlarmView('active',this)">
+Active
+</button>
+
+<button class="tab" onclick="setAlarmView('ack',this)">
+Acknowledged
+</button>
+
+<button class="tab" onclick="setAlarmView('all',this)">
+All
+</button>
+
+</div>
+
+</div>
+
+<br>
+
+<div id="alarmContainer"></div>
+
+</section>
+
+
+<!-- ================= TICKETS ================= -->
+
+<section id="tickets" class="page">
+
+<div class="card">
+
+<h2>🎫 SMA / Ticket Management</h2>
+
+<p style="margin:10px 0">
+Search by ticket number, alarm, site, department, severity or status.
+</p>
+
+<input
+id="ticketSearch"
+placeholder="🔎 Search SMA..."
+oninput="renderTickets()"
+>
+
+</div>
+
+<br>
+
+<div id="ticketContainer"></div>
+
+</section>
+
+
+<!-- ================= WORK ORDERS ================= -->
+
+<section id="workorders" class="page">
+
+<div class="card">
+
+<h2>🔧 Work Order Management</h2>
+
+<p style="margin:10px 0">
+Search and update operational work orders.
+</p>
+
+<input
+id="workOrderSearch"
+placeholder="🔎 Search WO / SMA / site / department..."
+oninput="renderWorkOrders()"
+>
+
+</div>
+
+<br>
+
+<div id="workOrderContainer"></div>
+
+</section>
+
+
+<!-- ================= EMAIL ================= -->
+
+<section id="emails" class="page">
+
+<div class="email-layout">
+
+<div>
+
+<div class="email-panel">
+
+<h2>📧 Shared NOC Mailbox</h2>
+
+<p style="margin:8px 0;color:#987486">
+Emails are generated continuously from different departments.
+</p>
+
+<input
+id="emailSearch"
+placeholder="🔎 Search sender, subject, site, SMA, alarm..."
+oninput="renderEmails()"
+>
+
+<div class="tabs">
+
+<button class="tab active" id="inboxTab"
+onclick="setEmailFolder('inbox',this)">
+📥 Inbox
+</button>
+
+<button class="tab" id="favTab"
+onclick="setEmailFolder('favorites',this)">
+⭐ Favorites
+</button>
+
+<button class="tab" id="sentTab"
+onclick="setEmailFolder('sent',this)">
+📤 Sent
+</button>
+
+</div>
+
+</div>
+
+<br>
+
+<div class="email-list" id="emailList"></div>
+
+</div>
+
+
+<div class="email-panel" id="emailView">
+
+<h2>📧 Email Viewer</h2>
+
+<div class="email-body">
+Select an email from the mailbox.
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ================= TOPOLOGY ================= -->
+
+<section id="topology" class="page">
+
+<div class="card">
+
+<h2>🗺️ Network Topology</h2>
+
+<p style="margin-top:8px;line-height:1.6">
+Search the network and visually identify affected infrastructure.
+The topology changes color automatically when alarms affect equipment.
+</p>
+
+<div class="topology-search">
+
+<input
+id="topologySearch"
+placeholder="🔎 Search device, site, IP, department, service..."
+oninput="searchTopology(this.value)"
+>
+
+<button class="secondary"
+onclick="clearTopologySearch()">
+Clear
+</button>
+
+</div>
+
+<div id="topologyResults"></div>
+
+</div>
+
+<br>
+
+<div class="topology-container">
+
+<div class="topology">
+
+<!-- CONNECTIONS -->
+
+<div class="connection" id="c1"
+style="left:550px;top:115px;width:5px;height:120px"></div>
+
+<div class="connection" id="c2"
+style="left:550px;top:295px;width:5px;height:100px"></div>
+
+<div class="connection" id="c3"
+style="left:470px;top:330px;width:180px;transform:rotate(25deg)"></div>
+
+<div class="connection" id="c4"
+style="left:470px;top:330px;width:180px;transform:rotate(155deg)"></div>
+
+<div class="connection" id="c5"
+style="left:320px;top:455px;width:190px;transform:rotate(15deg)"></div>
+
+<div class="connection" id="c6"
+style="left:180px;top:550px;width:160px"></div>
+
+<div class="connection" id="c7"
+style="left:650px;top:455px;width:190px;transform:rotate(-15deg)"></div>
+
+<div class="connection" id="c8"
+style="left:780px;top:550px;width:160px"></div>
+
+<!-- INTERNET -->
+
+<div class="node normal"
+id="node-internet"
+style="left:472px;top:30px"
+onclick="inspectNode('internet')">
+
+<div class="icon">🌐</div>
+
+<strong>Internet</strong>
+
+<small>External Network</small>
+
+<div class="node-status">NORMAL</div>
+
+</div>
+
+
+<!-- CORE -->
+
+<div class="node normal"
+id="node-core"
+style="left:472px;top:225px"
+onclick="inspectNode('core')">
+
+<div class="icon">🖥️</div>
+
+<strong>IP Core</strong>
+
+<small>MCT-IP-CORE-01</small>
+
+<div class="node-status">NORMAL</div>
+
+</div>
+
+
+<!-- IP -->
+
+<div class="node normal"
+id="node-ip"
+style="left:390px;top:380px"
+onclick="inspectNode('ip')">
+
+<div class="icon">🌐</div>
+
+<strong>IP Router</strong>
+
+<small>MCT-IP-031</small>
+
+<div class="node-status">NORMAL</div>
+
+</div>
+
+
+<!-- TRANSMISSION -->
+
+<div class="node normal"
+id="node-trans"
+style="left:100px;top:380px"
+onclick="inspectNode('trans')">
+
+<div class="icon">📡</div>
+
+<strong>Transmission</strong>
+
+<small>MCT-TR-014</small>
+
+<div class="node-status">NORMAL</div>
+
+</div>
+
+
+<!-- RAN -->
+
+<div class="node normal"
+id="node-ran"
+style="left:700px;top:380px"
+onclick="inspectNode('ran')">
+
+<div class="icon">📱</div>
+
+<strong>RAN</strong>
+
+<small>MCT-RAN-207</small>
+
+<div class="node-status">NORMAL</div>
+
+</div>
+
+
+<!-- MICROWAVE -->
+
+<div class="node normal"
+id="node-micro"
+style="left:110px;top:520px"
+onclick="inspectNode('micro')">
+
+<div class="icon">📶</div>
+
+<strong>Microwave</strong>
+
+<small>SLL-MW-014</small>
+
+<div class="node-status">NORMAL</div>
+
+</div>
+
+
+<!-- REMOTE -->
+
+<div class="node normal"
+id="node-remote"
+style="left:15px;top:620px"
+onclick="inspectNode('remote')">
+
+<div class="icon">🏢</div>
+
+<strong>Remote Site</strong>
+
+<small>SLL-REMOTE-02</small>
+
+<div class="node-status">NORMAL</div>
+
+</div>
+
+
+<!-- FIXED -->
+
+<div class="node normal"
+id="node-fixed"
+style="left:350px;top:540px"
+onclick="inspectNode('fixed')">
+
+<div class="icon">🏢</div>
+
+<strong>Fixed Network</strong>
+
+<small>SLL-FIX-112</small>
+
+<div class="node-status">NORMAL</div>
+
+</div>
+
+
+<!-- CELL -->
+
+<div class="node normal"
+id="node-cell"
+style="left:760px;top:520px"
+onclick="inspectNode('cell')">
+
+<div class="icon">📱</div>
+
+<strong>Cell Site</strong>
+
+<small>MCT-CELL-207</small>
+
+<div class="node-status">NORMAL</div>
+
+</div>
+
+
+<!-- SOC -->
+
+<div class="node normal"
+id="node-soc"
+style="left:890px;top:620px"
+onclick="inspectNode('soc')">
+
+<div class="icon">🛡️</div>
+
+<strong>SOC</strong>
+
+<small>MCT-SOC-008</small>
+
+<div class="node-status">NORMAL</div>
+
+</div>
+
+</div>
+
+
+<div class="legend">
+
+<span>
+<i class="dot normal"></i>
+Normal
+</span>
+
+<span>
+<i class="dot warning"></i>
+Warning
+</span>
+
+<span>
+<i class="dot major"></i>
+Major
+</span>
+
+<span>
+<i class="dot critical"></i>
+Critical
+</span>
+
+<span>
+<i class="dot emergency"></i>
+Emergency / Down
+</span>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ================= TASKS ================= -->
+
+<section id="tasks" class="page">
+
+<div class="card">
+
+<h2>📋 My NOC Tasks</h2>
+
+<p style="margin-top:8px">
+Work that currently requires operator attention.
+</p>
+
+</div>
+
+<br>
+
+<div id="taskContainer"></div>
+
+</section>
+
+
+<!-- ================= DEPARTMENTS ================= -->
+
+<section id="departments" class="page">
+
+<div class="card">
+
+<h2>🏢 NOC Departments</h2>
+
+<p style="margin-top:8px">
+Different teams work together through the NOC.
+</p>
+
+</div>
+
+<br>
+
+<div class="department-grid">
+
+<div class="department" onclick="departmentInfo('IP')">
+<h3>🌐 IP</h3>
+<p>Routing, interfaces, connectivity and IP Core.</p>
+</div>
+
+<div class="department" onclick="departmentInfo('Transmission')">
+<h3>📡 Transmission</h3>
+<p>Microwave, VSAT, fiber and transport.</p>
+</div>
+
+<div class="department" onclick="departmentInfo('RAN')">
+<h3>📱 RAN</h3>
+<p>Radio access network and mobile sites.</p>
+</div>
+
+<div class="department" onclick="departmentInfo('Fixed')">
+<h3>🏢 Fixed</h3>
+<p>Fixed access and service connectivity.</p>
+</div>
+
+<div class="department" onclick="departmentInfo('Service Desk')">
+<h3>🎧 Service Desk</h3>
+<p>Customer incidents and communication.</p>
+</div>
+
+<div class="department" onclick="departmentInfo('SOC')">
+<h3>🛡️ SOC</h3>
+<p>Security monitoring.</p>
+</div>
+
+<div class="department" onclick="departmentInfo('Agile Ops')">
+<h3>⚙️ Agile Ops</h3>
+<p>Alarm and operational monitoring.</p>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ================= GLOBAL SEARCH ================= -->
+
+<section id="search" class="page">
+
+<div class="card">
+
+<h2>🔎 Global NOC Search</h2>
+
+<p style="margin:10px 0">
+Search everything: alarms, tickets, work orders, emails and network equipment.
+</p>
+
+<input
+id="globalSearchPage"
+placeholder="Search anything..."
+oninput="globalSearch(this.value)"
+>
+
+</div>
+
+<br>
+
+<div class="card">
+
+<div id="globalResults" class="search-results">
+
+<div class="empty">
+Start typing to search the NOC.
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ================= LOG ================= -->
+
+<section id="log" class="page">
+
+<div class="card">
+
+<h2>📝 Activity Log</h2>
+
+</div>
+
+<br>
+
+<div id="activityLog"></div>
+
+</section>
+
+
+</div>
+
+
+<!-- ================= MODAL ================= -->
+
+<div class="modal" id="modal">
+
+<div class="modal-box">
+
+<span class="close" onclick="closeModal()">✕</span>
+
+<div id="modalContent"></div>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+DATA
+===================================================== */
+
+let alarms=[];
+let tickets=[];
+let workOrders=[];
+let inboxEmails=[];
+let sentEmails=[];
+
+let alarmNumber=1000;
+let ticketNumber=48000;
+let workOrderNumber=10000;
+
+let score=100;
+let alarmView="active";
+let emailFolder="inbox";
+
+
+/* =====================================================
+TOPOLOGY DATABASE
+===================================================== */
+
+const topologyData={
+
+internet:{
+name:"Internet",
+type:"External Network",
+department:"External",
+ip:"Public Network",
+services:["Internet Connectivity"],
+connections:["IP Core"],
+node:"internet"
+},
+
+core:{
+name:"IP Core",
+type:"Core Router",
+department:"IP",
+ip:"10.10.0.1",
+services:["Core Routing","Internet","Enterprise Connectivity"],
+connections:["Internet","IP Router","Transmission","RAN"],
+node:"core"
+},
+
+ip:{
+name:"MCT-IP-031",
+type:"IP Router",
+department:"IP",
+ip:"10.10.31.1",
+services:["IP Connectivity","Enterprise Traffic"],
+connections:["IP Core","Fixed Network"],
+node:"ip"
+},
+
+trans:{
+name:"MCT-TR-014",
+type:"Transmission Node",
+department:"Transmission",
+ip:"10.20.14.1",
+services:["Transport","Microwave"],
+connections:["IP Core","Microwave"],
+node:"trans"
+},
+
+micro:{
+name:"SLL-MW-014",
+type:"Microwave Link",
+department:"Transmission",
+ip:"10.30.14.1",
+services:["Microwave Transport"],
+connections:["Transmission","Remote Site"],
+node:"micro"
+},
+
+remote:{
+name:"SLL-REMOTE-02",
+type:"Remote Site",
+department:"Fixed",
+ip:"10.40.2.1",
+services:["Fixed Access"],
+connections:["Microwave"],
+node:"remote"
+},
+
+fixed:{
+name:"SLL-FIX-112",
+type:"Fixed Network",
+department:"Fixed",
+ip:"10.50.112.1",
+services:["Fixed Broadband","Enterprise"],
+connections:["IP Router"],
+node:"fixed"
+},
+
+ran:{
+name:"MCT-RAN-207",
+type:"RAN Controller",
+department:"RAN",
+ip:"10.60.207.1",
+services:["Mobile Access","4G","5G"],
+connections:["IP Core","Cell Site"],
+node:"ran"
+},
+
+cell:{
+name:"MCT-CELL-207",
+type:"Cell Site",
+department:"RAN",
+ip:"10.70.207.1",
+services:["4G","5G","Voice"],
+connections:["RAN"],
+node:"cell"
+},
+
+soc:{
+name:"MCT-SOC-008",
+type:"Security Monitoring",
+department:"SOC",
+ip:"10.80.8.1",
+services:["Security Monitoring"],
+connections:["IP Core"],
+node:"soc"
+}
+
+};
+
+
+/* =====================================================
+CLOCK
+===================================================== */
+
+function updateClock(){
+
+document.getElementById("clock")
+.textContent=
+new Date().toLocaleTimeString();
+
+}
+
+setInterval(updateClock,1000);
+updateClock();
+
+
+/* =====================================================
+NAVIGATION
+===================================================== */
+
+function showPage(id,button){
+
+document
+.querySelectorAll(".page")
+.forEach(p=>p.classList.remove("active"));
+
+document
+.getElementById(id)
+.classList.add("active");
+
+document
+.querySelectorAll(".nav-btn")
+.forEach(b=>b.classList.remove("active"));
+
+if(button)
+button.classList.add("active");
+
+}
+
+function showPageByName(name){
+
+const map={
+dashboard:"dashboard",
+alarms:"alarms",
+tickets:"tickets",
+workorders:"workorders",
+emails:"emails",
+topology:"topology",
+tasks:"tasks",
+departments:"departments",
+search:"search",
+log:"log"
+};
+
+showPage(map[name]||name);
+
+}
+
+
+/* =====================================================
+LOGGING
+===================================================== */
+
+function addLog(message){
+
+const log=
+document.createElement("div");
+
+log.className="log";
+
+log.innerHTML=`
+
+<small>
+${new Date().toLocaleTimeString()}
+</small>
+
+<br>
+
+${message}
+
+`;
+
+document
+.getElementById("activityLog")
+.prepend(log);
+
+}
+
+
+/* =====================================================
+SEVERITY
+===================================================== */
+
+const severityList=[
+"Emergency",
+"Critical",
+"Major",
+"Minor",
+"Warning"
+];
+
+
+/* =====================================================
+ALARM TYPES
+===================================================== */
+
+const alarmTypes=[
+
+{
+type:"IP Core Down",
+department:"IP",
+site:"MCT-IP-CORE-01",
+severity:"Emergency",
+node:"core",
+sla:15
+},
+
+{
+type:"IP Router Failure",
+department:"IP",
+site:"MCT-IP-031",
+severity:"Critical",
+node:"ip",
+sla:20
+},
+
+{
+type:"Microwave Link Down",
+department:"Transmission",
+site:"SLL-MW-014",
+severity:"Emergency",
+node:"micro",
+sla:15
+},
+
+{
+type:"Transmission Degradation",
+department:"Transmission",
+site:"MCT-TR-014",
+severity:"Major",
+node:"trans",
+sla:30
+},
+
+{
+type:"RAN Service Degradation",
+department:"RAN",
+site:"MCT-RAN-207",
+severity:"Major",
+node:"ran",
+sla:30
+},
+
+{
+type:"Cell Site Critical",
+department:"RAN",
+site:"MCT-CELL-207",
+severity:"Critical",
+node:"cell",
+sla:20
+},
+
+{
+type:"Fixed Service Failure",
+department:"Fixed",
+site:"SLL-FIX-112",
+severity:"Critical",
+node:"fixed",
+sla:20
+},
+
+{
+type:"Fixed Service Warning",
+department:"Fixed",
+site:"SLL-FIX-112",
+severity:"Warning",
+node:"fixed",
+sla:60
+},
+
+{
+type:"SOC Security Alert",
+department:"SOC",
+site:"MCT-SOC-008",
+severity:"Critical",
+node:"soc",
+sla:20
+},
+
+{
+type:"IP Interface Warning",
+department:"IP",
+site:"MCT-IP-031",
+severity:"Warning",
+node:"ip",
+sla:60
+},
+
+{
+type:"Minor Network Degradation",
+department:"Transmission",
+site:"MCT-TR-014",
+severity:"Minor",
+node:"trans",
+sla:60
+}
+
+];
+
+
+/* =====================================================
+GENERATE ALARM
+===================================================== */
+
+function generateAlarm(){
+
+const a=
+alarmTypes[
+Math.floor(
+Math.random()*alarmTypes.length
+)
+];
+
+const alarm={
+
+id:++alarmNumber,
+
+type:a.type,
+
+department:a.department,
+
+site:a.site,
+
+severity:a.severity,
+
+node:a.node,
+
+sla:a.sla,
+
+remaining:a.sla*60,
+
+acknowledged:false,
+
+created:new Date(),
+
+ticketId:null,
+
+workOrderId:null
+
+};
+
+alarms.push(alarm);
+
+
+/* AUTO TICKET */
+
+const ticket=createTicket(alarm);
+
+
+/* AUTO WORK ORDER */
+
+const wo=createWorkOrder(ticket);
+
+alarm.ticketId=ticket.id;
+alarm.workOrderId=wo.id;
+
+
+/* EMAIL */
+
+createAlarmEmail(alarm,ticket,wo);
+
+
+/* UPDATE TOPOLOGY */
+
+updateTopologyStates();
+
+
+addLog(
+`🚨 <strong>${alarm.severity}</strong> alarm:
+${alarm.type} at ${alarm.site}.`
+);
+
+renderAll();
+
+}
+
+
+/* =====================================================
+TICKET
+===================================================== */
+
+function createTicket(alarm){
+
+const ticket={
+
+id:"SMA-"+(++ticketNumber),
+
+alarmId:"AL-"+alarm.id,
+
+type:alarm.type,
+
+department:alarm.department,
+
+site:alarm.site,
+
+severity:alarm.severity,
+
+status:"New",
+
+notes:"",
+
+created:new Date().toLocaleTimeString()
+
+};
+
+tickets.push(ticket);
+
+addLog(
+`🎫 Ticket <strong>${ticket.id}</strong> automatically created.`
+);
+
+return ticket;
+
+}
+
+
+/* =====================================================
+WORK ORDER
+===================================================== */
+
+function createWorkOrder(ticket){
+
+const wo={
+
+id:"WO-"+(++workOrderNumber),
+
+ticketId:ticket.id,
+
+site:ticket.site,
+
+department:ticket.department,
+
+severity:ticket.severity,
+
+task:"Investigate "+ticket.type,
+
+assigned:ticket.department+" Team",
+
+status:"Pending"
+
+};
+
+workOrders.push(wo);
+
+addLog(
+`🔧 Work Order <strong>${wo.id}</strong> automatically created.`
+);
+
+return wo;
+
+}
+
+
+/* =====================================================
+ALARM EMAIL
+===================================================== */
+
+function createAlarmEmail(alarm,ticket,wo){
+
+inboxEmails.unshift({
+
+id:"EMAIL-"+Date.now(),
+
+from:"NOC Monitoring",
+
+to:"NOC Operator",
+
+subject:
+`[${alarm.severity}] ${alarm.type} — AL-${alarm.id}`,
+
+body:`
+
+<strong>Automated Network Alarm</strong>
+
+<br><br>
+
+Alarm:
+<strong>AL-${alarm.id}</strong>
+
+<br>
+
+Severity:
+<strong>${alarm.severity}</strong>
+
+<br>
+
+Site:
+<strong>${alarm.site}</strong>
+
+<br>
+
+Department:
+<strong>${alarm.department}</strong>
+
+<br>
+
+SMA:
+<strong>${ticket.id}</strong>
+
+<br>
+
+Work Order:
+<strong>${wo.id}</strong>
+
+<br><br>
+
+The alarm requires operator attention.
+
+Please acknowledge the alarm and investigate the
+affected network element.
+
+`,
+
+time:new Date().toLocaleTimeString(),
+
+unread:true,
+
+favorite:false,
+
+threadId:"ALARM-"+alarm.id
+
+});
+
+}
+
+
+/* =====================================================
+SHARED NOC EMAILS
+===================================================== */
+
+const sharedEmails=[
+
+["IP Operations","IP Core Daily Status",
+"IP Core monitoring is active. Please review any abnormal interfaces and correlated alarms."],
+
+["Transmission","Microwave Performance",
+"Transmission is monitoring microwave links. Degraded links should be correlated with affected services."],
+
+["RAN Operations","RAN KPI Report",
+"RAN has circulated the latest KPI information. Abnormal sites should be investigated."],
+
+["Fixed Operations","Fixed Network Status",
+"Fixed network services are under monitoring. Please report any customer-impacting issues."],
+
+["Service Desk","Customer Incident",
+"Service Desk is requesting a network status update for a customer-related case."],
+
+["SOC","Security Monitoring Notice",
+"SOC has issued a monitoring notice. Review any related security alarms."],
+
+["Agile Ops","Alarm Monitoring Update",
+"Agile Ops has updated monitoring information. Continue watching active events."],
+
+["Network Planning","Planned Network Activity",
+"Network Planning has circulated information regarding planned network activities."]
+
+];
+
+
+function generateNOCEmail(){
+
+const e=
+sharedEmails[
+Math.floor(Math.random()*sharedEmails.length)
+];
+
+inboxEmails.unshift({
+
+id:"SHARED-"+Date.now(),
+
+from:e[0],
+
+to:"NOC Operator",
+
+subject:e[1],
+
+body:e[2],
+
+time:new Date().toLocaleTimeString(),
+
+unread:true,
+
+favorite:false,
+
+threadId:"SHARED-"+Math.floor(Math.random()*5)
+
+});
+
+addLog(
+`📧 New email received from <strong>${e[0]}</strong>.`
+);
+
+renderAll();
+
+}
+
+
+/* =====================================================
+EMAIL EVERY 5 MINUTES
+===================================================== */
+
+setInterval(
+generateNOCEmail,
+300000
+);
+
+
+/* =====================================================
+SEED EMAILS
+===================================================== */
+
+[
+["IP Operations","Morning IP Report"],
+["Transmission","Transmission Morning Report"],
+["RAN Operations","RAN Daily Status"],
+["Fixed Operations","Fixed Network Update"],
+["Service Desk","Customer Case Update"],
+["SOC","SOC Monitoring Summary"],
+["Agile Ops","NOC Operations Brief"],
+["Network Planning","Planned Activity Notice"]
+].forEach((x,i)=>{
+
+inboxEmails.push({
+
+id:"START-"+i,
+
+from:x[0],
+
+to:"NOC Operator",
+
+subject:x[1],
+
+body:
+`This is the ${x[1]}. The department is currently monitoring network activity and will communicate any significant events.`,
+
+time:
+new Date(
+Date.now()-i*600000
+).toLocaleTimeString(),
+
+unread:i<4,
+
+favorite:false,
+
+threadId:"START-THREAD-"+i
+
+});
+
+});
+
+
+/* =====================================================
+ALARM TIMER
+===================================================== */
+
+setInterval(()=>{
+
+alarms.forEach(a=>{
+
+if(!a.acknowledged && a.remaining>0){
+
+a.remaining--;
+
+}
+
+});
+
+renderAlarms();
+
+},1000);
+
+
+/* =====================================================
+ALARM SEARCH
+===================================================== */
+
+let alarmView="active";
+
+function setAlarmView(view,button){
+
+alarmView=view;
+
+document
+.querySelectorAll("#alarms .tab")
+.forEach(b=>b.classList.remove("active"));
+
+button.classList.add("active");
+
+renderAlarms();
+
+}
+
+
+function renderAlarms(){
+
+const container=
+document.getElementById("alarmContainer");
+
+container.innerHTML="";
+
+const query=
+(
+document.getElementById("alarmSearch")?.value
+||""<
