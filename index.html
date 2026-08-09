@@ -2,12 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Oman NOC Training Simulator</title>
 
 <style>
-
 *{
 box-sizing:border-box;
 margin:0;
@@ -26,8 +24,8 @@ left:0;
 top:0;
 width:235px;
 height:100vh;
-background:linear-gradient(180deg,#ff8fc7,#e96da8);
-padding:22px 14px;
+background:linear-gradient(180deg,#ff8fc7,#df639e);
+padding:20px 14px;
 color:white;
 z-index:20;
 overflow-y:auto;
@@ -44,7 +42,6 @@ margin-bottom:25px;
 display:block;
 font-size:11px;
 margin-top:5px;
-opacity:.9;
 }
 
 .nav-btn{
@@ -67,7 +64,7 @@ background:rgba(255,255,255,.25);
 
 .main{
 margin-left:235px;
-padding:25px;
+padding:24px;
 }
 
 .topbar{
@@ -77,14 +74,35 @@ padding:18px 22px;
 margin-bottom:22px;
 box-shadow:0 5px 20px rgba(255,105,180,.12);
 display:flex;
-justify-content:space-between;
 align-items:center;
-gap:20px;
+gap:18px;
 }
 
 .topbar h1{
 color:#d95794;
-margin-bottom:5px;
+}
+
+.topbar p{
+margin-top:5px;
+color:#987486;
+}
+
+.global-search{
+flex:1;
+}
+
+input,select,textarea{
+width:100%;
+padding:12px 14px;
+border:2px solid #ffd7e9;
+border-radius:14px;
+outline:none;
+background:white;
+}
+
+textarea{
+min-height:120px;
+resize:vertical;
 }
 
 .clock{
@@ -94,19 +112,6 @@ padding:10px 15px;
 border-radius:20px;
 font-weight:bold;
 white-space:nowrap;
-}
-
-.global-search{
-flex:1;
-max-width:500px;
-}
-
-.global-search input{
-width:100%;
-padding:12px 16px;
-border:2px solid #ffd7e9;
-border-radius:22px;
-outline:none;
 }
 
 .page{
@@ -119,7 +124,7 @@ display:block;
 
 .cards{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
 gap:16px;
 margin-bottom:20px;
 }
@@ -128,8 +133,7 @@ margin-bottom:20px;
 .ticket,
 .workorder,
 .alarm,
-.email-view,
-.email-list,
+.email-panel,
 .task{
 background:white;
 border:1px solid #ffd7e9;
@@ -153,13 +157,16 @@ color:#e45d9b;
 margin-top:8px;
 }
 
+button{
+cursor:pointer;
+}
+
 .primary,
 .secondary,
 .danger{
 border:0;
 border-radius:20px;
-padding:11px 18px;
-cursor:pointer;
+padding:10px 17px;
 font-weight:bold;
 }
 
@@ -168,17 +175,13 @@ background:#ff83bd;
 color:white;
 }
 
-.primary:hover{
-background:#dc5792;
-}
-
 .secondary{
-background:#ffe2ef;
+background:#ffe3ef;
 color:#c44c83;
 }
 
 .danger{
-background:#ff547b;
+background:#ff4f78;
 color:white;
 }
 
@@ -190,83 +193,10 @@ gap:15px;
 margin-bottom:15px;
 }
 
-.alarm{
-border-left:6px solid #ff4f78;
-margin-bottom:14px;
-}
-
-.alarm.critical{
-border-left-color:#e6395d;
-}
-
-.alarm.major{
-border-left-color:#f2a33c;
-}
-
-.alarm.minor{
-border-left-color:#63c992;
-}
-
-.alarm.warning{
-border-left-color:#f5c85b;
-}
-
-.alarm-head{
-display:flex;
-justify-content:space-between;
-align-items:center;
-gap:10px;
-margin-bottom:10px;
-}
-
-.priority{
-padding:6px 11px;
-border-radius:15px;
-font-size:12px;
-font-weight:bold;
-white-space:nowrap;
-background:#ffe0e8;
-color:#df4f75;
-}
-
-.priority.critical{
-background:#ffe1e7;
-color:#c9274d;
-}
-
-.priority.major{
-background:#fff0d5;
-color:#bd791c;
-}
-
-.priority.minor{
-background:#def7e8;
-color:#3e9966;
-}
-
-.priority.warning{
-background:#fff7d8;
-color:#a87a12;
-}
-
-.timer{
-color:#d95794;
-font-weight:bold;
-margin-top:8px;
-}
-
-.timer.warning{
-color:#e78b22;
-}
-
-.timer.critical{
-color:#ed4e6f;
-}
-
 .info-grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-gap:12px;
+grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+gap:10px;
 margin:15px 0;
 }
 
@@ -284,79 +214,162 @@ margin-bottom:5px;
 
 .status{
 display:inline-block;
-padding:6px 10px;
+padding:6px 11px;
 border-radius:15px;
-background:#ffe7f1;
-color:#c94e87;
 font-size:12px;
 font-weight:bold;
+background:#ffe7f1;
+color:#c94e83;
 }
 
-.status.success{
+.status.normal{
 background:#def7e8;
 color:#3e9966;
 }
 
 .status.warning{
+background:#fff7d8;
+color:#a87a12;
+}
+
+.status.major{
 background:#fff0d5;
 color:#bd791c;
 }
 
-.status.danger{
-background:#ffe0e8;
-color:#df4f75;
+.status.critical{
+background:#ffe1e7;
+color:#c9274d;
 }
 
-.email-layout{
-display:grid;
-grid-template-columns:280px 1fr;
-gap:18px;
+.status.emergency{
+background:#ffd7df;
+color:#a81838;
 }
 
-.email-list{
-min-height:600px;
+.alarm{
+border-left:6px solid #63c992;
+margin-bottom:14px;
 }
 
-.email-toolbar{
+.alarm.warning{
+border-left-color:#f5c85b;
+}
+
+.alarm.major{
+border-left-color:#f2a33c;
+}
+
+.alarm.critical{
+border-left-color:#e6395d;
+}
+
+.alarm.emergency{
+border-left-color:#a81838;
+animation:alarmPulse 1.5s infinite;
+}
+
+@keyframes alarmPulse{
+50%{
+box-shadow:0 0 20px rgba(168,24,56,.18);
+}
+}
+
+.priority{
+padding:6px 11px;
+border-radius:15px;
+font-size:12px;
+font-weight:bold;
+background:#def7e8;
+color:#3e9966;
+}
+
+.priority.warning{
+background:#fff7d8;
+color:#a87a12;
+}
+
+.priority.major{
+background:#fff0d5;
+color:#bd791c;
+}
+
+.priority.critical{
+background:#ffe1e7;
+color:#c9274d;
+}
+
+.priority.emergency{
+background:#ffd7df;
+color:#a81838;
+}
+
+.alarm-head{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+}
+
+.timer{
+margin-top:10px;
+font-weight:bold;
+color:#d95794;
+}
+
+.empty{
+background:white;
+border:1px solid #ffd7e9;
+border-radius:18px;
+padding:40px;
+text-align:center;
+color:#a8758f;
+}
+
+.tabs{
 display:flex;
 gap:8px;
-margin:15px 0;
-}
-
-.email-toolbar input{
-flex:1;
-}
-
-.email-tabs{
-display:flex;
-gap:7px;
 flex-wrap:wrap;
 margin:15px 0;
 }
 
-.email-tab{
+.tab{
 border:0;
-padding:8px 13px;
-border-radius:15px;
+padding:8px 14px;
+border-radius:18px;
 background:#ffe5f1;
 color:#c44c83;
-cursor:pointer;
 }
 
-.email-tab.active{
+.tab.active{
 background:#ff83bd;
 color:white;
 }
 
+/* EMAIL */
+
+.email-layout{
+display:grid;
+grid-template-columns:300px 1fr;
+gap:18px;
+}
+
+.email-list{
+background:white;
+border:1px solid #ffd7e9;
+border-radius:18px;
+overflow:hidden;
+}
+
 .email-item{
-padding:14px;
-border-bottom:1px solid #ffe4ef;
+padding:15px;
+border-bottom:1px solid #ffe3ef;
 cursor:pointer;
 position:relative;
 }
 
 .email-item:hover{
-background:#fff5fa;
+background:#fff4f9;
 }
 
 .email-item.unread{
@@ -367,7 +380,6 @@ font-weight:bold;
 .email-item strong{
 display:block;
 color:#d95794;
-margin-bottom:5px;
 padding-right:25px;
 }
 
@@ -378,151 +390,156 @@ color:#987486;
 .star{
 position:absolute;
 right:12px;
-top:14px;
-font-size:18px;
-cursor:pointer;
+top:12px;
+font-size:20px;
 }
 
 .star.active{
-color:#f5b51b;
+color:#eab516;
 }
 
 .email-body{
 background:#fff8fb;
-padding:18px;
-border-radius:14px;
-margin:15px 0;
+border-radius:15px;
+padding:20px;
 line-height:1.7;
+margin:15px 0;
 }
 
-textarea,
-select,
-input{
-width:100%;
-padding:13px;
-border:2px solid #ffd7e9;
-border-radius:14px;
-outline:none;
-background:white;
+.thread{
+border-left:4px solid #ff83bd;
+padding-left:15px;
 }
 
-textarea{
-min-height:120px;
-resize:vertical;
+/* TOPOLOGY */
+
+.topology-search{
+display:flex;
+gap:10px;
+margin:18px 0;
 }
 
-.topology-wrapper{
-background:white;
+.topology-search button{
+white-space:nowrap;
+}
+
+.topology-container{
+background:#fffafd;
 border:1px solid #ffd7e9;
 border-radius:20px;
-padding:20px;
+padding:25px;
 overflow:auto;
 }
 
 .topology{
-min-width:900px;
-min-height:600px;
 position:relative;
-background:#fffafd;
-border-radius:18px;
+width:1100px;
+height:720px;
+margin:auto;
+background:
+radial-gradient(#ffd9ea 1px,transparent 1px);
+background-size:25px 25px;
+border-radius:20px;
 }
 
 .node{
 position:absolute;
-width:150px;
-padding:14px;
-text-align:center;
+width:155px;
+padding:13px;
 background:white;
-border:3px solid #ff9acb;
-border-radius:16px;
+border:3px solid #63c992;
+border-radius:17px;
+text-align:center;
 cursor:pointer;
-box-shadow:0 5px 15px rgba(255,105,180,.15);
 z-index:3;
-transition:.2s;
+box-shadow:0 5px 16px rgba(255,105,180,.12);
+transition:.25s;
 }
 
 .node:hover{
-transform:scale(1.04);
+transform:scale(1.05);
+}
+
+.node.normal{
+border-color:#63c992;
+}
+
+.node.warning{
+border-color:#f5c85b;
+background:#fffdf1;
+}
+
+.node.major{
+border-color:#f2a33c;
+background:#fff9ef;
+}
+
+.node.critical{
+border-color:#e6395d;
+background:#fff1f4;
+}
+
+.node.emergency{
+border-color:#a81838;
+background:#ffe9ee;
+animation:nodePulse 1.2s infinite;
+}
+
+@keyframes nodePulse{
+50%{
+box-shadow:0 0 25px rgba(168,24,56,.3);
+}
 }
 
 .node .icon{
 font-size:27px;
-margin-bottom:5px;
 }
 
 .node strong{
 display:block;
 color:#d95794;
+margin:4px 0;
 }
 
 .node small{
-color:#8f697b;
+display:block;
+color:#987486;
 }
 
-.node.down{
-border-color:#ff4f78;
-background:#fff0f3;
-animation:pulse 1.2s infinite;
+.node .node-status{
+font-size:11px;
+margin-top:6px;
+font-weight:bold;
 }
 
-.node.critical{
-border-color:#e6395d;
-background:#fff0f3;
-}
-
-.node.major{
-border-color:#f2a33c;
-background:#fff8e9;
-}
-
-.node.minor{
-border-color:#63c992;
-background:#f0fff6;
-}
-
-.node.warning{
-border-color:#f5c85b;
-background:#fffbea;
-}
-
-@keyframes pulse{
-0%{box-shadow:0 0 0 0 rgba(255,79,120,.35)}
-70%{box-shadow:0 0 0 12px rgba(255,79,120,0)}
-100%{box-shadow:0 0 0 0 rgba(255,79,120,0)}
-}
-
-.link{
+.connection{
 position:absolute;
 height:5px;
-background:#ffb0d4;
+background:#aee4c5;
+border-radius:10px;
 transform-origin:left center;
 z-index:1;
-border-radius:10px;
 }
 
-.link.down{
-background:#ff4f78;
+.connection.warning{
+background:#f5c85b;
 }
 
-.link.critical{
-background:#e6395d;
-}
-
-.link.major{
+.connection.major{
 background:#f2a33c;
 }
 
-.link.minor{
-background:#63c992;
+.connection.critical{
+background:#e6395d;
 }
 
-.link.warning{
-background:#f5c85b;
+.connection.emergency{
+background:#a81838;
 }
 
 .legend{
 display:flex;
-gap:18px;
+gap:20px;
 flex-wrap:wrap;
 margin-top:15px;
 }
@@ -534,132 +551,24 @@ gap:6px;
 }
 
 .dot{
-width:12px;
-height:12px;
+width:13px;
+height:13px;
 border-radius:50%;
 }
 
-.green{background:#63c992}
-.yellow{background:#f2a33c}
-.red{background:#ff4f78}
-.darkred{background:#e6395d}
-.gold{background:#f5c85b}
+.dot.normal{background:#63c992}
+.dot.warning{background:#f5c85b}
+.dot.major{background:#f2a33c}
+.dot.critical{background:#e6395d}
+.dot.emergency{background:#a81838}
 
-.departments{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:16px;
-}
-
-.department{
-background:white;
-border:2px solid #ffd7e9;
-border-radius:18px;
-padding:20px;
-cursor:pointer;
-transition:.2s;
-}
-
-.department:hover{
-box-shadow:0 8px 20px rgba(255,105,180,.15);
-transform:translateY(-2px);
-}
-
-.department h3{
-color:#d95794;
-margin-bottom:8px;
-}
-
-.log{
-background:white;
-border-left:5px solid #ff83bd;
-border-radius:12px;
-padding:14px;
-margin-bottom:9px;
-}
-
-.log small{
-color:#a8758f;
-}
-
-.progress{
-height:12px;
-background:#ffe6f1;
-border-radius:20px;
-overflow:hidden;
-}
-
-.progress-bar{
-height:100%;
-background:#ff83bd;
-width:0;
-transition:.4s;
-}
-
-.choice{
-display:block;
-width:100%;
-background:white;
-border:2px solid #ffd7e9;
-border-radius:14px;
-padding:14px;
-text-align:left;
-margin-bottom:10px;
-cursor:pointer;
-}
-
-.choice:hover{
-background:#fff2f8;
-border-color:#ff83bd;
-}
-
-.empty{
-text-align:center;
-padding:40px;
-color:#a8758f;
-background:white;
-border-radius:18px;
-border:1px solid #ffd7e9;
-}
-
-.modal{
-display:none;
-position:fixed;
-inset:0;
-background:rgba(70,35,55,.45);
-justify-content:center;
-align-items:center;
-z-index:50;
-}
-
-.modal.show{
-display:flex;
-}
-
-.modal-box{
-width:92%;
-max-width:700px;
-max-height:90vh;
-overflow-y:auto;
-background:white;
-border-radius:22px;
-padding:25px;
-}
-
-.close{
-float:right;
-cursor:pointer;
-font-size:23px;
-}
-
-.modal-box h2{
-color:#d95794;
-margin-bottom:14px;
+.search-results{
+margin-top:15px;
 }
 
 .search-result{
-padding:15px;
-border-bottom:1px solid #ffe1ed;
+padding:14px;
+border-bottom:1px solid #ffe3ef;
 cursor:pointer;
 }
 
@@ -672,12 +581,67 @@ font-size:11px;
 font-weight:bold;
 color:#d95794;
 text-transform:uppercase;
+margin-bottom:4px;
 }
 
-.thread{
-border-left:4px solid #ff83bd;
-padding-left:14px;
-margin-top:15px;
+.department-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+gap:15px;
+}
+
+.department{
+background:white;
+border:2px solid #ffd7e9;
+border-radius:18px;
+padding:20px;
+cursor:pointer;
+}
+
+.department:hover{
+border-color:#ff83bd;
+}
+
+.log{
+background:white;
+border-left:5px solid #ff83bd;
+padding:13px;
+border-radius:12px;
+margin-bottom:8px;
+}
+
+.log small{
+color:#a8758f;
+}
+
+.modal{
+display:none;
+position:fixed;
+inset:0;
+background:rgba(60,30,45,.45);
+align-items:center;
+justify-content:center;
+z-index:100;
+}
+
+.modal.show{
+display:flex;
+}
+
+.modal-box{
+background:white;
+width:92%;
+max-width:750px;
+max-height:90vh;
+overflow:auto;
+border-radius:22px;
+padding:25px;
+}
+
+.close{
+float:right;
+font-size:22px;
+cursor:pointer;
 }
 
 @media(max-width:850px){
@@ -687,10 +651,6 @@ width:68px;
 padding:15px 7px;
 }
 
-.logo{
-font-size:18px;
-}
-
 .logo small,
 .nav-btn span{
 display:none;
@@ -698,16 +658,11 @@ display:none;
 
 .nav-btn{
 text-align:center;
-font-size:18px;
 }
 
 .main{
 margin-left:68px;
 padding:15px;
-}
-
-.email-layout{
-grid-template-columns:1fr;
 }
 
 .topbar{
@@ -716,8 +671,11 @@ flex-wrap:wrap;
 
 .global-search{
 order:3;
-max-width:none;
 width:100%;
+}
+
+.email-layout{
+grid-template-columns:1fr;
 }
 
 }
@@ -726,6 +684,8 @@ width:100%;
 </head>
 
 <body>
+
+<!-- ================= SIDEBAR ================= -->
 
 <div class="sidebar">
 
@@ -736,18 +696,19 @@ width:100%;
 
 <button class="nav-btn active" onclick="showPage('dashboard',this)">🏠 <span>Dashboard</span></button>
 <button class="nav-btn" onclick="showPage('alarms',this)">🚨 <span>Alarms</span></button>
-<button class="nav-btn" onclick="showPage('tickets',this)">🎫 <span>Tickets</span></button>
+<button class="nav-btn" onclick="showPage('tickets',this)">🎫 <span>Tickets / SMA</span></button>
 <button class="nav-btn" onclick="showPage('workorders',this)">🔧 <span>Work Orders</span></button>
-<button class="nav-btn" onclick="showPage('emails',this)">📧 <span>Email</span></button>
-<button class="nav-btn" onclick="showPage('tasks',this)">📋 <span>My Tasks</span></button>
-<button class="nav-btn" onclick="showPage('search',this)">🔎 <span>Search</span></button>
+<button class="nav-btn" onclick="showPage('emails',this)">📧 <span>Emails</span></button>
 <button class="nav-btn" onclick="showPage('topology',this)">🗺️ <span>Topology</span></button>
+<button class="nav-btn" onclick="showPage('tasks',this)">📋 <span>My Tasks</span></button>
 <button class="nav-btn" onclick="showPage('departments',this)">🏢 <span>Departments</span></button>
-<button class="nav-btn" onclick="showPage('scenarios',this)">🎯 <span>Scenarios</span></button>
-<button class="nav-btn" onclick="showPage('kpi',this)">📊 <span>KPI</span></button>
+<button class="nav-btn" onclick="showPage('search',this)">🔎 <span>Global Search</span></button>
 <button class="nav-btn" onclick="showPage('log',this)">📝 <span>Activity Log</span></button>
 
 </div>
+
+
+<!-- ================= MAIN ================= -->
 
 <div class="main">
 
@@ -755,21 +716,23 @@ width:100%;
 
 <div>
 <h1>Oman NOC Training Simulator</h1>
-<p>Interactive Network Operations Training</p>
+<p>Network Operations Control Center</p>
 </div>
 
 <div class="global-search">
 <input
 id="globalSearch"
-placeholder="🔎 Search alarm, SMA, work order, site, email..."
+placeholder="🔎 Search alarm, SMA, WO, email, site..."
 oninput="globalSearch(this.value)"
 >
 </div>
 
-<div class="clock" id="clock">00:00:00</div>
+<div class="clock" id="clock"></div>
 
 </div>
 
+
+<!-- ================= DASHBOARD ================= -->
 
 <section id="dashboard" class="page active">
 
@@ -777,27 +740,27 @@ oninput="globalSearch(this.value)"
 
 <div class="card">
 <h3>🚨 Active Alarms</h3>
-<div class="big-number" id="activeAlarmCount">0</div>
+<div class="big-number" id="activeCount">0</div>
 </div>
 
 <div class="card">
 <h3>✅ Acknowledged</h3>
-<div class="big-number" id="ackAlarmCount">0</div>
+<div class="big-number" id="ackCount">0</div>
 </div>
 
 <div class="card">
-<h3>🎫 Tickets</h3>
+<h3>🎫 SMA / Tickets</h3>
 <div class="big-number" id="ticketCount">0</div>
 </div>
 
 <div class="card">
 <h3>🔧 Work Orders</h3>
-<div class="big-number" id="workOrderCount">0</div>
+<div class="big-number" id="woCount">0</div>
 </div>
 
 <div class="card">
 <h3>📧 Unread Emails</h3>
-<div class="big-number" id="unreadEmailCount">0</div>
+<div class="big-number" id="emailCount">0</div>
 </div>
 
 <div class="card">
@@ -807,25 +770,33 @@ oninput="globalSearch(this.value)"
 
 </div>
 
+
 <div class="card">
 
-<h2>🌸 NOC Control Center</h2>
+<div class="section-title">
 
-<p style="margin:12px 0 20px;line-height:1.6">
-Monitor alarms, handle the shared NOC mailbox, investigate incidents,
-manage tickets and follow the network topology.
+<div>
+<h2>🌸 NOC Control Center</h2>
+<p style="margin-top:8px">
+Monitor alarms, investigate topology, process tickets,
+manage work orders and communicate through the shared mailbox.
 </p>
+</div>
+
+</div>
+
+<br>
 
 <button class="primary" onclick="generateAlarm()">
 🚨 Generate Alarm
 </button>
 
-<button class="primary" onclick="startScenario()" style="margin-left:8px">
-🎯 Training Scenario
+<button class="secondary" onclick="generateNOCEmail()" style="margin-left:8px">
+📧 Generate NOC Email
 </button>
 
-<button class="secondary" onclick="showPageById('emails')" style="margin-left:8px">
-📧 Open Mailbox
+<button class="secondary" onclick="showPageByName('topology')" style="margin-left:8px">
+🗺️ Network Topology
 </button>
 
 </div>
@@ -834,22 +805,16 @@ manage tickets and follow the network topology.
 
 <div class="card">
 
-<h3>Training Progress</h3>
+<h3>Live Network Status</h3>
 
-<br>
-
-<div class="progress">
-<div class="progress-bar" id="progressBar"></div>
-</div>
-
-<br>
-
-<p id="progressText">0% completed</p>
+<div id="dashboardNetworkStatus" style="margin-top:15px"></div>
 
 </div>
 
 </section>
 
+
+<!-- ================= ALARMS ================= -->
 
 <section id="alarms" class="page">
 
@@ -858,30 +823,36 @@ manage tickets and follow the network topology.
 <div class="section-title">
 
 <div>
-<h2>🚨 Alarm Monitor</h2>
+<h2>🚨 Alarm Management</h2>
 <p style="margin-top:8px">
-Emergency, Critical, Major, Minor and Warning events.
+Search alarms by alarm ID, SMA, work order, site, severity or department.
 </p>
 </div>
 
 <button class="primary" onclick="generateAlarm()">
-+ Generate Alarm
++ New Alarm
 </button>
 
 </div>
 
-<div class="email-tabs">
+<input
+id="alarmSearch"
+placeholder="🔎 Search alarm / SMA / WO / site / severity..."
+oninput="renderAlarms()"
+>
 
-<button class="email-tab active" onclick="setAlarmView('active')">
-🚨 Active
+<div class="tabs">
+
+<button class="tab active" onclick="setAlarmView('active',this)">
+Active
 </button>
 
-<button class="email-tab" onclick="setAlarmView('ack')">
-✅ Acknowledged
+<button class="tab" onclick="setAlarmView('ack',this)">
+Acknowledged
 </button>
 
-<button class="email-tab" onclick="setAlarmView('all')">
-📋 All
+<button class="tab" onclick="setAlarmView('all',this)">
+All
 </button>
 
 </div>
@@ -895,24 +866,22 @@ Emergency, Critical, Major, Minor and Warning events.
 </section>
 
 
+<!-- ================= TICKETS ================= -->
+
 <section id="tickets" class="page">
 
 <div class="card">
 
-<div class="section-title">
+<h2>🎫 SMA / Ticket Management</h2>
 
-<div>
-<h2>🎫 Incident / SMA Management</h2>
-<p style="margin-top:8px">
-Search and manage all generated incidents.
+<p style="margin:10px 0">
+Search by ticket number, alarm, site, department, severity or status.
 </p>
-</div>
-
-</div>
 
 <input
-placeholder="🔎 Search ticket, site, department, severity..."
-oninput="searchTickets(this.value)"
+id="ticketSearch"
+placeholder="🔎 Search SMA..."
+oninput="renderTickets()"
 >
 
 </div>
@@ -924,17 +893,22 @@ oninput="searchTickets(this.value)"
 </section>
 
 
+<!-- ================= WORK ORDERS ================= -->
+
 <section id="workorders" class="page">
 
 <div class="card">
 
-<h2>🔧 Work Orders</h2>
+<h2>🔧 Work Order Management</h2>
 
-<br>
+<p style="margin:10px 0">
+Search and update operational work orders.
+</p>
 
 <input
-placeholder="🔎 Search work order, ticket, site, department..."
-oninput="searchWorkOrders(this.value)"
+id="workOrderSearch"
+placeholder="🔎 Search WO / SMA / site / department..."
+oninput="renderWorkOrders()"
 >
 
 </div>
@@ -946,71 +920,62 @@ oninput="searchWorkOrders(this.value)"
 </section>
 
 
+<!-- ================= EMAIL ================= -->
+
 <section id="emails" class="page">
 
 <div class="email-layout">
 
-<div class="email-list">
+<div>
 
-<h2>📧 NOC Mailbox</h2>
+<div class="email-panel">
 
-<p style="margin-top:8px;color:#987486">
-Shared NOC mailbox — not every email belongs to your incident.
+<h2>📧 Shared NOC Mailbox</h2>
+
+<p style="margin:8px 0;color:#987486">
+Emails are generated continuously from different departments.
 </p>
-
-<div class="email-toolbar">
 
 <input
 id="emailSearch"
-placeholder="🔎 Search mail..."
+placeholder="🔎 Search sender, subject, site, SMA, alarm..."
 oninput="renderEmails()"
 >
 
-</div>
+<div class="tabs">
 
-<div class="email-tabs">
-
-<button class="email-tab active"
-id="inboxTab"
-onclick="setEmailFolder('inbox')">
+<button class="tab active" id="inboxTab"
+onclick="setEmailFolder('inbox',this)">
 📥 Inbox
 </button>
 
-<button class="email-tab"
-id="favoriteTab"
-onclick="setEmailFolder('favorites')">
+<button class="tab" id="favTab"
+onclick="setEmailFolder('favorites',this)">
 ⭐ Favorites
 </button>
 
-<button class="email-tab"
-id="sentTab"
-onclick="setEmailFolder('sent')">
+<button class="tab" id="sentTab"
+onclick="setEmailFolder('sent',this)">
 📤 Sent
 </button>
 
 </div>
 
-<div id="emailList"></div>
+</div>
+
+<br>
+
+<div class="email-list" id="emailList"></div>
 
 </div>
 
 
-<div class="email-view" id="emailView">
+<div class="email-panel" id="emailView">
 
-<h2>📧 NOC Mail</h2>
+<h2>📧 Email Viewer</h2>
 
 <div class="email-body">
-
-Select an email to read it.
-
-<br><br>
-
-Remember:
-
-<strong>
-not every email is related to your current incident.
-</strong>
-
+Select an email from the mailbox.
 </div>
 
 </div>
@@ -1020,14 +985,296 @@ not every email is related to your current incident.
 </section>
 
 
+<!-- ================= TOPOLOGY ================= -->
+
+<section id="topology" class="page">
+
+<div class="card">
+
+<h2>🗺️ Network Topology</h2>
+
+<p style="margin-top:8px;line-height:1.6">
+Search the network and visually identify affected infrastructure.
+The topology changes color automatically when alarms affect equipment.
+</p>
+
+<div class="topology-search">
+
+<input
+id="topologySearch"
+placeholder="🔎 Search device, site, IP, department, service..."
+oninput="searchTopology(this.value)"
+>
+
+<button class="secondary"
+onclick="clearTopologySearch()">
+Clear
+</button>
+
+</div>
+
+<div id="topologyResults"></div>
+
+</div>
+
+<br>
+
+<div class="topology-container">
+
+<div class="topology">
+
+<!-- CONNECTIONS -->
+
+<div class="connection" id="c1"
+style="left:550px;top:115px;width:5px;height:120px"></div>
+
+<div class="connection" id="c2"
+style="left:550px;top:295px;width:5px;height:100px"></div>
+
+<div class="connection" id="c3"
+style="left:470px;top:330px;width:180px;transform:rotate(25deg)"></div>
+
+<div class="connection" id="c4"
+style="left:470px;top:330px;width:180px;transform:rotate(155deg)"></div>
+
+<div class="connection" id="c5"
+style="left:320px;top:455px;width:190px;transform:rotate(15deg)"></div>
+
+<div class="connection" id="c6"
+style="left:180px;top:550px;width:160px"></div>
+
+<div class="connection" id="c7"
+style="left:650px;top:455px;width:190px;transform:rotate(-15deg)"></div>
+
+<div class="connection" id="c8"
+style="left:780px;top:550px;width:160px"></div>
+
+<!-- INTERNET -->
+
+<div class="node normal"
+id="node-internet"
+style="left:472px;top:30px"
+onclick="inspectNode('internet')">
+
+<div class="icon">🌐</div>
+
+<strong>Internet</strong>
+
+<small>External Network</small>
+
+<div class="node-status">NORMAL</div>
+
+</div>
+
+
+<!-- CORE -->
+
+<div class="node normal"
+id="node-core"
+style="left:472px;top:225px"
+onclick="inspectNode('core')">
+
+<div class="icon">🖥️</div>
+
+<strong>IP Core</strong>
+
+<small>MCT-IP-CORE-01</small>
+
+<div class="node-status">NORMAL</div>
+
+</div>
+
+
+<!-- IP -->
+
+<div class="node normal"
+id="node-ip"
+style="left:390px;top:380px"
+onclick="inspectNode('ip')">
+
+<div class="icon">🌐</div>
+
+<strong>IP Router</strong>
+
+<small>MCT-IP-031</small>
+
+<div class="node-status">NORMAL</div>
+
+</div>
+
+
+<!-- TRANSMISSION -->
+
+<div class="node normal"
+id="node-trans"
+style="left:100px;top:380px"
+onclick="inspectNode('trans')">
+
+<div class="icon">📡</div>
+
+<strong>Transmission</strong>
+
+<small>MCT-TR-014</small>
+
+<div class="node-status">NORMAL</div>
+
+</div>
+
+
+<!-- RAN -->
+
+<div class="node normal"
+id="node-ran"
+style="left:700px;top:380px"
+onclick="inspectNode('ran')">
+
+<div class="icon">📱</div>
+
+<strong>RAN</strong>
+
+<small>MCT-RAN-207</small>
+
+<div class="node-status">NORMAL</div>
+
+</div>
+
+
+<!-- MICROWAVE -->
+
+<div class="node normal"
+id="node-micro"
+style="left:110px;top:520px"
+onclick="inspectNode('micro')">
+
+<div class="icon">📶</div>
+
+<strong>Microwave</strong>
+
+<small>SLL-MW-014</small>
+
+<div class="node-status">NORMAL</div>
+
+</div>
+
+
+<!-- REMOTE -->
+
+<div class="node normal"
+id="node-remote"
+style="left:15px;top:620px"
+onclick="inspectNode('remote')">
+
+<div class="icon">🏢</div>
+
+<strong>Remote Site</strong>
+
+<small>SLL-REMOTE-02</small>
+
+<div class="node-status">NORMAL</div>
+
+</div>
+
+
+<!-- FIXED -->
+
+<div class="node normal"
+id="node-fixed"
+style="left:350px;top:540px"
+onclick="inspectNode('fixed')">
+
+<div class="icon">🏢</div>
+
+<strong>Fixed Network</strong>
+
+<small>SLL-FIX-112</small>
+
+<div class="node-status">NORMAL</div>
+
+</div>
+
+
+<!-- CELL -->
+
+<div class="node normal"
+id="node-cell"
+style="left:760px;top:520px"
+onclick="inspectNode('cell')">
+
+<div class="icon">📱</div>
+
+<strong>Cell Site</strong>
+
+<small>MCT-CELL-207</small>
+
+<div class="node-status">NORMAL</div>
+
+</div>
+
+
+<!-- SOC -->
+
+<div class="node normal"
+id="node-soc"
+style="left:890px;top:620px"
+onclick="inspectNode('soc')">
+
+<div class="icon">🛡️</div>
+
+<strong>SOC</strong>
+
+<small>MCT-SOC-008</small>
+
+<div class="node-status">NORMAL</div>
+
+</div>
+
+</div>
+
+
+<div class="legend">
+
+<span>
+<i class="dot normal"></i>
+Normal
+</span>
+
+<span>
+<i class="dot warning"></i>
+Warning
+</span>
+
+<span>
+<i class="dot major"></i>
+Major
+</span>
+
+<span>
+<i class="dot critical"></i>
+Critical
+</span>
+
+<span>
+<i class="dot emergency"></i>
+Emergency / Down
+</span>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ================= TASKS ================= -->
+
 <section id="tasks" class="page">
 
 <div class="card">
 
 <h2>📋 My NOC Tasks</h2>
 
-<p style="margin-top:10px">
-Everything currently requiring your attention.
+<p style="margin-top:8px">
+Work that currently requires operator attention.
 </p>
 
 </div>
@@ -1039,18 +1286,78 @@ Everything currently requiring your attention.
 </section>
 
 
+<!-- ================= DEPARTMENTS ================= -->
+
+<section id="departments" class="page">
+
+<div class="card">
+
+<h2>🏢 NOC Departments</h2>
+
+<p style="margin-top:8px">
+Different teams work together through the NOC.
+</p>
+
+</div>
+
+<br>
+
+<div class="department-grid">
+
+<div class="department" onclick="departmentInfo('IP')">
+<h3>🌐 IP</h3>
+<p>Routing, interfaces, connectivity and IP Core.</p>
+</div>
+
+<div class="department" onclick="departmentInfo('Transmission')">
+<h3>📡 Transmission</h3>
+<p>Microwave, VSAT, fiber and transport.</p>
+</div>
+
+<div class="department" onclick="departmentInfo('RAN')">
+<h3>📱 RAN</h3>
+<p>Radio access network and mobile sites.</p>
+</div>
+
+<div class="department" onclick="departmentInfo('Fixed')">
+<h3>🏢 Fixed</h3>
+<p>Fixed access and service connectivity.</p>
+</div>
+
+<div class="department" onclick="departmentInfo('Service Desk')">
+<h3>🎧 Service Desk</h3>
+<p>Customer incidents and communication.</p>
+</div>
+
+<div class="department" onclick="departmentInfo('SOC')">
+<h3>🛡️ SOC</h3>
+<p>Security monitoring.</p>
+</div>
+
+<div class="department" onclick="departmentInfo('Agile Ops')">
+<h3>⚙️ Agile Ops</h3>
+<p>Alarm and operational monitoring.</p>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ================= GLOBAL SEARCH ================= -->
+
 <section id="search" class="page">
 
 <div class="card">
 
 <h2>🔎 Global NOC Search</h2>
 
-<p style="margin:10px 0 15px">
-Search across alarms, tickets, work orders, emails and network sites.
+<p style="margin:10px 0">
+Search everything: alarms, tickets, work orders, emails and network equipment.
 </p>
 
 <input
-id="searchPageInput"
+id="globalSearchPage"
 placeholder="Search anything..."
 oninput="globalSearch(this.value)"
 >
@@ -1061,10 +1368,10 @@ oninput="globalSearch(this.value)"
 
 <div class="card">
 
-<div id="searchResults">
+<div id="globalResults" class="search-results">
 
 <div class="empty">
-Start typing to search the NOC system.
+Start typing to search the NOC.
 </div>
 
 </div>
@@ -1074,221 +1381,7 @@ Start typing to search the NOC system.
 </section>
 
 
-<section id="topology" class="page">
-
-<div class="card">
-
-<h2>🗺️ Network Topology</h2>
-
-<p style="margin-top:10px;line-height:1.6">
-Use the topology to identify relationships and possible root causes.
-</p>
-
-</div>
-
-<br>
-
-<div class="topology-wrapper">
-
-<div class="topology">
-
-<div class="link" id="l1" style="left:505px;top:140px;width:90px;transform:rotate(90deg)"></div>
-<div class="link" id="l2" style="left:505px;top:290px;width:90px;transform:rotate(90deg)"></div>
-<div class="link" id="l3" style="left:430px;top:350px;width:160px;transform:rotate(-25deg)"></div>
-<div class="link" id="l4" style="left:580px;top:350px;width:160px;transform:rotate(25deg)"></div>
-<div class="link" id="l5" style="left:285px;top:440px;width:170px;transform:rotate(10deg)"></div>
-<div class="link" id="l6" style="left:180px;top:520px;width:130px"></div>
-<div class="link" id="l7" style="left:700px;top:440px;width:130px;transform:rotate(25deg)"></div>
-
-<div class="node" id="node-internet" style="left:430px;top:30px" onclick="inspectNode('internet')">
-<div class="icon">🌐</div>
-<strong>Internet</strong>
-<small>External Network</small>
-</div>
-
-<div class="node" id="node-core" style="left:430px;top:190px" onclick="inspectNode('core')">
-<div class="icon">🖥️</div>
-<strong>IP Core</strong>
-<small>MCT-IP-CORE-01</small>
-</div>
-
-<div class="node" id="node-ip" style="left:350px;top:350px" onclick="inspectNode('ip')">
-<div class="icon">🌐</div>
-<strong>IP Router</strong>
-<small>MCT-IP-031</small>
-</div>
-
-<div class="node" id="node-trans" style="left:150px;top:350px" onclick="inspectNode('trans')">
-<div class="icon">📡</div>
-<strong>Transmission</strong>
-<small>MCT-TR-014</small>
-</div>
-
-<div class="node" id="node-ran" style="left:650px;top:350px" onclick="inspectNode('ran')">
-<div class="icon">📱</div>
-<strong>RAN Site</strong>
-<small>MCT-RAN-207</small>
-</div>
-
-<div class="node" id="node-micro" style="left:170px;top:470px" onclick="inspectNode('micro')">
-<div class="icon">📶</div>
-<strong>Microwave</strong>
-<small>SLL-MW-014</small>
-</div>
-
-<div class="node" id="node-remote" style="left:20px;top:470px" onclick="inspectNode('remote')">
-<div class="icon">🏢</div>
-<strong>Remote Site</strong>
-<small>SLL-REMOTE-02</small>
-</div>
-
-<div class="node" id="node-cell" style="left:760px;top:470px" onclick="inspectNode('cell')">
-<div class="icon">📱</div>
-<strong>Cell Site</strong>
-<small>MCT-CELL-207</small>
-</div>
-
-</div>
-
-<div class="legend">
-
-<span><i class="dot red"></i> Emergency</span>
-<span><i class="dot darkred"></i> Critical</span>
-<span><i class="dot yellow"></i> Major</span>
-<span><i class="dot green"></i> Minor</span>
-<span><i class="dot gold"></i> Warning</span>
-
-</div>
-
-</div>
-
-</section>
-
-
-<section id="departments" class="page">
-
-<div class="card">
-
-<h2>🏢 NOC Departments</h2>
-
-<p style="margin-top:10px">
-Different departments communicate through the shared NOC environment.
-</p>
-
-</div>
-
-<br>
-
-<div class="departments">
-
-<div class="department" onclick="departmentInfo('IP')">
-<h3>🌐 IP</h3>
-<p>IP connectivity, routing, interfaces and topology.</p>
-</div>
-
-<div class="department" onclick="departmentInfo('Transmission')">
-<h3>📡 Transmission</h3>
-<p>Microwave, VSAT, fiber and transport infrastructure.</p>
-</div>
-
-<div class="department" onclick="departmentInfo('RAN')">
-<h3>📱 RAN</h3>
-<p>Radio access sites and mobile performance.</p>
-</div>
-
-<div class="department" onclick="departmentInfo('Fixed')">
-<h3>🏢 Fixed</h3>
-<p>Fixed network services and access connectivity.</p>
-</div>
-
-<div class="department" onclick="departmentInfo('Service Desk')">
-<h3>🎧 Service Desk</h3>
-<p>Customer incidents and communication.</p>
-</div>
-
-<div class="department" onclick="departmentInfo('SOC')">
-<h3>🛡️ SOC</h3>
-<p>Security monitoring and security events.</p>
-</div>
-
-<div class="department" onclick="departmentInfo('Agile Ops')">
-<h3>⚙️ Agile Ops</h3>
-<p>Alarm monitoring and operational workflow.</p>
-</div>
-
-</div>
-
-</section>
-
-
-<section id="scenarios" class="page">
-
-<div class="card">
-
-<h2>🎯 Training Scenarios</h2>
-
-<p style="margin:10px 0 18px">
-Practice realistic NOC decision-making.
-</p>
-
-<button class="primary" onclick="startScenario()">
-Start Scenario
-</button>
-
-</div>
-
-<br>
-
-<div class="card">
-
-<h3>Standard Workflow</h3>
-
-<p style="margin-top:12px;line-height:2">
-🚨 Alarm →
-👀 Monitor →
-✅ Acknowledge →
-🔎 Investigate →
-🎫 SMA →
-🔧 Work Order →
-🗺️ Topology →
-📧 Communicate →
-🚨 Escalate →
-✅ Resolve
-</p>
-
-</div>
-
-</section>
-
-
-<section id="kpi" class="page">
-
-<div class="cards">
-
-<div class="card">
-<h3>Network Availability</h3>
-<div class="big-number">99.2%</div>
-</div>
-
-<div class="card">
-<h3>SLA Compliance</h3>
-<div class="big-number">96%</div>
-</div>
-
-<div class="card">
-<h3>Average Response</h3>
-<div class="big-number">8 min</div>
-</div>
-
-<div class="card">
-<h3>Open Tickets</h3>
-<div class="big-number" id="kpiTickets">0</div>
-</div>
-
-</div>
-
-</section>
-
+<!-- ================= LOG ================= -->
 
 <section id="log" class="page">
 
@@ -1304,8 +1397,11 @@ Start Scenario
 
 </section>
 
+
 </div>
 
+
+<!-- ================= MODAL ================= -->
 
 <div class="modal" id="modal">
 
@@ -1322,118 +1418,228 @@ Start Scenario
 
 <script>
 
-/* ==============================
-GLOBAL DATA
-============================== */
+/* =====================================================
+DATA
+===================================================== */
 
 let alarms=[];
 let tickets=[];
 let workOrders=[];
-
 let inboxEmails=[];
 let sentEmails=[];
 
+let alarmNumber=1000;
+let ticketNumber=48000;
+let workOrderNumber=10000;
+
 let score=100;
-let progress=0;
-
-let alarmCounter=1000;
-let ticketCounter=48000;
-let workOrderCounter=10000;
-
 let alarmView="active";
 let emailFolder="inbox";
 
 
-/* ==============================
+/* =====================================================
+TOPOLOGY DATABASE
+===================================================== */
+
+const topologyData={
+
+internet:{
+name:"Internet",
+type:"External Network",
+department:"External",
+ip:"Public Network",
+services:["Internet Connectivity"],
+connections:["IP Core"],
+node:"internet"
+},
+
+core:{
+name:"IP Core",
+type:"Core Router",
+department:"IP",
+ip:"10.10.0.1",
+services:["Core Routing","Internet","Enterprise Connectivity"],
+connections:["Internet","IP Router","Transmission","RAN"],
+node:"core"
+},
+
+ip:{
+name:"MCT-IP-031",
+type:"IP Router",
+department:"IP",
+ip:"10.10.31.1",
+services:["IP Connectivity","Enterprise Traffic"],
+connections:["IP Core","Fixed Network"],
+node:"ip"
+},
+
+trans:{
+name:"MCT-TR-014",
+type:"Transmission Node",
+department:"Transmission",
+ip:"10.20.14.1",
+services:["Transport","Microwave"],
+connections:["IP Core","Microwave"],
+node:"trans"
+},
+
+micro:{
+name:"SLL-MW-014",
+type:"Microwave Link",
+department:"Transmission",
+ip:"10.30.14.1",
+services:["Microwave Transport"],
+connections:["Transmission","Remote Site"],
+node:"micro"
+},
+
+remote:{
+name:"SLL-REMOTE-02",
+type:"Remote Site",
+department:"Fixed",
+ip:"10.40.2.1",
+services:["Fixed Access"],
+connections:["Microwave"],
+node:"remote"
+},
+
+fixed:{
+name:"SLL-FIX-112",
+type:"Fixed Network",
+department:"Fixed",
+ip:"10.50.112.1",
+services:["Fixed Broadband","Enterprise"],
+connections:["IP Router"],
+node:"fixed"
+},
+
+ran:{
+name:"MCT-RAN-207",
+type:"RAN Controller",
+department:"RAN",
+ip:"10.60.207.1",
+services:["Mobile Access","4G","5G"],
+connections:["IP Core","Cell Site"],
+node:"ran"
+},
+
+cell:{
+name:"MCT-CELL-207",
+type:"Cell Site",
+department:"RAN",
+ip:"10.70.207.1",
+services:["4G","5G","Voice"],
+connections:["RAN"],
+node:"cell"
+},
+
+soc:{
+name:"MCT-SOC-008",
+type:"Security Monitoring",
+department:"SOC",
+ip:"10.80.8.1",
+services:["Security Monitoring"],
+connections:["IP Core"],
+node:"soc"
+}
+
+};
+
+
+/* =====================================================
 CLOCK
-============================== */
+===================================================== */
 
 function updateClock(){
-document.getElementById("clock").textContent=
+
+document.getElementById("clock")
+.textContent=
 new Date().toLocaleTimeString();
+
 }
 
 setInterval(updateClock,1000);
 updateClock();
 
 
-/* ==============================
+/* =====================================================
 NAVIGATION
-============================== */
+===================================================== */
 
 function showPage(id,button){
 
-document.querySelectorAll(".page")
+document
+.querySelectorAll(".page")
 .forEach(p=>p.classList.remove("active"));
 
-document.getElementById(id).classList.add("active");
+document
+.getElementById(id)
+.classList.add("active");
 
-document.querySelectorAll(".nav-btn")
+document
+.querySelectorAll(".nav-btn")
 .forEach(b=>b.classList.remove("active"));
 
-if(button){
+if(button)
 button.classList.add("active");
-}
 
 }
 
+function showPageByName(name){
 
-function showPageById(id){
+const map={
+dashboard:"dashboard",
+alarms:"alarms",
+tickets:"tickets",
+workorders:"workorders",
+emails:"emails",
+topology:"topology",
+tasks:"tasks",
+departments:"departments",
+search:"search",
+log:"log"
+};
 
-const pageIds=[
-"dashboard",
-"alarms",
-"tickets",
-"workorders",
-"emails",
-"tasks",
-"search",
-"topology",
-"departments",
-"scenarios",
-"kpi",
-"log"
-];
-
-const buttons=document.querySelectorAll(".nav-btn");
-
-const index=pageIds.indexOf(id);
-
-showPage(
-id,
-index>=0 ? buttons[index] : null
-);
+showPage(map[name]||name);
 
 }
 
 
-/* ==============================
-ACTIVITY LOG
-============================== */
+/* =====================================================
+LOGGING
+===================================================== */
 
 function addLog(message){
 
-const div=document.createElement("div");
+const log=
+document.createElement("div");
 
-div.className="log";
+log.className="log";
 
-div.innerHTML=`
-<small>${new Date().toLocaleTimeString()}</small>
+log.innerHTML=`
+
+<small>
+${new Date().toLocaleTimeString()}
+</small>
+
 <br>
+
 ${message}
+
 `;
 
-document.getElementById("activityLog")
-.prepend(div);
+document
+.getElementById("activityLog")
+.prepend(log);
 
 }
 
 
-/* ==============================
-SEVERITY SYSTEM
-============================== */
+/* =====================================================
+SEVERITY
+===================================================== */
 
-const severities=[
+const severityList=[
 "Emergency",
 "Critical",
 "Major",
@@ -1442,28 +1648,28 @@ const severities=[
 ];
 
 
-/* ==============================
+/* =====================================================
 ALARM TYPES
-============================== */
+===================================================== */
 
-const possibleAlarms=[
+const alarmTypes=[
 
 {
-type:"IP Core Interface Down",
+type:"IP Core Down",
 department:"IP",
-site:"MCT-IP-031",
+site:"MCT-IP-CORE-01",
 severity:"Emergency",
-sla:15,
-node:"ip"
+node:"core",
+sla:15
 },
 
 {
-type:"Core Routing Failure",
+type:"IP Router Failure",
 department:"IP",
-site:"MCT-IP-CORE-01",
+site:"MCT-IP-031",
 severity:"Critical",
-sla:20,
-node:"core"
+node:"ip",
+sla:20
 },
 
 {
@@ -1471,17 +1677,17 @@ type:"Microwave Link Down",
 department:"Transmission",
 site:"SLL-MW-014",
 severity:"Emergency",
-sla:15,
-node:"micro"
+node:"micro",
+sla:15
 },
 
 {
-type:"Transmission Link Degradation",
+type:"Transmission Degradation",
 department:"Transmission",
 site:"MCT-TR-014",
 severity:"Major",
-sla:30,
-node:"trans"
+node:"trans",
+sla:30
 },
 
 {
@@ -1489,17 +1695,17 @@ type:"RAN Service Degradation",
 department:"RAN",
 site:"MCT-RAN-207",
 severity:"Major",
-sla:30,
-node:"ran"
+node:"ran",
+sla:30
 },
 
 {
-type:"RAN KPI Warning",
+type:"Cell Site Critical",
 department:"RAN",
-site:"MCT-RAN-221",
-severity:"Warning",
-sla:60,
-node:"ran"
+site:"MCT-CELL-207",
+severity:"Critical",
+node:"cell",
+sla:20
 },
 
 {
@@ -1507,118 +1713,135 @@ type:"Fixed Service Failure",
 department:"Fixed",
 site:"SLL-FIX-112",
 severity:"Critical",
-sla:20,
-node:"remote"
+node:"fixed",
+sla:20
 },
 
 {
 type:"Fixed Service Warning",
 department:"Fixed",
-site:"SLL-FIX-122",
+site:"SLL-FIX-112",
 severity:"Warning",
-sla:60,
-node:"remote"
+node:"fixed",
+sla:60
 },
 
 {
-type:"Minor Interface Alert",
-department:"IP",
-site:"MCT-IP-044",
-severity:"Minor",
-sla:60,
-node:"ip"
-},
-
-{
-type:"SOC Security Event",
+type:"SOC Security Alert",
 department:"SOC",
 site:"MCT-SOC-008",
 severity:"Critical",
-sla:20,
-node:"core"
+node:"soc",
+sla:20
 },
 
 {
-type:"Service Desk Customer Impact",
-department:"Service Desk",
-site:"MCT-CUST-109",
-severity:"Major",
-sla:30,
-node:"core"
+type:"IP Interface Warning",
+department:"IP",
+site:"MCT-IP-031",
+severity:"Warning",
+node:"ip",
+sla:60
+},
+
+{
+type:"Minor Network Degradation",
+department:"Transmission",
+site:"MCT-TR-014",
+severity:"Minor",
+node:"trans",
+sla:60
 }
 
 ];
 
 
-/* ==============================
+/* =====================================================
 GENERATE ALARM
-============================== */
+===================================================== */
 
 function generateAlarm(){
 
-const selected=
-possibleAlarms[
-Math.floor(Math.random()*possibleAlarms.length)
+const a=
+alarmTypes[
+Math.floor(
+Math.random()*alarmTypes.length
+)
 ];
 
 const alarm={
 
-id:++alarmCounter,
+id:++alarmNumber,
 
-type:selected.type,
+type:a.type,
 
-department:selected.department,
+department:a.department,
 
-site:selected.site,
+site:a.site,
 
-severity:selected.severity,
+severity:a.severity,
 
-sla:selected.sla,
+node:a.node,
 
-remaining:selected.sla*60,
+sla:a.sla,
 
-node:selected.node,
+remaining:a.sla*60,
 
 acknowledged:false,
 
-acknowledgedAt:null,
+created:new Date(),
 
-createdAt:new Date()
+ticketId:null,
+
+workOrderId:null
 
 };
 
 alarms.push(alarm);
 
-createTicket(alarm);
 
-createAlarmEmail(alarm);
+/* AUTO TICKET */
 
-highlightTopology(
-alarm.node,
-alarm.severity
-);
+const ticket=createTicket(alarm);
+
+
+/* AUTO WORK ORDER */
+
+const wo=createWorkOrder(ticket);
+
+alarm.ticketId=ticket.id;
+alarm.workOrderId=wo.id;
+
+
+/* EMAIL */
+
+createAlarmEmail(alarm,ticket,wo);
+
+
+/* UPDATE TOPOLOGY */
+
+updateTopologyStates();
+
 
 addLog(
-`🚨 <strong>${alarm.severity}</strong> alarm generated:
+`🚨 <strong>${alarm.severity}</strong> alarm:
 ${alarm.type} at ${alarm.site}.`
 );
 
 renderAll();
 
-showPageById("alarms");
-
 }
 
 
-/* ==============================
-TICKETS
-============================== */
+/* =====================================================
+TICKET
+===================================================== */
 
 function createTicket(alarm){
 
 const ticket={
 
-id:"SMA-"+(++ticketCounter),
+id:"SMA-"+(++ticketNumber),
 
 alarmId:"AL-"+alarm.id,
 
@@ -1632,38 +1855,38 @@ severity:alarm.severity,
 
 status:"New",
 
-created:new Date().toLocaleTimeString(),
+notes:"",
 
-notes:""
+created:new Date().toLocaleTimeString()
 
 };
 
 tickets.push(ticket);
 
-createWorkOrder(ticket);
-
 addLog(
-`🎫 <strong>${ticket.id}</strong> automatically created.`
+`🎫 Ticket <strong>${ticket.id}</strong> automatically created.`
 );
+
+return ticket;
 
 }
 
 
-/* ==============================
-WORK ORDERS
-============================== */
+/* =====================================================
+WORK ORDER
+===================================================== */
 
 function createWorkOrder(ticket){
 
 const wo={
 
-id:"WO-"+(++workOrderCounter),
+id:"WO-"+(++workOrderNumber),
 
 ticketId:ticket.id,
 
-department:ticket.department,
-
 site:ticket.site,
+
+department:ticket.department,
 
 severity:ticket.severity,
 
@@ -1678,273 +1901,23 @@ status:"Pending"
 workOrders.push(wo);
 
 addLog(
-`🔧 <strong>${wo.id}</strong> automatically created.`
+`🔧 Work Order <strong>${wo.id}</strong> automatically created.`
 );
 
-}
-
-
-/* ==============================
-EMAIL SYSTEM
-============================== */
-
-/*
-IMPORTANT:
-
-The mailbox receives:
-1. Alarm emails
-2. Department emails
-3. Customer/service emails
-4. Status/update emails
-5. Unrelated NOC emails
-
-New shared-mailbox traffic is generated
-automatically every 5 MINUTES.
-*/
-
-
-const departmentEmails=[
-
-{
-from:"IP Operations",
-subject:"IP Core Maintenance Update",
-body:"Please be advised that routine IP Core maintenance activities are scheduled. Monitor the network during the maintenance window."
-},
-
-{
-from:"Transmission Team",
-subject:"Microwave Link Performance Report",
-body:"The Transmission team has shared the latest microwave performance information. Please monitor degraded links."
-},
-
-{
-from:"RAN Operations",
-subject:"RAN KPI Review",
-body:"RAN KPI performance is being reviewed. Any abnormal sites should be correlated with current alarms."
-},
-
-{
-from:"Fixed Operations",
-subject:"Fixed Network Service Update",
-body:"Fixed services are currently under routine monitoring. Please report any abnormal service behaviour."
-},
-
-{
-from:"Service Desk",
-subject:"Customer Incident Follow-up",
-body:"The Service Desk is requesting an update on a customer-impacting network event."
-},
-
-{
-from:"SOC",
-subject:"Security Monitoring Notice",
-body:"SOC has issued a monitoring notice. Please remain alert for related security events."
-},
-
-{
-from:"Agile Ops",
-subject:"NOC Monitoring Update",
-body:"Agile Ops has updated monitoring parameters. Continue monitoring current events and correlated alarms."
-},
-
-{
-from:"Network Planning",
-subject:"Planned Network Activity",
-body:"Network Planning has circulated information regarding upcoming network activity."
-}
-
-];
-
-
-/* INITIAL EMAILS */
-
-function seedEmails(){
-
-const starterEmails=[
-
-{
-from:"IP Operations",
-subject:"Daily IP Network Status",
-body:"Good morning. The IP network is currently under normal monitoring. Please report any abnormal alarms."
-},
-
-{
-from:"Transmission Team",
-subject:"Daily Transmission Status",
-body:"Transmission links are currently being monitored. Any degradation should be correlated with affected services."
-},
-
-{
-from:"RAN Operations",
-subject:"RAN Morning Report",
-body:"RAN operations has circulated the morning performance report. Please review any sites showing abnormal KPIs."
-},
-
-{
-from:"Service Desk",
-subject:"Customer Service Update",
-body:"The Service Desk has several ongoing customer cases. Please check the NOC monitoring system for network-related incidents."
-},
-
-{
-from:"SOC",
-subject:"Security Monitoring Summary",
-body:"SOC monitoring is active. Any security-related event should be acknowledged and investigated according to procedure."
-},
-
-{
-from:"Agile Ops",
-subject:"NOC Operations Brief",
-body:"Please continue monitoring alarms, incidents, work orders and service-impacting events."
-},
-
-{
-from:"Network Planning",
-subject:"Planned Activity Notice",
-body:"A planned network activity notice has been circulated for operational awareness."
-},
-
-{
-from:"Fixed Operations",
-subject:"Fixed Service Monitoring",
-body:"Fixed services are currently under routine monitoring."
-}
-
-];
-
-
-starterEmails.forEach((e,index)=>{
-
-inboxEmails.push({
-
-id:"SEED-"+index,
-
-type:"inbox",
-
-unread:index<4,
-
-favorite:false,
-
-from:e.from,
-
-to:"NOC Operator",
-
-subject:e.subject,
-
-time:new Date(
-Date.now()-(index*7*60000)
-).toLocaleTimeString(),
-
-body:e.body,
-
-threadId:"THREAD-"+index
-
-});
-
-});
+return wo;
 
 }
 
 
-seedEmails();
-
-
-/* ==============================
-AUTOMATIC EMAIL GENERATION
-============================== */
-
-/*
-Every five minutes.
-
-This is REAL five-minute timing,
-not five seconds.
-*/
-
-setInterval(
-generateNOCEmail,
-5*60*1000
-);
-
-
-/*
-Generate shared NOC traffic.
-*/
-
-function generateNOCEmail(){
-
-const e=
-departmentEmails[
-Math.floor(
-Math.random()*departmentEmails.length
-)
-];
-
-const threadId=
-"THREAD-"+Math.floor(Math.random()*5);
-
-
-const email={
-
-id:"AUTO-"+Date.now(),
-
-type:"inbox",
-
-unread:true,
-
-favorite:false,
-
-from:e.from,
-
-to:"NOC Operator",
-
-subject:e.subject,
-
-time:new Date().toLocaleTimeString(),
-
-body:e.body,
-
-threadId:threadId
-
-};
-
-inboxEmails.unshift(email);
-
-addLog(
-`📧 New shared NOC email received from
-<strong>${e.from}</strong>.`
-);
-
-renderAll();
-
-}
-
-
-/* ==============================
+/* =====================================================
 ALARM EMAIL
-============================== */
+===================================================== */
 
-function createAlarmEmail(alarm){
+function createAlarmEmail(alarm,ticket,wo){
 
-const ticket=
-tickets.find(
-t=>t.alarmId==="AL-"+alarm.id
-);
+inboxEmails.unshift({
 
-const wo=
-workOrders.find(
-w=>w.ticketId===ticket.id
-);
-
-
-const email={
-
-id:"ALARM-EMAIL-"+alarm.id,
-
-type:"inbox",
-
-unread:true,
-
-favorite:false,
+id:"EMAIL-"+Date.now(),
 
 from:"NOC Monitoring",
 
@@ -1953,108 +1926,893 @@ to:"NOC Operator",
 subject:
 `[${alarm.severity}] ${alarm.type} — AL-${alarm.id}`,
 
-time:new Date().toLocaleTimeString(),
-
-threadId:"ALARM-THREAD-"+alarm.id,
-
 body:`
 
-<strong>Automated NOC Notification</strong>
+<strong>Automated Network Alarm</strong>
 
 <br><br>
 
-A network event has been detected.
+Alarm:
+<strong>AL-${alarm.id}</strong>
+
+<br>
+
+Severity:
+<strong>${alarm.severity}</strong>
+
+<br>
+
+Site:
+<strong>${alarm.site}</strong>
+
+<br>
+
+Department:
+<strong>${alarm.department}</strong>
+
+<br>
+
+SMA:
+<strong>${ticket.id}</strong>
+
+<br>
+
+Work Order:
+<strong>${wo.id}</strong>
 
 <br><br>
 
-<strong>Alarm:</strong>
-AL-${alarm.id}
+The alarm requires operator attention.
 
-<br>
+Please acknowledge the alarm and investigate the
+affected network element.
 
-<strong>Severity:</strong>
-${alarm.severity}
+`,
 
-<br>
+time:new Date().toLocaleTimeString(),
 
-<strong>Department:</strong>
-${alarm.department}
+unread:true,
 
-<br>
+favorite:false,
 
-<strong>Site:</strong>
-${alarm.site}
+threadId:"ALARM-"+alarm.id
 
-<br>
-
-<strong>SLA:</strong>
-${alarm.sla} minutes
-
-<br>
-
-<strong>SMA:</strong>
-${ticket.id}
-
-<br>
-
-<strong>Work Order:</strong>
-${wo.id}
-
-<br><br>
-
-<strong>Required Action:</strong>
-
-<br>
-
-Please acknowledge the alarm, investigate the affected service,
-and update the incident.
-
-`
-
-};
-
-inboxEmails.unshift(email);
+});
 
 }
 
 
-/* ==============================
-EMAIL FOLDERS
-============================== */
+/* =====================================================
+SHARED NOC EMAILS
+===================================================== */
 
-function setEmailFolder(folder){
+const sharedEmails=[
+
+["IP Operations","IP Core Daily Status",
+"IP Core monitoring is active. Please review any abnormal interfaces and correlated alarms."],
+
+["Transmission","Microwave Performance",
+"Transmission is monitoring microwave links. Degraded links should be correlated with affected services."],
+
+["RAN Operations","RAN KPI Report",
+"RAN has circulated the latest KPI information. Abnormal sites should be investigated."],
+
+["Fixed Operations","Fixed Network Status",
+"Fixed network services are under monitoring. Please report any customer-impacting issues."],
+
+["Service Desk","Customer Incident",
+"Service Desk is requesting a network status update for a customer-related case."],
+
+["SOC","Security Monitoring Notice",
+"SOC has issued a monitoring notice. Review any related security alarms."],
+
+["Agile Ops","Alarm Monitoring Update",
+"Agile Ops has updated monitoring information. Continue watching active events."],
+
+["Network Planning","Planned Network Activity",
+"Network Planning has circulated information regarding planned network activities."]
+
+];
+
+
+function generateNOCEmail(){
+
+const e=
+sharedEmails[
+Math.floor(Math.random()*sharedEmails.length)
+];
+
+inboxEmails.unshift({
+
+id:"SHARED-"+Date.now(),
+
+from:e[0],
+
+to:"NOC Operator",
+
+subject:e[1],
+
+body:e[2],
+
+time:new Date().toLocaleTimeString(),
+
+unread:true,
+
+favorite:false,
+
+threadId:"SHARED-"+Math.floor(Math.random()*5)
+
+});
+
+addLog(
+`📧 New email received from <strong>${e[0]}</strong>.`
+);
+
+renderAll();
+
+}
+
+
+/* =====================================================
+EMAIL EVERY 5 MINUTES
+===================================================== */
+
+setInterval(
+generateNOCEmail,
+300000
+);
+
+
+/* =====================================================
+SEED EMAILS
+===================================================== */
+
+[
+["IP Operations","Morning IP Report"],
+["Transmission","Transmission Morning Report"],
+["RAN Operations","RAN Daily Status"],
+["Fixed Operations","Fixed Network Update"],
+["Service Desk","Customer Case Update"],
+["SOC","SOC Monitoring Summary"],
+["Agile Ops","NOC Operations Brief"],
+["Network Planning","Planned Activity Notice"]
+].forEach((x,i)=>{
+
+inboxEmails.push({
+
+id:"START-"+i,
+
+from:x[0],
+
+to:"NOC Operator",
+
+subject:x[1],
+
+body:
+`This is the ${x[1]}. The department is currently monitoring network activity and will communicate any significant events.`,
+
+time:
+new Date(
+Date.now()-i*600000
+).toLocaleTimeString(),
+
+unread:i<4,
+
+favorite:false,
+
+threadId:"START-THREAD-"+i
+
+});
+
+});
+
+
+/* =====================================================
+ALARM TIMER
+===================================================== */
+
+setInterval(()=>{
+
+alarms.forEach(a=>{
+
+if(!a.acknowledged && a.remaining>0){
+
+a.remaining--;
+
+}
+
+});
+
+renderAlarms();
+
+},1000);
+
+
+/* =====================================================
+ALARM SEARCH
+===================================================== */
+
+let alarmView="active";
+
+function setAlarmView(view,button){
+
+alarmView=view;
+
+document
+.querySelectorAll("#alarms .tab")
+.forEach(b=>b.classList.remove("active"));
+
+button.classList.add("active");
+
+renderAlarms();
+
+}
+
+
+function renderAlarms(){
+
+const container=
+document.getElementById("alarmContainer");
+
+container.innerHTML="";
+
+const query=
+(
+document.getElementById("alarmSearch")?.value
+||""
+).toLowerCase();
+
+
+let list=alarms.filter(a=>{
+
+const ticket=
+tickets.find(
+t=>t.id===a.ticketId
+);
+
+const wo=
+workOrders.find(
+w=>w.id===a.workOrderId
+);
+
+const searchable=`
+
+AL-${a.id}
+${a.type}
+${a.site}
+${a.department}
+${a.severity}
+${a.ticketId}
+${a.workOrderId}
+${ticket?.status||""}
+${wo?.status||""}
+
+`.toLowerCase();
+
+return searchable.includes(query);
+
+});
+
+
+if(alarmView==="active")
+list=list.filter(a=>!a.acknowledged);
+
+if(alarmView==="ack")
+list=list.filter(a=>a.acknowledged);
+
+
+if(!list.length){
+
+container.innerHTML=
+`<div class="empty">🌸 No alarms found.</div>`;
+
+return;
+
+}
+
+
+list.slice().reverse().forEach(a=>{
+
+const ticket=
+tickets.find(
+t=>t.id===a.ticketId
+);
+
+const wo=
+workOrders.find(
+w=>w.id===a.workOrderId
+);
+
+const severityClass=
+a.severity.toLowerCase();
+
+
+const div=
+document.createElement("div");
+
+div.className=
+`alarm ${severityClass}`;
+
+div.innerHTML=`
+
+<div class="alarm-head">
+
+<strong>
+🚨 ${a.type}
+</strong>
+
+<span class="priority ${severityClass}">
+${a.severity}
+</span>
+
+</div>
+
+
+<div class="info-grid">
+
+<div class="info">
+<small>Alarm</small>
+AL-${a.id}
+</div>
+
+<div class="info">
+<small>SMA</small>
+${a.ticketId}
+</div>
+
+<div class="info">
+<small>Work Order</small>
+${a.workOrderId}
+</div>
+
+<div class="info">
+<small>Site</small>
+${a.site}
+</div>
+
+<div class="info">
+<small>Department</small>
+${a.department}
+</div>
+
+<div class="info">
+<small>Status</small>
+${a.acknowledged?"Acknowledged":"Active"}
+</div>
+
+</div>
+
+
+<div class="timer">
+
+${a.acknowledged
+?
+"⏸ SLA stopped at "+formatTime(a.remaining)
+:
+"⏱ SLA remaining: "+formatTime(a.remaining)
+}
+
+</div>
+
+<br>
+
+${
+a.acknowledged
+
+?
+
+`<button
+class="secondary"
+onclick="reopenAlarm(${a.id})">
+↩ Reopen
+</button>`
+
+:
+
+`<button
+class="primary"
+onclick="ackAlarm(${a.id})">
+✓ Acknowledge
+</button>`
+
+}
+
+<button
+class="secondary"
+style="margin-left:6px"
+onclick="inspectNode('${a.node}')">
+🗺️ Investigate
+</button>
+
+<button
+class="secondary"
+style="margin-left:6px"
+onclick="editTicket('${a.ticketId}')">
+🎫 Open SMA
+</button>
+
+<button
+class="secondary"
+style="margin-left:6px"
+onclick="editWorkOrder('${a.workOrderId}')">
+🔧 Work Order
+</button>
+
+`;
+
+container.appendChild(div);
+
+});
+
+}
+
+
+function formatTime(seconds){
+
+const minutes=
+Math.floor(seconds/60);
+
+const secs=
+seconds%60;
+
+return `${minutes}:${String(secs).padStart(2,"0")}`;
+
+}
+
+
+/* =====================================================
+ACKNOWLEDGE
+===================================================== */
+
+function ackAlarm(id){
+
+const alarm=
+alarms.find(a=>a.id===id);
+
+if(!alarm)return;
+
+alarm.acknowledged=true;
+
+const ticket=
+tickets.find(
+t=>t.id===alarm.ticketId
+);
+
+if(ticket)
+ticket.status="Investigating";
+
+score+=5;
+
+addLog(
+`✅ AL-${id} acknowledged. SLA timer stopped.`
+);
+
+updateTopologyStates();
+
+renderAll();
+
+}
+
+
+function reopenAlarm(id){
+
+const alarm=
+alarms.find(a=>a.id===id);
+
+if(!alarm)return;
+
+alarm.acknowledged=false;
+
+addLog(
+`🔄 AL-${id} reopened.`
+);
+
+updateTopologyStates();
+
+renderAll();
+
+}
+
+
+/* =====================================================
+TICKETS
+===================================================== */
+
+function renderTickets(){
+
+const container=
+document.getElementById("ticketContainer");
+
+container.innerHTML="";
+
+const query=
+(
+document.getElementById("ticketSearch")?.value
+||""
+).toLowerCase();
+
+
+const list=tickets.filter(t=>
+
+`
+
+${t.id}
+${t.alarmId}
+${t.type}
+${t.site}
+${t.department}
+${t.severity}
+${t.status}
+${t.notes}
+
+`.toLowerCase().includes(query)
+
+);
+
+
+if(!list.length){
+
+container.innerHTML=
+`<div class="empty">No tickets found.</div>`;
+
+return;
+
+}
+
+
+list.slice().reverse().forEach(t=>{
+
+const div=
+document.createElement("div");
+
+div.className="ticket";
+
+div.innerHTML=`
+
+<h3>🎫 ${t.id}</h3>
+
+<div class="info-grid">
+
+<div class="info">
+<small>Alarm</small>
+${t.alarmId}
+</div>
+
+<div class="info">
+<small>Incident</small>
+${t.type}
+</div>
+
+<div class="info">
+<small>Severity</small>
+${t.severity}
+</div>
+
+<div class="info">
+<small>Site</small>
+${t.site}
+</div>
+
+<div class="info">
+<small>Department</small>
+${t.department}
+</div>
+
+<div class="info">
+<small>Status</small>
+${t.status}
+</div>
+
+</div>
+
+<p>
+${t.notes||"No investigation notes yet."}
+</p>
+
+<br>
+
+<button
+class="primary"
+onclick="editTicket('${t.id}')">
+Open / Update
+</button>
+
+`;
+
+container.appendChild(div);
+
+});
+
+}
+
+
+/* =====================================================
+EDIT TICKET
+===================================================== */
+
+function editTicket(id){
+
+const t=
+tickets.find(x=>x.id===id);
+
+if(!t)return;
+
+openModal(`
+
+<h2>🎫 ${t.id}</h2>
+
+<p>${t.type}</p>
+
+<br>
+
+<label>Status</label>
+
+<br><br>
+
+<select id="editTicketStatus">
+
+<option ${t.status==="New"?"selected":""}>
+New
+</option>
+
+<option ${t.status==="Investigating"?"selected":""}>
+Investigating
+</option>
+
+<option ${t.status==="Escalated"?"selected":""}>
+Escalated
+</option>
+
+<option ${t.status==="Resolved"?"selected":""}>
+Resolved
+</option>
+
+<option ${t.status==="Closed"?"selected":""}>
+Closed
+</option>
+
+</select>
+
+<br><br>
+
+<label>Investigation Notes</label>
+
+<br><br>
+
+<textarea id="editTicketNotes">
+${t.notes}
+</textarea>
+
+<br><br>
+
+<button
+class="primary"
+onclick="saveTicket('${id}')">
+Save Ticket
+</button>
+
+`);
+
+}
+
+
+function saveTicket(id){
+
+const t=
+tickets.find(x=>x.id===id);
+
+t.status=
+document.getElementById("editTicketStatus").value;
+
+t.notes=
+document.getElementById("editTicketNotes").value;
+
+score+=5;
+
+addLog(
+`📝 ${t.id} updated to ${t.status}.`
+);
+
+closeModal();
+
+renderAll();
+
+}
+
+
+/* =====================================================
+WORK ORDERS
+===================================================== */
+
+function renderWorkOrders(){
+
+const container=
+document.getElementById("workOrderContainer");
+
+container.innerHTML="";
+
+const query=
+(
+document.getElementById("workOrderSearch")?.value
+||""
+).toLowerCase();
+
+
+const list=
+workOrders.filter(w=>
+
+`
+
+${w.id}
+${w.ticketId}
+${w.site}
+${w.department}
+${w.severity}
+${w.status}
+${w.task}
+
+`.toLowerCase().includes(query)
+
+);
+
+
+if(!list.length){
+
+container.innerHTML=
+`<div class="empty">No work orders found.</div>`;
+
+return;
+
+}
+
+
+list.slice().reverse().forEach(w=>{
+
+const div=
+document.createElement("div");
+
+div.className="workorder";
+
+div.innerHTML=`
+
+<h3>🔧 ${w.id}</h3>
+
+<div class="info-grid">
+
+<div class="info">
+<small>SMA</small>
+${w.ticketId}
+</div>
+
+<div class="info">
+<small>Task</small>
+${w.task}
+</div>
+
+<div class="info">
+<small>Site</small>
+${w.site}
+</div>
+
+<div class="info">
+<small>Department</small>
+${w.department}
+</div>
+
+<div class="info">
+<small>Assigned</small>
+${w.assigned}
+</div>
+
+<div class="info">
+<small>Status</small>
+${w.status}
+</div>
+
+</div>
+
+<button
+class="primary"
+onclick="editWorkOrder('${w.id}')">
+Update Work Order
+</button>
+
+`;
+
+container.appendChild(div);
+
+});
+
+}
+
+
+function editWorkOrder(id){
+
+const w=
+workOrders.find(x=>x.id===id);
+
+if(!w)return;
+
+openModal(`
+
+<h2>🔧 ${w.id}</h2>
+
+<p>${w.task}</p>
+
+<br>
+
+<select id="editWOStatus">
+
+<option ${w.status==="Pending"?"selected":""}>
+Pending
+</option>
+
+<option ${w.status==="Assigned"?"selected":""}>
+Assigned
+</option>
+
+<option ${w.status==="In Progress"?"selected":""}>
+In Progress
+</option>
+
+<option ${w.status==="Completed"?"selected":""}>
+Completed
+</option>
+
+</select>
+
+<br><br>
+
+<button
+class="primary"
+onclick="saveWorkOrder('${id}')">
+Save Work Order
+</button>
+
+`);
+
+}
+
+
+function saveWorkOrder(id){
+
+const w=
+workOrders.find(x=>x.id===id);
+
+w.status=
+document.getElementById("editWOStatus").value;
+
+score+=5;
+
+addLog(
+`🔧 ${w.id} updated to ${w.status}.`
+);
+
+closeModal();
+
+renderAll();
+
+}
+
+
+/* =====================================================
+EMAIL SEARCH
+===================================================== */
+
+function setEmailFolder(folder,button){
 
 emailFolder=folder;
 
 document
-.getElementById("inboxTab")
-.classList.toggle(
-"active",
-folder==="inbox"
-);
+.querySelectorAll("#emails .tab")
+.forEach(b=>b.classList.remove("active"));
 
-document
-.getElementById("favoriteTab")
-.classList.toggle(
-"active",
-folder==="favorites"
-);
-
-document
-.getElementById("sentTab")
-.classList.toggle(
-"active",
-folder==="sent"
-);
+button.classList.add("active");
 
 renderEmails();
 
 }
 
-
-/* ==============================
-EMAIL SEARCH
-============================== */
 
 function renderEmails(){
 
@@ -2063,70 +2821,52 @@ document.getElementById("emailList");
 
 list.innerHTML="";
 
-const search=
+let emails=
+emailFolder==="sent"
+?
+sentEmails
+:
+inboxEmails;
+
+
+if(emailFolder==="favorites")
+emails=
+inboxEmails.filter(e=>e.favorite);
+
+
+const query=
 (
 document.getElementById("emailSearch")?.value
 ||""
-)
-.toLowerCase();
+).toLowerCase();
 
 
-let emails=[];
+emails=
+emails.filter(e=>
 
+`
 
-if(emailFolder==="inbox"){
+${e.from}
+${e.to}
+${e.subject}
+${e.body}
 
-emails=inboxEmails;
-
-}
-
-else if(emailFolder==="favorites"){
-
-emails=inboxEmails
-.filter(e=>e.favorite);
-
-}
-
-else{
-
-emails=sentEmails;
-
-}
-
-
-emails=emails.filter(e=>
-
-e.subject.toLowerCase().includes(search)
-
-||
-
-e.from.toLowerCase().includes(search)
-
-||
-
-e.body.toLowerCase().includes(search)
+`.toLowerCase().includes(query)
 
 );
 
 
 if(!emails.length){
 
-list.innerHTML=`
-
-<div class="empty">
-
-📭 No emails found.
-
-</div>
-
-`;
+list.innerHTML=
+`<div class="empty">📭 No emails found.</div>`;
 
 return;
 
 }
 
 
-emails.forEach(email=>{
+emails.forEach(e=>{
 
 const item=
 document.createElement("div");
@@ -2134,51 +2874,42 @@ document.createElement("div");
 item.className=
 "email-item"+
 (
-email.unread &&
-emailFolder==="inbox"
+e.unread&&emailFolder!=="sent"
 ?
 " unread"
 :
 ""
 );
 
-
 item.innerHTML=`
 
 <span
-class="star ${email.favorite?"active":""}"
-onclick="toggleFavorite(event,'${email.id}')">
-${email.favorite?"★":"☆"}
+class="star ${e.favorite?"active":""}"
+onclick="toggleFavorite(event,'${e.id}')">
+
+${e.favorite?"★":"☆"}
+
 </span>
 
 <strong>
-${email.subject}
+${e.subject}
 </strong>
 
 <small>
 ${emailFolder==="sent"
-?"To: "+email.to
-:"From: "+email.from}
+?"To: "+e.to
+:"From: "+e.from}
 </small>
 
 <br>
 
-<small>
-${email.time}
-</small>
+<small>${e.time}</small>
 
 `;
 
-
 item.onclick=()=>{
-
-openEmail(
-email.id,
-emailFolder
-);
-
+openEmail(e.id);
 };
-
 
 list.appendChild(item);
 
@@ -2186,10 +2917,6 @@ list.appendChild(item);
 
 }
 
-
-/* ==============================
-FAVORITES
-============================== */
 
 function toggleFavorite(event,id){
 
@@ -2199,40 +2926,23 @@ const email=
 [...inboxEmails,...sentEmails]
 .find(e=>e.id===id);
 
-if(!email)return;
-
-email.favorite=
-!email.favorite;
-
-addLog(
-email.favorite
-?
-`⭐ Email added to Favorites.`
-:
-`☆ Email removed from Favorites.`
-);
+if(email)
+email.favorite=!email.favorite;
 
 renderEmails();
 
 }
 
 
-/* ==============================
+/* =====================================================
 OPEN EMAIL
-============================== */
+===================================================== */
 
-function openEmail(id,folder){
-
-const emails=
-folder==="sent"
-?
-sentEmails
-:
-inboxEmails;
-
+function openEmail(id){
 
 const email=
-emails.find(e=>e.id===id);
+[...inboxEmails,...sentEmails]
+.find(e=>e.id===id);
 
 if(!email)return;
 
@@ -2249,7 +2959,7 @@ document.getElementById("emailView").innerHTML=`
 
 <h2>📧 ${email.subject}</h2>
 
-<p style="margin-top:10px">
+<br>
 
 <strong>From:</strong>
 ${email.from}
@@ -2261,11 +2971,8 @@ ${email.to}
 
 <br>
 
-<strong>Received:</strong>
+<strong>Time:</strong>
 ${email.time}
-
-</p>
-
 
 <div class="email-body">
 
@@ -2276,36 +2983,32 @@ ${email.body}
 
 ${
 related.length>1
-
 ?
-
 `
 
-<h3>🔗 Related NOC Emails</h3>
+<h3>🔗 Related Messages</h3>
 
 <div class="thread">
 
-${related.map(
-r=>`
+${related.map(r=>`
+
 <p>
 <strong>${r.from}</strong>
-—
+<br>
 ${r.subject}
 </p>
-`
-).join("<br>")}
+
+`).join("<br>")}
 
 </div>
 
 `
-
 :""
-
 }
 
 
 ${
-folder!=="sent"
+email.from!=="NOC Operator"
 
 ?
 
@@ -2318,19 +3021,19 @@ folder!=="sent"
 <br>
 
 <textarea
-id="emailReply"
+id="replyText"
 placeholder="Write your response...">
 </textarea>
 
 <br><br>
 
-<button class="primary"
+<button
+class="primary"
 onclick="sendReply('${email.id}')">
-📤 Send Reply
+📤 Send Response
 </button>
 
 `
-
 :""
 
 }
@@ -2342,10 +3045,6 @@ renderEmails();
 }
 
 
-/* ==============================
-SEND EMAIL
-============================== */
-
 function sendReply(id){
 
 const original=
@@ -2354,28 +3053,20 @@ inboxEmails.find(e=>e.id===id);
 if(!original)return;
 
 const text=
-document
-.getElementById("emailReply")
+document.getElementById("replyText")
 .value.trim();
 
 if(!text){
 
-alert("Please write a response.");
+alert("Write a response first.");
 
 return;
 
 }
 
-
-const sent={
+sentEmails.unshift({
 
 id:"SENT-"+Date.now(),
-
-type:"sent",
-
-unread:false,
-
-favorite:false,
 
 from:"NOC Operator",
 
@@ -2383,48 +3074,30 @@ to:original.from,
 
 subject:"RE: "+original.subject,
 
+body:escapeHtml(text),
+
 time:new Date().toLocaleTimeString(),
 
-threadId:original.threadId,
+unread:false,
 
-body:`
+favorite:false,
 
-<strong>NOC Operator Response</strong>
+threadId:original.threadId
 
-<br><br>
-
-${escapeHtml(text)}
-
-<br><br>
-
-Regards,<br>
-NOC Operations
-
-`
-
-};
-
-sentEmails.unshift(sent);
+});
 
 score+=5;
 
-progress+=5;
-
 addLog(
-`📤 Response sent to
-<strong>${original.from}</strong>.`
+`📤 Email response sent to ${original.from}.`
 );
-
-openEmail(sent.id,"sent");
 
 renderAll();
 
+openEmail(sentEmails[0].id);
+
 }
 
-
-/* ==============================
-ESCAPE
-============================== */
 
 function escapeHtml(text){
 
@@ -2437,786 +3110,534 @@ return text
 }
 
 
-/* ==============================
-ALARM TIMER
-============================== */
+/* =====================================================
+TOPOLOGY STATE ENGINE
+===================================================== */
 
-setInterval(function(){
+/*
+This is the important part.
 
-alarms.forEach(alarm=>{
+The topology is no longer static.
 
-if(
-!alarm.acknowledged &&
-alarm.remaining>0
-){
+The state of every network node is calculated
+from active alarms affecting that node.
 
-alarm.remaining--;
+Priority:
+
+Emergency > Critical > Major > Minor > Warning > Normal
+*/
+
+function severityRank(severity){
+
+const ranks={
+Emergency:5,
+Critical:4,
+Major:3,
+Minor:2,
+Warning:1
+};
+
+return ranks[severity]||0;
+
+}
+
+
+function getNodeState(nodeId){
+
+const nodeAlarms=
+alarms.filter(
+a=>
+a.node===nodeId
+&&
+!a.acknowledged
+);
+
+
+if(!nodeAlarms.length)
+return "normal";
+
+
+let strongest=
+nodeAlarms
+.sort(
+(a,b)=>
+severityRank(b.severity)
+-
+severityRank(a.severity)
+)[0];
+
+
+return strongest.severity.toLowerCase();
+
+}
+
+
+/* =====================================================
+PROPAGATE NETWORK FAILURE
+===================================================== */
+
+function updateTopologyStates(){
+
+Object.keys(topologyData)
+.forEach(id=>{
+
+const state=
+getNodeState(id);
+
+const element=
+document.getElementById(
+"node-"+id
+);
+
+if(!element)return;
+
+element.className=
+"node "+state;
+
+const status=
+element.querySelector(".node-status");
+
+if(status){
+
+status.textContent=
+state==="normal"
+?
+"NORMAL"
+:
+state==="emergency"
+?
+"DOWN / EMERGENCY"
+:
+state.toUpperCase();
 
 }
 
 });
 
-renderAlarms();
 
-},1000);
+updateConnections();
 
-
-/* ==============================
-ALARM VIEW
-============================== */
-
-function setAlarmView(view){
-
-alarmView=view;
-
-renderAlarms();
+renderDashboardNetwork();
 
 }
 
 
-/* ==============================
-RENDER ALARMS
-============================== */
+/* =====================================================
+CONNECTION STATES
+===================================================== */
 
-function renderAlarms(){
+const connectionMap={
 
-const container=
-document.getElementById("alarmContainer");
+c1:["internet","core"],
 
-container.innerHTML="";
+c2:["core","ip"],
 
-let filtered=[];
+c3:["core","ran"],
 
-if(alarmView==="active")
-filtered=alarms.filter(a=>!a.acknowledged);
+c4:["core","trans"],
 
-else if(alarmView==="ack")
-filtered=alarms.filter(a=>a.acknowledged);
+c5:["trans","micro"],
 
-else
-filtered=[...alarms];
+c6:["micro","remote"],
+
+c7:["ip","fixed"],
+
+c8:["ran","cell"]
+
+};
 
 
-if(!filtered.length){
+function updateConnections(){
 
-container.innerHTML=
-`<div class="empty">🌸 No alarms here.</div>`;
+Object.keys(connectionMap)
+.forEach(id=>{
+
+const connection=
+document.getElementById(id);
+
+if(!connection)return;
+
+const nodes=
+connectionMap[id];
+
+const states=
+nodes.map(
+n=>getNodeState(n)
+);
+
+
+let strongest="normal";
+
+states.forEach(s=>{
+
+if(
+severityRank(
+capitalize(s)
+)>
+severityRank(
+capitalize(strongest)
+)
+){
+
+strongest=s;
+
+}
+
+});
+
+
+connection.className=
+"connection "+strongest;
+
+});
+
+}
+
+
+function capitalize(str){
+
+return str.charAt(0).toUpperCase()+str.slice(1);
+
+}
+
+
+/* =====================================================
+TOPOLOGY SEARCH
+===================================================== */
+
+function searchTopology(value){
+
+const query=
+value.toLowerCase().trim();
+
+const results=
+document.getElementById("topologyResults");
+
+
+if(!query){
+
+results.innerHTML="";
 
 return;
 
 }
 
 
-filtered
-.slice()
-.reverse()
-.forEach(alarm=>{
+const matches=
+Object.entries(topologyData)
+.filter(([id,n])=>
 
-const div=
-document.createElement("div");
+`
 
+${n.name}
+${n.type}
+${n.department}
+${n.ip}
+${n.services.join(" ")}
+${n.connections.join(" ")}
 
-let cls="";
+`.toLowerCase().includes(query)
 
-if(alarm.severity==="Critical")
-cls="critical";
-
-if(alarm.severity==="Major")
-cls="major";
-
-if(alarm.severity==="Minor")
-cls="minor";
-
-if(alarm.severity==="Warning")
-cls="warning";
-
-
-const ticket=
-tickets.find(
-t=>t.alarmId==="AL-"+alarm.id
 );
 
 
-const timer=
-formatTime(alarm.remaining);
+if(!matches.length){
 
+results.innerHTML=
+`
+<div class="empty">
+No topology elements found.
+</div>
+`;
 
-let timerClass="";
-
-if(
-!alarm.acknowledged &&
-alarm.remaining<=300
-){
-
-timerClass="critical";
-
-}
-else if(
-!alarm.acknowledged &&
-alarm.remaining<=600
-){
-
-timerClass="warning";
+return;
 
 }
 
 
-div.className=
-"alarm "+cls;
+results.innerHTML=
 
+matches.map(([id,n])=>{
 
-div.innerHTML=`
+const state=
+getNodeState(id);
 
-<div class="alarm-head">
+return `
+
+<div
+class="search-result"
+onclick="inspectNode('${id}')">
+
+<div class="search-type">
+${n.type}
+</div>
 
 <strong>
-🚨 ${alarm.type}
+${n.name}
 </strong>
 
-<span class="priority ${cls}">
-${alarm.severity}
+<br>
+
+${n.department}
+—
+${n.ip}
+
+<br>
+
+<small>
+Services:
+${n.services.join(", ")}
+</small>
+
+<br><br>
+
+<span class="status ${state}">
+${state==="normal"
+?"NORMAL"
+:
+state.toUpperCase()}
 </span>
 
 </div>
 
+`;
 
-<div class="info-grid">
+}).join("");
 
-<div class="info">
-<small>Alarm</small>
-AL-${alarm.id}
-</div>
-
-<div class="info">
-<small>Department</small>
-${alarm.department}
-</div>
-
-<div class="info">
-<small>Site</small>
-${alarm.site}
-</div>
-
-<div class="info">
-<small>SMA</small>
-${ticket?.id||"—"}
-</div>
-
-</div>
-
-
-<p class="timer ${timerClass}">
-
-${
-alarm.acknowledged
-?
-"⏸️ SLA stopped at "
-:
-"⏱️ SLA remaining: "
 }
 
-${timer}
 
-</p>
+function clearTopologySearch(){
 
+document.getElementById("topologySearch")
+.value="";
 
-<br>
+document.getElementById("topologyResults")
+.innerHTML="";
 
-
-<span class="status ${
-alarm.acknowledged
-?
-"success"
-:
-"warning"
-}">
-
-${
-alarm.acknowledged
-?
-"✓ ACKNOWLEDGED"
-:
-"⏳ WAITING FOR ACK"
 }
 
+
+/* =====================================================
+INSPECT TOPOLOGY NODE
+===================================================== */
+
+function inspectNode(id){
+
+const node=
+topologyData[id];
+
+if(!node)return;
+
+const state=
+getNodeState(id);
+
+const relatedAlarms=
+alarms.filter(
+a=>a.node===id
+);
+
+const relatedTickets=
+tickets.filter(
+t=>
+relatedAlarms.some(
+a=>a.ticketId===t.id
+)
+);
+
+const relatedWO=
+workOrders.filter(
+w=>
+relatedAlarms.some(
+a=>a.workOrderId===w.id
+)
+);
+
+
+openModal(`
+
+<h2>🗺️ ${node.name}</h2>
+
+<span class="status ${state}">
+${state==="normal"
+?
+"NORMAL"
+:
+state.toUpperCase()}
 </span>
 
 
-<br><br>
+<div class="info-grid">
 
+<div class="info">
+<small>Device Type</small>
+${node.type}
+</div>
+
+<div class="info">
+<small>Department</small>
+${node.department}
+</div>
+
+<div class="info">
+<small>IP Address</small>
+${node.ip}
+</div>
+
+<div class="info">
+<small>Active Alarms</small>
+${relatedAlarms.filter(a=>!a.acknowledged).length}
+</div>
+
+<div class="info">
+<small>Tickets</small>
+${relatedTickets.length}
+</div>
+
+<div class="info">
+<small>Work Orders</small>
+${relatedWO.length}
+</div>
+
+</div>
+
+
+<h3>🔗 Connected Equipment</h3>
+
+<div class="email-body">
+
+${node.connections.join("<br>")}
+
+</div>
+
+
+<h3>📡 Services</h3>
+
+<div class="email-body">
+
+${node.services.join("<br>")}
+
+</div>
+
+
+<h3>🚨 Related Alarms</h3>
+
+<div class="email-body">
 
 ${
-alarm.acknowledged
-
+relatedAlarms.length
 ?
-
+relatedAlarms.map(a=>
 `
-
-<button
-class="secondary"
-onclick="reopenAlarm(${alarm.id})">
-↩ Reopen
-</button>
-
+AL-${a.id}
+—
+${a.type}
+—
+<strong>${a.severity}</strong>
 `
-
+).join("<br>")
 :
+"No related alarms."
+}
 
+</div>
+
+
+<h3>🎫 Related Tickets</h3>
+
+<div class="email-body">
+
+${
+relatedTickets.length
+?
+relatedTickets.map(t=>
 `
-
-<button
-class="primary"
-onclick="acknowledgeAlarm(${alarm.id})">
-✓ Acknowledge
-</button>
-
+${t.id}
+—
+${t.status}
 `
+).join("<br>")
+:
+"No related tickets."
+}
+
+</div>
+
+`);
 
 }
 
 
-<button
-class="secondary"
-onclick="focusTopology('${alarm.node}')"
-style="margin-left:6px">
-🗺️ Investigate
-</button>
+/* =====================================================
+DASHBOARD NETWORK
+===================================================== */
 
-
-<button
-class="secondary"
-onclick="openTicketForAlarm(${alarm.id})"
-style="margin-left:6px">
-🎫 Ticket
-</button>
-
-`;
-
-container.appendChild(div);
-
-});
-
-}
-
-
-/* ==============================
-FORMAT TIMER
-============================== */
-
-function formatTime(seconds){
-
-const min=Math.floor(seconds/60);
-
-const sec=seconds%60;
-
-return `${min}:${String(sec).padStart(2,"0")}`;
-
-}
-
-
-/* ==============================
-ACKNOWLEDGE
-============================== */
-
-function acknowledgeAlarm(id){
-
-const alarm=
-alarms.find(a=>a.id===id);
-
-if(!alarm)return;
-
-alarm.acknowledged=true;
-
-alarm.acknowledgedAt=
-new Date().toLocaleTimeString();
-
-
-const ticket=
-tickets.find(
-t=>t.alarmId==="AL-"+id
-);
-
-if(ticket)
-ticket.status="Investigating";
-
-
-score+=5;
-
-progress+=5;
-
-addLog(
-`✅ AL-${id} acknowledged.
-SLA stopped at ${formatTime(alarm.remaining)}.`
-);
-
-renderAll();
-
-}
-
-
-/* ==============================
-REOPEN
-============================== */
-
-function reopenAlarm(id){
-
-const alarm=
-alarms.find(a=>a.id===id);
-
-if(!alarm)return;
-
-alarm.acknowledged=false;
-
-addLog(
-`🔄 AL-${id} reopened.
-SLA monitoring resumed.`
-);
-
-renderAll();
-
-}
-
-
-/* ==============================
-TICKET RENDER
-============================== */
-
-function renderTickets(){
+function renderDashboardNetwork(){
 
 const container=
-document.getElementById("ticketContainer");
-
-container.innerHTML="";
-
-const search=
-window.ticketSearch||"";
-
-const filtered=
-tickets.filter(t=>
-
-t.id.toLowerCase().includes(search)
-
-||
-
-t.type.toLowerCase().includes(search)
-
-||
-
-t.site.toLowerCase().includes(search)
-
-||
-
-t.department.toLowerCase().includes(search)
-
-||
-
-t.severity.toLowerCase().includes(search)
-
+document.getElementById(
+"dashboardNetworkStatus"
 );
 
-
-if(!filtered.length){
+if(!container)return;
 
 container.innerHTML=
-`<div class="empty">No tickets found.</div>`;
+Object.entries(topologyData)
+.map(([id,n])=>{
 
-return;
+const state=
+getNodeState(id);
 
-}
+return `
 
+<div style="
+display:flex;
+justify-content:space-between;
+padding:10px;
+border-bottom:1px solid #ffe3ef;
+">
 
-filtered
-.slice()
-.reverse()
-.forEach(ticket=>{
+<span>
+<strong>${n.name}</strong>
+—
+${n.department}
+</span>
 
-const div=
-document.createElement("div");
-
-div.className="ticket";
-
-div.innerHTML=`
-
-<h3>🎫 ${ticket.id}</h3>
-
-<div class="info-grid">
-
-<div class="info">
-<small>Alarm</small>
-${ticket.alarmId}
-</div>
-
-<div class="info">
-<small>Incident</small>
-${ticket.type}
-</div>
-
-<div class="info">
-<small>Severity</small>
-${ticket.severity}
-</div>
-
-<div class="info">
-<small>Department</small>
-${ticket.department}
-</div>
-
-<div class="info">
-<small>Status</small>
-${ticket.status}
-</div>
+<span class="status ${state}">
+${state.toUpperCase()}
+</span>
 
 </div>
-
-<button
-class="primary"
-onclick="editTicket('${ticket.id}')">
-Update Ticket
-</button>
 
 `;
 
-container.appendChild(div);
-
-});
+}).join("");
 
 }
 
 
-function searchTickets(value){
-
-window.ticketSearch=
-value.toLowerCase();
-
-renderTickets();
-
-}
-
-
-/* ==============================
-WORK ORDER RENDER
-============================== */
-
-function renderWorkOrders(){
-
-const container=
-document.getElementById("workOrderContainer");
-
-container.innerHTML="";
-
-const search=
-window.workOrderSearch||"";
-
-const filtered=
-workOrders.filter(w=>
-
-w.id.toLowerCase().includes(search)
-
-||
-
-w.ticketId.toLowerCase().includes(search)
-
-||
-
-w.site.toLowerCase().includes(search)
-
-||
-
-w.department.toLowerCase().includes(search)
-
-);
-
-
-if(!filtered.length){
-
-container.innerHTML=
-`<div class="empty">No work orders found.</div>`;
-
-return;
-
-}
-
-
-filtered
-.slice()
-.reverse()
-.forEach(wo=>{
-
-const div=
-document.createElement("div");
-
-div.className="workorder";
-
-div.innerHTML=`
-
-<h3>🔧 ${wo.id}</h3>
-
-<div class="info-grid">
-
-<div class="info">
-<small>Ticket</small>
-${wo.ticketId}
-</div>
-
-<div class="info">
-<small>Department</small>
-${wo.department}
-</div>
-
-<div class="info">
-<small>Site</small>
-${wo.site}
-</div>
-
-<div class="info">
-<small>Severity</small>
-${wo.severity}
-</div>
-
-<div class="info">
-<small>Assigned</small>
-${wo.assigned}
-</div>
-
-<div class="info">
-<small>Status</small>
-${wo.status}
-</div>
-
-</div>
-
-<button
-class="primary"
-onclick="editWorkOrder('${wo.id}')">
-Update Work Order
-</button>
-
-`;
-
-container.appendChild(div);
-
-});
-
-}
-
-
-function searchWorkOrders(value){
-
-window.workOrderSearch=
-value.toLowerCase();
-
-renderWorkOrders();
-
-}
-
-
-/* ==============================
-EDIT TICKET
-============================== */
-
-function openTicketForAlarm(id){
-
-const ticket=
-tickets.find(
-t=>t.alarmId==="AL-"+id
-);
-
-if(ticket)
-editTicket(ticket.id);
-
-}
-
-
-function editTicket(id){
-
-const ticket=
-tickets.find(t=>t.id===id);
-
-if(!ticket)return;
-
-document.getElementById("modalContent").innerHTML=`
-
-<h2>🎫 ${ticket.id}</h2>
-
-<p>${ticket.type}</p>
-
-<br>
-
-<select id="ticketStatus">
-
-<option ${ticket.status==="New"?"selected":""}>
-New
-</option>
-
-<option ${ticket.status==="Investigating"?"selected":""}>
-Investigating
-</option>
-
-<option ${ticket.status==="Escalated"?"selected":""}>
-Escalated
-</option>
-
-<option ${ticket.status==="Resolved"?"selected":""}>
-Resolved
-</option>
-
-<option ${ticket.status==="Closed"?"selected":""}>
-Closed
-</option>
-
-</select>
-
-<br><br>
-
-<textarea id="ticketNotes"
-placeholder="Investigation notes...">${ticket.notes}</textarea>
-
-<br><br>
-
-<button class="primary"
-onclick="saveTicket('${id}')">
-Save
-</button>
-
-`;
-
-document
-.getElementById("modal")
-.classList.add("show");
-
-}
-
-
-function saveTicket(id){
-
-const ticket=
-tickets.find(t=>t.id===id);
-
-ticket.status=
-document.getElementById("ticketStatus").value;
-
-ticket.notes=
-document.getElementById("ticketNotes").value;
-
-score+=5;
-
-progress+=5;
-
-addLog(
-`📝 ${ticket.id} updated to ${ticket.status}.`
-);
-
-closeModal();
-
-renderAll();
-
-}
-
-
-/* ==============================
-WORK ORDER EDIT
-============================== */
-
-function editWorkOrder(id){
-
-const wo=
-workOrders.find(w=>w.id===id);
-
-if(!wo)return;
-
-document.getElementById("modalContent").innerHTML=`
-
-<h2>🔧 ${wo.id}</h2>
-
-<p>${wo.task}</p>
-
-<br>
-
-<select id="woStatus">
-
-<option ${wo.status==="Pending"?"selected":""}>
-Pending
-</option>
-
-<option ${wo.status==="Assigned"?"selected":""}>
-Assigned
-</option>
-
-<option ${wo.status==="In Progress"?"selected":""}>
-In Progress
-</option>
-
-<option ${wo.status==="Completed"?"selected":""}>
-Completed
-</option>
-
-</select>
-
-<br><br>
-
-<button
-class="primary"
-onclick="saveWorkOrder('${id}')">
-Save
-</button>
-
-`;
-
-document
-.getElementById("modal")
-.classList.add("show");
-
-}
-
-
-function saveWorkOrder(id){
-
-const wo=
-workOrders.find(w=>w.id===id);
-
-wo.status=
-document.getElementById("woStatus").value;
-
-score+=5;
-
-progress+=5;
-
-addLog(
-`🔧 ${wo.id} updated to ${wo.status}.`
-);
-
-closeModal();
-
-renderAll();
-
-}
-
-
-/* ==============================
+/* =====================================================
 GLOBAL SEARCH
-============================== */
+===================================================== */
 
 function globalSearch(value){
 
 const query=
 value.toLowerCase().trim();
 
-
 const results=
-document.getElementById("searchResults");
+document.getElementById("globalResults");
+
 
 if(!query){
 
-if(results){
-
+if(results)
 results.innerHTML=
 `
 <div class="empty">
-Start typing to search the NOC system.
+Start typing to search the NOC.
 </div>
 `;
-
-}
 
 return;
 
@@ -3230,27 +3651,19 @@ let output=[];
 
 alarms.forEach(a=>{
 
-if(
-(
-"AL-"+a.id
-).toLowerCase().includes(query)
+const text=`
 
-||
+AL-${a.id}
+${a.type}
+${a.site}
+${a.department}
+${a.severity}
+${a.ticketId}
+${a.workOrderId}
 
-a.type.toLowerCase().includes(query)
+`.toLowerCase();
 
-||
-
-a.site.toLowerCase().includes(query)
-
-||
-
-a.department.toLowerCase().includes(query)
-
-||
-
-a.severity.toLowerCase().includes(query)
-){
+if(text.includes(query)){
 
 output.push({
 
@@ -3259,9 +3672,11 @@ type:"Alarm",
 title:`AL-${a.id} — ${a.type}`,
 
 detail:
-`${a.severity} • ${a.site} • ${a.department}`,
+`${a.severity} • ${a.site} • ${a.ticketId}`,
 
-action:()=>showPageById("alarms")
+action:()=>{
+showPageByName("alarms");
+}
 
 });
 
@@ -3274,25 +3689,19 @@ action:()=>showPageById("alarms")
 
 tickets.forEach(t=>{
 
-if(
-t.id.toLowerCase().includes(query)
+const text=`
 
-||
+${t.id}
+${t.alarmId}
+${t.type}
+${t.site}
+${t.department}
+${t.severity}
+${t.status}
 
-t.type.toLowerCase().includes(query)
+`.toLowerCase();
 
-||
-
-t.site.toLowerCase().includes(query)
-
-||
-
-t.department.toLowerCase().includes(query)
-
-||
-
-t.status.toLowerCase().includes(query)
-){
+if(text.includes(query)){
 
 output.push({
 
@@ -3301,9 +3710,11 @@ type:"SMA / Ticket",
 title:`${t.id} — ${t.type}`,
 
 detail:
-`${t.severity} • ${t.site} • ${t.status}`,
+`${t.site} • ${t.status}`,
 
-action:()=>editTicket(t.id)
+action:()=>{
+editTicket(t.id);
+}
 
 });
 
@@ -3316,21 +3727,19 @@ action:()=>editTicket(t.id)
 
 workOrders.forEach(w=>{
 
-if(
-w.id.toLowerCase().includes(query)
+const text=`
 
-||
+${w.id}
+${w.ticketId}
+${w.site}
+${w.department}
+${w.severity}
+${w.status}
+${w.task}
 
-w.ticketId.toLowerCase().includes(query)
+`.toLowerCase();
 
-||
-
-w.site.toLowerCase().includes(query)
-
-||
-
-w.department.toLowerCase().includes(query)
-){
+if(text.includes(query)){
 
 output.push({
 
@@ -3341,7 +3750,9 @@ title:`${w.id} — ${w.task}`,
 detail:
 `${w.site} • ${w.status}`,
 
-action:()=>editWorkOrder(w.id)
+action:()=>{
+editWorkOrder(w.id);
+}
 
 });
 
@@ -3355,21 +3766,16 @@ action:()=>editWorkOrder(w.id)
 [...inboxEmails,...sentEmails]
 .forEach(e=>{
 
-if(
-e.subject.toLowerCase().includes(query)
+const text=`
 
-||
+${e.from}
+${e.to}
+${e.subject}
+${e.body}
 
-e.from.toLowerCase().includes(query)
+`.toLowerCase();
 
-||
-
-e.to.toLowerCase().includes(query)
-
-||
-
-e.body.toLowerCase().includes(query)
-){
+if(text.includes(query)){
 
 output.push({
 
@@ -3381,19 +3787,47 @@ detail:
 `${e.from} → ${e.to}`,
 
 action:()=>{
+showPageByName("emails");
+openEmail(e.id);
+}
 
-showPageById("emails");
+});
 
-setTimeout(
-()=>openEmail(
-e.id,
-sentEmails.includes(e)
-?"sent"
-:"inbox"
-),
-100
-);
+}
 
+});
+
+
+/* TOPOLOGY */
+
+Object.entries(topologyData)
+.forEach(([id,n])=>{
+
+const text=`
+
+${n.name}
+${n.type}
+${n.department}
+${n.ip}
+${n.services.join(" ")}
+${n.connections.join(" ")}
+
+`.toLowerCase();
+
+if(text.includes(query)){
+
+output.push({
+
+type:"Topology",
+
+title:n.name,
+
+detail:
+`${n.type} • ${n.department} • ${n.ip}`,
+
+action:()=>{
+showPageByName("topology");
+inspectNode(id);
 }
 
 });
@@ -3408,7 +3842,7 @@ if(!output.length){
 results.innerHTML=
 `
 <div class="empty">
-No results found for "<strong>${escapeHtml(query)}</strong>".
+No results for "<strong>${escapeHtml(query)}</strong>".
 </div>
 `;
 
@@ -3418,12 +3852,11 @@ return;
 
 
 results.innerHTML=
-output
-.slice(0,50)
-.map((r,index)=>`
+output.slice(0,60).map((r,i)=>`
 
-<div class="search-result"
-onclick="runSearchResult(${index})">
+<div
+class="search-result"
+onclick="runGlobalResult(${i})">
 
 <div class="search-type">
 ${r.type}
@@ -3441,33 +3874,27 @@ ${r.detail}
 
 </div>
 
-`)
-.join("");
+`).join("");
 
-
-window.searchResults=output;
+window.globalResults=output;
 
 }
 
 
-/* ==============================
-SEARCH RESULT
-============================== */
+function runGlobalResult(index){
 
-function runSearchResult(index){
+const result=
+window.globalResults[index];
 
-const item=
-window.searchResults[index];
-
-if(item)
-item.action();
+if(result)
+result.action();
 
 }
 
 
-/* ==============================
-MY TASKS
-============================== */
+/* =====================================================
+TASKS
+===================================================== */
 
 function renderTasks(){
 
@@ -3476,107 +3903,90 @@ document.getElementById("taskContainer");
 
 container.innerHTML="";
 
-
-const activeAlarms=
-alarms.filter(
-a=>!a.acknowledged
-);
+let tasks=[];
 
 
-const openTickets=
-tickets.filter(
-t=>
-t.status!=="Resolved"
-&&
-t.status!=="Closed"
-);
-
-
-const openWOs=
-workOrders.filter(
-w=>w.status!=="Completed"
-);
-
-
-const unread=
-inboxEmails.filter(
-e=>e.unread
-);
-
-
-const tasks=[];
-
-
-activeAlarms.forEach(a=>{
+alarms
+.filter(a=>!a.acknowledged)
+.forEach(a=>{
 
 tasks.push({
 
 title:`Acknowledge AL-${a.id}`,
 
-type:"Alarm",
+detail:
+`${a.severity} — ${a.type} — ${a.site}`,
 
-severity:a.severity,
-
-detail:`${a.type} — ${a.site}`,
-
-action:()=>showPageById("alarms")
-
-});
+action:()=>{
+showPageByName("alarms");
+}
 
 });
 
+});
 
-openTickets.forEach(t=>{
+
+tickets
+.filter(
+t=>
+t.status!=="Resolved"
+&&
+t.status!=="Closed"
+)
+.forEach(t=>{
 
 tasks.push({
 
-title:`Investigate ${t.id}`,
+title:`Work SMA ${t.id}`,
 
-type:"SMA",
+detail:
+`${t.type} — ${t.site} — ${t.status}`,
 
-severity:t.severity,
-
-detail:`${t.type} — ${t.site}`,
-
-action:()=>editTicket(t.id)
-
-});
+action:()=>{
+editTicket(t.id);
+}
 
 });
 
+});
 
-openWOs.forEach(w=>{
+
+workOrders
+.filter(
+w=>w.status!=="Completed"
+)
+.forEach(w=>{
 
 tasks.push({
 
-title:`Work on ${w.id}`,
+title:`Work ${w.id}`,
 
-type:"Work Order",
+detail:
+`${w.task} — ${w.site} — ${w.status}`,
 
-severity:w.severity,
-
-detail:`${w.task} — ${w.site}`,
-
-action:()=>editWorkOrder(w.id)
-
-});
+action:()=>{
+editWorkOrder(w.id);
+}
 
 });
 
+});
 
-if(unread.length){
+
+const unread=
+inboxEmails.filter(e=>e.unread).length;
+
+if(unread){
 
 tasks.push({
 
-title:`Review ${unread.length} unread emails`,
-
-type:"Email",
-
-severity:"Information",
+title:`Review ${unread} unread emails`,
 
 detail:"Shared NOC mailbox",
 
-action:()=>showPageById("emails")
+action:()=>{
+showPageByName("emails");
+}
 
 });
 
@@ -3588,7 +3998,7 @@ if(!tasks.length){
 container.innerHTML=
 `
 <div class="empty">
-🎉 No outstanding tasks.
+🎉 No outstanding work.
 </div>
 `;
 
@@ -3597,7 +4007,7 @@ return;
 }
 
 
-tasks.forEach(task=>{
+tasks.forEach(t=>{
 
 const div=
 document.createElement("div");
@@ -3606,44 +4016,21 @@ div.className="task";
 
 div.innerHTML=`
 
-<h3>${task.title}</h3>
+<h3>${t.title}</h3>
 
-<br>
-
-<span class="status">
-${task.type}
-</span>
-
-<span class="priority ${
-task.severity==="Emergency"
-?""
-:
-task.severity==="Critical"
-?"critical"
-:
-task.severity==="Major"
-?"major"
-:
-task.severity==="Minor"
-?"minor"
-:
-"warning"
-}">
-${task.severity}
-</span>
-
-<p style="margin:12px 0">
-${task.detail}
+<p style="margin:10px 0">
+${t.detail}
 </p>
 
 <button class="primary">
-Open Task
+Open
 </button>
 
 `;
 
-div.querySelector("button")
-.onclick=task.action;
+div
+.querySelector("button")
+.onclick=t.action;
 
 container.appendChild(div);
 
@@ -3652,468 +4039,129 @@ container.appendChild(div);
 }
 
 
-/* ==============================
-TOPOLOGY
-============================== */
-
-function highlightTopology(node,severity){
-
-document
-.querySelectorAll(".node")
-.forEach(n=>
-n.classList.remove(
-"down",
-"critical",
-"major",
-"minor",
-"warning"
-)
-);
-
-document
-.querySelectorAll(".link")
-.forEach(l=>
-l.classList.remove(
-"down",
-"critical",
-"major",
-"minor",
-"warning"
-)
-);
-
-
-const target=
-document.getElementById("node-"+node);
-
-if(target){
-
-if(severity==="Emergency")
-target.classList.add("down");
-
-else
-target.classList.add(
-severity.toLowerCase()
-);
-
-}
-
-
-const maps={
-
-core:["l1","l2","l3","l4"],
-
-ip:["l2","l3"],
-
-trans:["l3","l5"],
-
-micro:["l5","l6"],
-
-remote:["l6"],
-
-ran:["l4","l7"],
-
-cell:["l7"]
-
-};
-
-
-if(maps[node]){
-
-maps[node].forEach(id=>{
-
-const link=
-document.getElementById(id);
-
-if(!link)return;
-
-if(severity==="Emergency")
-link.classList.add("down");
-
-else
-link.classList.add(
-severity.toLowerCase()
-);
-
-});
-
-}
-
-}
-
-
-function focusTopology(node){
-
-const alarm=
-alarms
-.filter(a=>a.node===node)
-.sort((a,b)=>b.id-a.id)[0];
-
-
-if(alarm){
-
-highlightTopology(
-node,
-alarm.severity
-);
-
-}
-
-showPageById("topology");
-
-setTimeout(
-()=>inspectNode(node),
-200
-);
-
-}
-
-
-/* ==============================
-TOPOLOGY INSPECT
-============================== */
-
-const topologyData={
-
-internet:{
-name:"Internet",
-department:"External",
-connections:["IP Core"],
-services:["Internet Connectivity"]
-},
-
-core:{
-name:"IP Core",
-department:"IP",
-connections:["Internet","IP Router","Transmission","RAN"],
-services:["Core Network"]
-},
-
-ip:{
-name:"IP Router MCT-IP-031",
-department:"IP",
-connections:["IP Core"],
-services:["IP Connectivity"]
-},
-
-trans:{
-name:"Transmission MCT-TR-014",
-department:"Transmission",
-connections:["IP Core","Microwave"],
-services:["Transport"]
-},
-
-ran:{
-name:"RAN Site MCT-RAN-207",
-department:"RAN",
-connections:["IP Core","Cell Site"],
-services:["Mobile Access"]
-},
-
-micro:{
-name:"Microwave SLL-MW-014",
-department:"Transmission",
-connections:["Transmission","Remote Site"],
-services:["Microwave Transport"]
-},
-
-remote:{
-name:"Remote Site SLL-REMOTE-02",
-department:"Fixed",
-connections:["Microwave"],
-services:["Fixed Services"]
-},
-
-cell:{
-name:"Cell Site MCT-CELL-207",
-department:"RAN",
-connections:["RAN Site"],
-services:["Mobile Service"]
-
-}
-
-};
-
-
-function inspectNode(id){
-
-const node=
-topologyData[id];
-
-if(!node)return;
-
-
-const related=
-alarms.filter(
-a=>a.node===id
-);
-
-
-document.getElementById("modalContent").innerHTML=`
-
-<h2>🗺️ ${node.name}</h2>
-
-<div class="info-grid">
-
-<div class="info">
-<small>Department</small>
-${node.department}
-</div>
-
-<div class="info">
-<small>Active Alarms</small>
-${related.filter(a=>!a.acknowledged).length}
-</div>
-
-<div class="info">
-<small>Total Alarms</small>
-${related.length}
-</div>
-
-</div>
-
-<h3>🔗 Connections</h3>
-
-<div class="email-body">
-
-${node.connections.join("<br>")}
-
-</div>
-
-<h3>📡 Services</h3>
-
-<div class="email-body">
-
-${node.services.join("<br>")}
-
-</div>
-
-<button
-class="primary"
-onclick="closeModal()">
-Close
-</button>
-
-`;
-
-document
-.getElementById("modal")
-.classList.add("show");
-
-}
-
-
-/* ==============================
+/* =====================================================
 DEPARTMENTS
-============================== */
+===================================================== */
 
 function departmentInfo(name){
 
-const descriptions={
+const info={
 
-IP:"Handles IP connectivity, routing, interfaces and topology.",
+IP:
+"Responsible for IP routing, interfaces, connectivity and Core network operations.",
 
-Transmission:"Handles microwave, VSAT, fiber and transport infrastructure.",
+Transmission:
+"Responsible for transport infrastructure including microwave, VSAT, fiber and transmission links.",
 
-RAN:"Handles radio access sites, alarms and mobile KPIs.",
+RAN:
+"Responsible for radio access network sites, mobile connectivity and RAN KPIs.",
 
-Fixed:"Handles fixed network services and access connectivity.",
+Fixed:
+"Responsible for fixed network services and access connectivity.",
 
 "Service Desk":
-"Handles customer incidents, communication and escalation.",
+"Handles customer incidents and coordinates communication between customers and technical teams.",
 
 SOC:
-"Handles security monitoring and security incidents.",
+"Monitors security events and coordinates security-related incidents.",
 
 "Agile Ops":
-"Handles alarm monitoring, event correlation and operational workflow."
+"Monitors alarms and operational events and coordinates NOC workflows."
 
 };
 
 
-document.getElementById("modalContent").innerHTML=`
+openModal(`
 
 <h2>🏢 ${name}</h2>
 
 <div class="email-body">
 
-${descriptions[name]}
+${info[name]}
 
 <br><br>
 
-<strong>Typical workflow:</strong>
+<strong>Typical relationship:</strong>
 
 <br><br>
 
-Alarm → Investigation → Ticket →
-Work Order → Escalation → Resolution
+Alarm →
+Monitoring →
+Investigation →
+SMA →
+Work Order →
+Escalation →
+Resolution
 
 </div>
 
-<button
-class="primary"
-onclick="closeModal()">
-Close
-</button>
-
-`;
-
-document
-.getElementById("modal")
-.classList.add("show");
+`);
 
 }
 
 
-/* ==============================
-SCENARIOS
-============================== */
-
-function startScenario(){
-
-const scenario=
-possibleAlarms[
-Math.floor(
-Math.random()*possibleAlarms.length
-)
-];
-
-
-document.getElementById("modalContent").innerHTML=`
-
-<h2>🎯 Training Scenario</h2>
-
-<h3>${scenario.type}</h3>
-
-<br>
-
-<p>
-<strong>Department:</strong>
-${scenario.department}
-</p>
-
-<p>
-<strong>Severity:</strong>
-${scenario.severity}
-</p>
-
-<br>
-
-<div class="email-body">
-
-An alarm has been generated.
-
-What is the correct first operational response?
-
-</div>
-
-<button class="choice"
-onclick="scenarioAnswer(true)">
-Acknowledge the alarm and begin investigation
-</button>
-
-<button class="choice"
-onclick="scenarioAnswer(false)">
-Ignore the alarm
-</button>
-
-<button class="choice"
-onclick="scenarioAnswer(false)">
-Immediately close the incident
-</button>
-
-`;
-
-document
-.getElementById("modal")
-.classList.add("show");
-
-}
-
-
-function scenarioAnswer(correct){
-
-if(correct){
-
-score+=10;
-progress+=5;
-
-alert("✅ Correct NOC decision.");
-
-addLog("✅ Correct scenario decision.");
-
-}
-else{
-
-score=Math.max(0,score-10);
-
-alert("⚠️ Incorrect. Review the NOC workflow.");
-
-addLog("⚠️ Incorrect scenario decision.");
-
-}
-
-closeModal();
-
-updateDashboard();
-
-}
-
-
-/* ==============================
-DASHBOARD
-============================== */
+/* =====================================================
+DASHBOARD COUNTERS
+===================================================== */
 
 function updateDashboard(){
 
-const active=
+document.getElementById("activeCount")
+.textContent=
 alarms.filter(a=>!a.acknowledged).length;
 
-const acknowledged=
+document.getElementById("ackCount")
+.textContent=
 alarms.filter(a=>a.acknowledged).length;
 
-const unread=
+document.getElementById("ticketCount")
+.textContent=
+tickets.length;
+
+document.getElementById("woCount")
+.textContent=
+workOrders.length;
+
+document.getElementById("emailCount")
+.textContent=
 inboxEmails.filter(e=>e.unread).length;
 
-
-document.getElementById("activeAlarmCount")
-.textContent=active;
-
-document.getElementById("ackAlarmCount")
-.textContent=acknowledged;
-
-document.getElementById("ticketCount")
-.textContent=tickets.length;
-
-document.getElementById("workOrderCount")
-.textContent=workOrders.length;
-
-document.getElementById("unreadEmailCount")
-.textContent=unread;
-
 document.getElementById("score")
-.textContent=Math.max(0,score);
-
-document.getElementById("kpiTickets")
-.textContent=tickets.length;
-
-
-const percentage=
-Math.min(100,progress);
-
-document.getElementById("progressBar")
-.style.width=percentage+"%";
-
-document.getElementById("progressText")
 .textContent=
-percentage+"% completed";
+score;
+
+renderDashboardNetwork();
 
 }
 
 
-/* ==============================
-RENDER ALL
-============================== */
+/* =====================================================
+MODAL
+===================================================== */
+
+function openModal(html){
+
+document.getElementById("modalContent")
+.innerHTML=html;
+
+document
+.getElementById("modal")
+.classList.add("show");
+
+}
+
+function closeModal(){
+
+document
+.getElementById("modal")
+.classList.remove("show");
+
+}
+
+
+/* =====================================================
+RENDER EVERYTHING
+===================================================== */
 
 function renderAll(){
 
@@ -4129,36 +4177,33 @@ renderTasks();
 
 updateDashboard();
 
-}
-
-
-/* ==============================
-MODAL
-============================== */
-
-function closeModal(){
-
-document
-.getElementById("modal")
-.classList.remove("show");
+updateTopologyStates();
 
 }
 
 
-/* ==============================
+/* =====================================================
 START
-============================== */
+===================================================== */
 
 addLog(
-"🌸 NOC Training Simulator started."
+"🌸 NOC Simulator initialized."
 );
 
 addLog(
-"📧 Shared NOC mailbox initialized with operational emails."
+"🗺️ Dynamic network topology enabled."
 );
 
 addLog(
-"⏱️ Automatic shared mailbox traffic configured for every 5 minutes."
+"🔎 Global NOC search enabled."
+);
+
+addLog(
+"📧 Shared NOC mailbox initialized."
+);
+
+addLog(
+"⏱️ Automatic email generation scheduled every 5 minutes."
 );
 
 renderAll();
