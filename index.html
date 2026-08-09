@@ -4,785 +4,318 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Oman NOC Training Simulator</title>
 
 <style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
 
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-    font-family:Arial,Helvetica,sans-serif;
-}
-
-body{
-    background:#fff7fb;
-    color:#503847;
-}
-
-/* SIDEBAR */
+body{background:#fff7fb;color:#513747}
 
 .sidebar{
-    position:fixed;
-    left:0;
-    top:0;
-    width:235px;
-    height:100vh;
-    background:linear-gradient(180deg,#ff8fc7,#f27fb5);
-    padding:22px 14px;
-    color:white;
-    z-index:20;
-    overflow-y:auto;
+position:fixed;left:0;top:0;width:235px;height:100vh;
+background:linear-gradient(180deg,#ff8fc7,#ed73ae);
+padding:22px 14px;color:white;z-index:10;overflow-y:auto
 }
 
-.logo{
-    text-align:center;
-    font-size:21px;
-    font-weight:bold;
-    margin-bottom:28px;
-}
-
-.logo small{
-    display:block;
-    font-size:11px;
-    margin-top:5px;
-    opacity:.85;
-}
+.logo{text-align:center;font-size:21px;font-weight:bold;margin-bottom:25px}
+.logo small{display:block;font-size:11px;margin-top:5px}
 
 .nav-btn{
-    width:100%;
-    border:0;
-    background:transparent;
-    color:white;
-    text-align:left;
-    padding:12px 13px;
-    border-radius:12px;
-    margin-bottom:6px;
-    cursor:pointer;
-    font-size:14px;
+width:100%;border:0;background:transparent;color:white;
+text-align:left;padding:12px;border-radius:12px;margin-bottom:5px;
+cursor:pointer;font-size:14px
 }
+.nav-btn:hover,.nav-btn.active{background:rgba(255,255,255,.25)}
 
-.nav-btn:hover,
-.nav-btn.active{
-    background:rgba(255,255,255,.25);
-}
-
-/* MAIN */
-
-.main{
-    margin-left:235px;
-    padding:25px;
-}
+.main{margin-left:235px;padding:25px}
 
 .topbar{
-    background:white;
-    border-radius:18px;
-    padding:18px 22px;
-    margin-bottom:22px;
-    box-shadow:0 5px 20px rgba(255,105,180,.12);
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+background:white;border-radius:18px;padding:18px 22px;margin-bottom:22px;
+box-shadow:0 5px 20px rgba(255,105,180,.12);
+display:flex;justify-content:space-between;align-items:center
 }
 
-.topbar h1{
-    color:#d95794;
-    margin-bottom:5px;
-}
+.topbar h1{color:#d95794;margin-bottom:5px}
+.clock{background:#ffe5f1;color:#d95794;padding:10px 15px;border-radius:20px;font-weight:bold}
 
-.clock{
-    background:#ffe5f1;
-    color:#d95794;
-    padding:10px 15px;
-    border-radius:20px;
-    font-weight:bold;
-}
-
-/* PAGES */
-
-.page{
-    display:none;
-}
-
-.page.active{
-    display:block;
-}
-
-/* CARDS */
+.page{display:none}
+.page.active{display:block}
 
 .cards{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
-    gap:16px;
-    margin-bottom:20px;
+display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+gap:16px;margin-bottom:20px
 }
 
-.card{
-    background:white;
-    border:1px solid #ffd7e9;
-    border-radius:18px;
-    padding:20px;
-    box-shadow:0 5px 18px rgba(255,105,180,.08);
+.card,.ticket,.workorder,.alarm{
+background:white;border:1px solid #ffd7e9;border-radius:18px;
+padding:20px;box-shadow:0 5px 18px rgba(255,105,180,.08)
 }
 
-.card h2,
-.card h3{
-    color:#d95794;
+.card h2,.card h3{color:#d95794}
+.big-number{font-size:30px;font-weight:bold;color:#e45d9b;margin-top:8px}
+
+.primary,.secondary,.danger{
+border:0;border-radius:20px;padding:11px 18px;cursor:pointer;font-weight:bold
 }
-
-.big-number{
-    font-size:30px;
-    font-weight:bold;
-    color:#e45d9b;
-    margin-top:8px;
-}
-
-/* BUTTONS */
-
-.primary{
-    background:#ff83bd;
-    color:white;
-    border:none;
-    border-radius:20px;
-    padding:11px 18px;
-    cursor:pointer;
-    font-weight:bold;
-}
-
-.primary:hover{
-    background:#dc5792;
-}
-
-.secondary{
-    background:#ffe2ef;
-    color:#c44c83;
-    border:none;
-    border-radius:20px;
-    padding:10px 16px;
-    cursor:pointer;
-}
-
-.danger{
-    background:#ff547b;
-    color:white;
-    border:none;
-    border-radius:20px;
-    padding:10px 16px;
-    cursor:pointer;
-}
-
-/* ALARMS */
+.primary{background:#ff83bd;color:white}
+.primary:hover{background:#dc5792}
+.secondary{background:#ffe2ef;color:#c44c83}
+.danger{background:#ff547b;color:white}
 
 .alarm{
-    background:white;
-    border-left:6px solid #ff4e7b;
-    border-radius:15px;
-    padding:18px;
-    margin-bottom:14px;
-    box-shadow:0 4px 15px rgba(255,105,180,.08);
+border-left:6px solid #ff4e78;margin-bottom:14px
 }
-
-.alarm.p2{
-    border-left-color:#f2aa3d;
-}
-
-.alarm.p3{
-    border-left-color:#6bcf9b;
-}
+.alarm.major{border-left-color:#f2a33c}
+.alarm.minor{border-left-color:#67c994}
 
 .alarm-head{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:10px;
+display:flex;justify-content:space-between;align-items:center;margin-bottom:10px
 }
 
 .priority{
-    padding:5px 10px;
-    border-radius:15px;
-    background:#ffe0e8;
-    color:#df4f75;
-    font-size:12px;
-    font-weight:bold;
+padding:6px 11px;border-radius:15px;background:#ffe0e8;
+color:#df4f75;font-size:12px;font-weight:bold
 }
+.priority.major{background:#fff0d5;color:#bd791c}
+.priority.minor{background:#def7e8;color:#3e9966}
 
-.timer{
-    color:#d95794;
-    font-weight:bold;
-}
-
-/* TICKETS */
-
-.ticket,
-.workorder{
-    background:white;
-    border:1px solid #ffd7e9;
-    border-radius:18px;
-    padding:20px;
-    margin-bottom:16px;
-}
+.timer{color:#d95794;font-weight:bold;margin-top:8px}
 
 .info-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
-    gap:12px;
-    margin:15px 0;
+display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+gap:12px;margin:15px 0
 }
 
-.info{
-    background:#fff6fa;
-    padding:12px;
-    border-radius:12px;
-}
-
-.info small{
-    display:block;
-    color:#a8758f;
-    margin-bottom:5px;
-}
-
-/* EMAIL */
+.info{background:#fff6fa;padding:12px;border-radius:12px}
+.info small{display:block;color:#a8758f;margin-bottom:5px}
 
 .email-layout{
-    display:grid;
-    grid-template-columns:260px 1fr;
-    gap:18px;
+display:grid;grid-template-columns:270px 1fr;gap:18px
 }
-
-.email-list,
-.email-view{
-    background:white;
-    border:1px solid #ffd7e9;
-    border-radius:18px;
-    padding:18px;
+.email-list,.email-view{
+background:white;border:1px solid #ffd7e9;border-radius:18px;padding:18px
 }
+.email-item{padding:14px;border-bottom:1px solid #ffe4ef;cursor:pointer}
+.email-item:hover{background:#fff5fa}
+.email-item strong{display:block;color:#d95794;margin-bottom:4px}
+.email-body{background:#fff8fb;padding:18px;border-radius:14px;margin:15px 0;line-height:1.7}
 
-.email-item{
-    padding:14px;
-    border-bottom:1px solid #ffe4ef;
-    cursor:pointer;
+textarea,select{
+width:100%;padding:13px;border:2px solid #ffd7e9;
+border-radius:14px;outline:none
 }
-
-.email-item:hover{
-    background:#fff5fa;
-}
-
-.email-item strong{
-    display:block;
-    color:#d95794;
-    margin-bottom:4px;
-}
-
-.email-body{
-    background:#fff8fb;
-    padding:18px;
-    border-radius:14px;
-    line-height:1.7;
-    margin:15px 0;
-}
-
-textarea{
-    width:100%;
-    min-height:120px;
-    padding:14px;
-    border:2px solid #ffd7e9;
-    border-radius:14px;
-    outline:none;
-    resize:vertical;
-}
-
-textarea:focus{
-    border-color:#ff83bd;
-}
-
-/* DEPARTMENTS */
+textarea{min-height:120px;resize:vertical}
 
 .departments{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:16px;
+display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px
 }
-
 .department{
-    background:white;
-    border:2px solid #ffd7e9;
-    border-radius:18px;
-    padding:20px;
-    cursor:pointer;
-    transition:.2s;
+background:white;border:2px solid #ffd7e9;border-radius:18px;
+padding:20px;cursor:pointer
 }
-
-.department:hover{
-    transform:translateY(-3px);
-    box-shadow:0 8px 20px rgba(255,105,180,.15);
-}
-
-.department h3{
-    color:#d95794;
-    margin-bottom:8px;
-}
-
-/* TOPOLOGY */
+.department:hover{box-shadow:0 8px 20px rgba(255,105,180,.15)}
+.department h3{color:#d95794;margin-bottom:8px}
 
 .topology-wrapper{
-    background:white;
-    border:1px solid #ffd7e9;
-    border-radius:20px;
-    padding:20px;
-    overflow:auto;
+background:white;border:1px solid #ffd7e9;border-radius:20px;
+padding:20px;overflow:auto
 }
 
 .topology{
-    min-width:850px;
-    min-height:570px;
-    position:relative;
-    background:
-        radial-gradient(circle at center,#fffafd,#fff);
-    border-radius:18px;
-    padding:20px;
+min-width:900px;min-height:600px;position:relative;
+background:#fffafd;border-radius:18px
 }
 
 .node{
-    position:absolute;
-    width:145px;
-    padding:15px 10px;
-    text-align:center;
-    background:white;
-    border:3px solid #ff9acb;
-    border-radius:16px;
-    cursor:pointer;
-    box-shadow:0 5px 15px rgba(255,105,180,.15);
-    z-index:3;
+position:absolute;width:150px;padding:14px;text-align:center;
+background:white;border:3px solid #ff9acb;border-radius:16px;
+cursor:pointer;box-shadow:0 5px 15px rgba(255,105,180,.15);z-index:3
 }
-
-.node:hover{
-    transform:scale(1.04);
-}
-
-.node .icon{
-    font-size:28px;
-    margin-bottom:6px;
-}
-
-.node strong{
-    display:block;
-    color:#d95794;
-}
-
-.node small{
-    color:#8f697b;
-}
+.node:hover{transform:scale(1.04)}
+.node .icon{font-size:27px;margin-bottom:5px}
+.node strong{display:block;color:#d95794}
+.node small{color:#8f697b}
 
 .node.down{
-    border-color:#ff4f78;
-    background:#fff0f3;
-    animation:pulse 1.2s infinite;
+border-color:#ff4f78;background:#fff0f3;
+animation:pulse 1.2s infinite
 }
 
-.node.warning{
-    border-color:#f2aa3d;
-    background:#fff9ed;
-}
+.node.major{border-color:#f2a33c;background:#fff8e9}
 
 @keyframes pulse{
-    0%{box-shadow:0 0 0 0 rgba(255,79,120,.35);}
-    70%{box-shadow:0 0 0 12px rgba(255,79,120,0);}
-    100%{box-shadow:0 0 0 0 rgba(255,79,120,0);}
+0%{box-shadow:0 0 0 0 rgba(255,79,120,.35)}
+70%{box-shadow:0 0 0 12px rgba(255,79,120,0)}
+100%{box-shadow:0 0 0 0 rgba(255,79,120,0)}
 }
 
 .link{
-    position:absolute;
-    height:5px;
-    background:#ffb0d4;
-    transform-origin:left center;
-    z-index:1;
-    border-radius:10px;
+position:absolute;height:5px;background:#ffb0d4;
+transform-origin:left center;z-index:1;border-radius:10px
 }
+.link.down{background:#ff4f78;box-shadow:0 0 8px rgba(255,79,120,.5)}
+.link.major{background:#f2a33c}
 
-.link.down{
-    background:#ff4f78;
-    box-shadow:0 0 8px rgba(255,79,120,.5);
-}
-
-.topology-legend{
-    display:flex;
-    gap:18px;
-    flex-wrap:wrap;
-    margin-top:15px;
-    font-size:13px;
-}
-
-.legend-item{
-    display:flex;
-    align-items:center;
-    gap:6px;
-}
-
-.dot{
-    width:12px;
-    height:12px;
-    border-radius:50%;
-}
-
-.dot.green{background:#63c992;}
-.dot.yellow{background:#f2aa3d;}
-.dot.red{background:#ff4f78;}
-
-/* SCENARIOS */
-
-.choice{
-    display:block;
-    width:100%;
-    background:white;
-    border:2px solid #ffd7e9;
-    border-radius:14px;
-    padding:14px;
-    text-align:left;
-    margin-bottom:10px;
-    cursor:pointer;
-}
-
-.choice:hover{
-    background:#fff2f8;
-    border-color:#ff83bd;
-}
-
-/* PROGRESS */
-
-.progress{
-    height:12px;
-    background:#ffe6f1;
-    border-radius:20px;
-    overflow:hidden;
-}
-
-.progress-bar{
-    height:100%;
-    background:#ff83bd;
-    width:0;
-    transition:.4s;
-}
-
-/* LOG */
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:15px}
+.legend span{display:flex;align-items:center;gap:6px}
+.dot{width:12px;height:12px;border-radius:50%}
+.green{background:#63c992}.yellow{background:#f2aa3d}.red{background:#ff4f78}
 
 .log{
-    background:white;
-    border-left:5px solid #ff83bd;
-    border-radius:12px;
-    padding:14px;
-    margin-bottom:9px;
+background:white;border-left:5px solid #ff83bd;border-radius:12px;
+padding:14px;margin-bottom:9px
 }
+.log small{color:#a8758f}
 
-.log small{
-    color:#a8758f;
+.choice{
+display:block;width:100%;background:white;border:2px solid #ffd7e9;
+border-radius:14px;padding:14px;text-align:left;margin-bottom:10px;cursor:pointer
 }
+.choice:hover{background:#fff2f8;border-color:#ff83bd}
 
-/* MODAL */
+.progress{height:12px;background:#ffe6f1;border-radius:20px;overflow:hidden}
+.progress-bar{height:100%;background:#ff83bd;width:0;transition:.4s}
 
 .modal{
-    display:none;
-    position:fixed;
-    inset:0;
-    background:rgba(70,35,55,.45);
-    justify-content:center;
-    align-items:center;
-    z-index:50;
+display:none;position:fixed;inset:0;background:rgba(70,35,55,.45);
+justify-content:center;align-items:center;z-index:50
 }
-
-.modal.show{
-    display:flex;
-}
-
+.modal.show{display:flex}
 .modal-box{
-    width:92%;
-    max-width:680px;
-    max-height:90vh;
-    overflow-y:auto;
-    background:white;
-    border-radius:22px;
-    padding:25px;
+width:92%;max-width:680px;max-height:90vh;overflow-y:auto;
+background:white;border-radius:22px;padding:25px
 }
+.close{float:right;cursor:pointer;font-size:23px}
+.modal-box h2{color:#d95794;margin-bottom:14px}
 
-.close{
-    float:right;
-    cursor:pointer;
-    font-size:23px;
+.status{
+display:inline-block;padding:6px 10px;border-radius:15px;
+background:#ffe7f1;color:#c94e87;font-size:12px;font-weight:bold
 }
-
-.modal-box h2{
-    color:#d95794;
-    margin-bottom:14px;
-}
-
-/* RESPONSIVE */
 
 @media(max-width:850px){
-
-    .sidebar{
-        width:68px;
-        padding:15px 7px;
-    }
-
-    .logo{
-        font-size:18px;
-    }
-
-    .logo small,
-    .nav-btn span{
-        display:none;
-    }
-
-    .nav-btn{
-        text-align:center;
-        font-size:18px;
-    }
-
-    .main{
-        margin-left:68px;
-        padding:15px;
-    }
-
-    .email-layout{
-        grid-template-columns:1fr;
-    }
-
+.sidebar{width:68px;padding:15px 7px}
+.logo{font-size:18px}
+.logo small,.nav-btn span{display:none}
+.nav-btn{text-align:center;font-size:18px}
+.main{margin-left:68px;padding:15px}
+.email-layout{grid-template-columns:1fr}
 }
-
 </style>
 </head>
 
 <body>
 
-
-<!-- ==========================
-     SIDEBAR
-========================== -->
-
 <div class="sidebar">
 
-    <div class="logo">
-        🌸 NOC SIM
-        <small>Training Environment</small>
-    </div>
-
-    <button class="nav-btn active"
-            onclick="showPage('dashboard',this)">
-        🏠 <span>Dashboard</span>
-    </button>
-
-    <button class="nav-btn"
-            onclick="showPage('alarms',this)">
-        🚨 <span>Alarms</span>
-    </button>
-
-    <button class="nav-btn"
-            onclick="showPage('tickets',this)">
-        🎫 <span>Tickets</span>
-    </button>
-
-    <button class="nav-btn"
-            onclick="showPage('workorders',this)">
-        🔧 <span>Work Orders</span>
-    </button>
-
-    <button class="nav-btn"
-            onclick="showPage('emails',this)">
-        📧 <span>Email</span>
-    </button>
-
-    <button class="nav-btn"
-            onclick="showPage('topology',this)">
-        🗺️ <span>Topology</span>
-    </button>
-
-    <button class="nav-btn"
-            onclick="showPage('departments',this)">
-        🏢 <span>Departments</span>
-    </button>
-
-    <button class="nav-btn"
-            onclick="showPage('scenarios',this)">
-        🎯 <span>Scenarios</span>
-    </button>
-
-    <button class="nav-btn"
-            onclick="showPage('kpi',this)">
-        📊 <span>KPI</span>
-    </button>
-
-    <button class="nav-btn"
-            onclick="showPage('log',this)">
-        📝 <span>Activity Log</span>
-    </button>
-
+<div class="logo">
+🌸 NOC SIM
+<small>Training Environment</small>
 </div>
 
+<button class="nav-btn active" onclick="showPage('dashboard',this)">🏠 <span>Dashboard</span></button>
+<button class="nav-btn" onclick="showPage('alarms',this)">🚨 <span>Alarms</span></button>
+<button class="nav-btn" onclick="showPage('tickets',this)">🎫 <span>Tickets</span></button>
+<button class="nav-btn" onclick="showPage('workorders',this)">🔧 <span>Work Orders</span></button>
+<button class="nav-btn" onclick="showPage('emails',this)">📧 <span>Email</span></button>
+<button class="nav-btn" onclick="showPage('topology',this)">🗺️ <span>Topology</span></button>
+<button class="nav-btn" onclick="showPage('departments',this)">🏢 <span>Departments</span></button>
+<button class="nav-btn" onclick="showPage('scenarios',this)">🎯 <span>Scenarios</span></button>
+<button class="nav-btn" onclick="showPage('kpi',this)">📊 <span>KPI</span></button>
+<button class="nav-btn" onclick="showPage('log',this)">📝 <span>Activity Log</span></button>
 
-<!-- ==========================
-     MAIN
-========================== -->
+</div>
 
 <div class="main">
 
 <div class="topbar">
-
-    <div>
-
-        <h1>Oman NOC Training Simulator</h1>
-
-        <p>
-            Interactive Network Operations Training
-        </p>
-
-    </div>
-
-    <div class="clock"
-         id="clock">
-        00:00:00
-    </div>
-
+<div>
+<h1>Oman NOC Training Simulator</h1>
+<p>Interactive Network Operations Training</p>
+</div>
+<div class="clock" id="clock">00:00:00</div>
 </div>
 
 
-<!-- ==========================
-     DASHBOARD
-========================== -->
+<!-- DASHBOARD -->
 
-<section id="dashboard"
-         class="page active">
+<section id="dashboard" class="page active">
 
 <div class="cards">
 
-    <div class="card">
-        <h3>🚨 Active Alarms</h3>
-        <div class="big-number"
-             id="alarmCount">
-            0
-        </div>
-    </div>
-
-    <div class="card">
-        <h3>🎫 Tickets</h3>
-        <div class="big-number"
-             id="ticketCount">
-            0
-        </div>
-    </div>
-
-    <div class="card">
-        <h3>🔧 Work Orders</h3>
-        <div class="big-number"
-             id="workOrderCount">
-            0
-        </div>
-    </div>
-
-    <div class="card">
-        <h3>🏆 Score</h3>
-        <div class="big-number"
-             id="score">
-            100
-        </div>
-    </div>
-
+<div class="card">
+<h3>🚨 Active Alarms</h3>
+<div class="big-number" id="alarmCount">0</div>
 </div>
 
+<div class="card">
+<h3>🎫 Tickets</h3>
+<div class="big-number" id="ticketCount">0</div>
+</div>
+
+<div class="card">
+<h3>🔧 Work Orders</h3>
+<div class="big-number" id="workOrderCount">0</div>
+</div>
+
+<div class="card">
+<h3>🏆 Training Score</h3>
+<div class="big-number" id="score">100</div>
+</div>
+
+</div>
 
 <div class="card">
 
-    <h2>
-        🌸 NOC Control Center
-    </h2>
+<h2>🌸 NOC Control Center</h2>
 
-    <p style="margin:10px 0 20px;line-height:1.6;">
+<p style="margin:12px 0 20px;line-height:1.6">
+Generate a realistic network event and follow it through the complete NOC workflow.
+</p>
 
-        Generate a realistic alarm and follow the
-        complete operational workflow.
+<button class="primary" onclick="generateAlarm()">🚨 Generate Alarm</button>
 
-    </p>
+<button class="primary" onclick="startScenario()" style="margin-left:8px">
+🎯 Training Scenario
+</button>
 
-    <button class="primary"
-            onclick="generateAlarm()">
-
-        🚨 Generate Alarm
-
-    </button>
-
-    <button class="primary"
-            onclick="startScenario()"
-            style="margin-left:8px;">
-
-        🎯 Training Scenario
-
-    </button>
-
-    <button class="secondary"
-            onclick="showPage('topology')"
-            style="margin-left:8px;">
-
-        🗺️ Open Topology
-
-    </button>
+<button class="secondary" onclick="showPage('topology')" style="margin-left:8px">
+🗺️ Topology
+</button>
 
 </div>
-
 
 <br>
 
-
 <div class="card">
 
-    <h3>
-        Training Progress
-    </h3>
+<h3>Training Progress</h3><br>
 
-    <br>
+<div class="progress">
+<div class="progress-bar" id="progressBar"></div>
+</div>
 
-    <div class="progress">
-
-        <div class="progress-bar"
-             id="progressBar">
-        </div>
-
-    </div>
-
-    <br>
-
-    <p id="progressText">
-        0% completed
-    </p>
+<br>
+<p id="progressText">0% completed</p>
 
 </div>
 
 </section>
 
 
-<!-- ==========================
-     ALARMS
-========================== -->
+<!-- ALARMS -->
 
-<section id="alarms"
-         class="page">
+<section id="alarms" class="page">
 
 <div class="card">
 
-    <h2>
-        🚨 Alarm Monitor
-    </h2>
+<h2>🚨 Alarm Monitor</h2>
 
-    <p style="margin:10px 0 18px;">
+<p style="margin:10px 0 18px">
+Monitor incoming network alarms and response deadlines.
+</p>
 
-        Incoming network events and alarms.
-
-    </p>
-
-    <button class="primary"
-            onclick="generateAlarm()">
-
-        + Generate Alarm
-
-    </button>
+<button class="primary" onclick="generateAlarm()">+ Generate Alarm</button>
 
 </div>
 
@@ -793,374 +326,162 @@ textarea:focus{
 </section>
 
 
-<!-- ==========================
-     TICKETS
-========================== -->
+<!-- TICKETS -->
 
-<section id="tickets"
-         class="page">
+<section id="tickets" class="page">
 
 <div class="card">
 
-    <h2>
-        🎫 Incident / SMA Management
-    </h2>
+<h2>🎫 Incident / SMA Management</h2>
 
-    <p style="margin-top:10px;">
-
-        Tickets are automatically generated from
-        critical alarms.
-
-    </p>
+<p style="margin-top:10px">
+Every qualifying alarm automatically creates an incident ticket.
+</p>
 
 </div>
 
 <br>
 
-<div id="ticketContainer">
-
-    <div class="ticket">
-
-        <h3>
-            No tickets yet 🌸
-        </h3>
-
-        <p style="margin-top:8px;">
-
-            Generate an alarm to create an automatic ticket.
-
-        </p>
-
-    </div>
-
-</div>
+<div id="ticketContainer"></div>
 
 </section>
 
 
-<!-- ==========================
-     WORK ORDERS
-========================== -->
+<!-- WORK ORDERS -->
 
-<section id="workorders"
-         class="page">
+<section id="workorders" class="page">
 
 <div class="card">
 
-    <h2>
-        🔧 Work Order Management
-    </h2>
+<h2>🔧 Work Orders</h2>
 
-    <p style="margin-top:10px;">
-
-        Work orders are automatically linked to
-        generated tickets.
-
-    </p>
+<p style="margin-top:10px">
+Work orders are automatically linked to incidents.
+</p>
 
 </div>
 
 <br>
 
-<div id="workOrderContainer">
-
-    <div class="workorder">
-
-        <h3>
-            No work orders yet 🌸
-        </h3>
-
-    </div>
-
-</div>
+<div id="workOrderContainer"></div>
 
 </section>
 
 
-<!-- ==========================
-     EMAIL
-========================== -->
+<!-- EMAIL -->
 
-<section id="emails"
-         class="page">
+<section id="emails" class="page">
 
 <div class="email-layout">
 
-    <div class="email-list">
+<div class="email-list">
 
-        <h2>
-            📥 Inbox
-        </h2>
+<h2>📥 Inbox</h2>
+<br>
 
-        <br>
+<div id="emailList"></div>
 
-        <div id="emailList"></div>
+</div>
 
-    </div>
+<div class="email-view" id="emailView">
 
+<h2>📧 Email</h2>
+<p style="margin-top:10px">Select an email.</p>
 
-    <div class="email-view"
-         id="emailView">
-
-        <h2>
-            📧 Email
-        </h2>
-
-        <p>
-            Select an email.
-        </p>
-
-    </div>
+</div>
 
 </div>
 
 </section>
 
 
-<!-- ==========================
-     TOPOLOGY
-========================== -->
+<!-- TOPOLOGY -->
 
-<section id="topology"
-         class="page">
+<section id="topology" class="page">
 
 <div class="card">
 
-    <h2>
-        🗺️ Network Topology
-    </h2>
+<h2>🗺️ Network Topology</h2>
 
-    <p style="margin-top:10px;line-height:1.6;">
-
-        Click any network element to inspect its
-        status, relationships and related incidents.
-
-    </p>
+<p style="margin-top:10px;line-height:1.6">
+Click a network element to investigate its relationships,
+alarms, tickets and affected services.
+</p>
 
 </div>
 
 <br>
-
 
 <div class="topology-wrapper">
 
-<div class="topology"
-     id="topologyCanvas">
-
+<div class="topology">
 
 <!-- LINKS -->
 
-<div class="link"
-     id="link-internet-core"
-     style="
-        left:500px;
-        top:92px;
-        width:170px;
-        transform:rotate(90deg);
-     ">
-</div>
-
-
-<div class="link"
-     id="link-core-ip"
-     style="
-        left:430px;
-        top:180px;
-        width:180px;
-        transform:rotate(90deg);
-     ">
-</div>
-
-
-<div class="link"
-     id="link-core-trans"
-     style="
-        left:430px;
-        top:180px;
-        width:220px;
-        transform:rotate(25deg);
-     ">
-</div>
-
-
-<div class="link"
-     id="link-core-ran"
-     style="
-        left:500px;
-        top:180px;
-        width:220px;
-        transform:rotate(155deg);
-     ">
-</div>
-
-
-<div class="link"
-     id="link-trans-micro"
-     style="
-        left:310px;
-        top:350px;
-        width:190px;
-        transform:rotate(20deg);
-     ">
-</div>
-
-
-<div class="link"
-     id="link-micro-remote"
-     style="
-        left:205px;
-        top:470px;
-        width:150px;
-        transform:rotate(0deg);
-     ">
-</div>
-
-
-<div class="link"
-     id="link-ran-cell"
-     style="
-        left:620px;
-        top:350px;
-        width:160px;
-        transform:rotate(35deg);
-     ">
-</div>
-
+<div class="link" id="l1" style="left:510px;top:130px;width:80px;transform:rotate(90deg)"></div>
+<div class="link" id="l2" style="left:505px;top:250px;width:100px;transform:rotate(90deg)"></div>
+<div class="link" id="l3" style="left:430px;top:300px;width:160px;transform:rotate(-25deg)"></div>
+<div class="link" id="l4" style="left:580px;top:300px;width:160px;transform:rotate(25deg)"></div>
+<div class="link" id="l5" style="left:285px;top:410px;width:170px;transform:rotate(10deg)"></div>
+<div class="link" id="l6" style="left:180px;top:500px;width:130px"></div>
+<div class="link" id="l7" style="left:700px;top:410px;width:130px;transform:rotate(25deg)"></div>
 
 <!-- NODES -->
 
-<div class="node"
-     id="node-internet"
-     style="left:430px;top:20px;"
-     onclick="inspectNode('internet')">
+<div class="node" id="node-internet" style="left:430px;top:30px" onclick="inspectNode('internet')">
+<div class="icon">🌐</div>
+<strong>Internet</strong>
+<small>External Network</small>
+</div>
 
-    <div class="icon">🌐</div>
+<div class="node" id="node-core" style="left:430px;top:190px" onclick="inspectNode('core')">
+<div class="icon">🖥️</div>
+<strong>IP Core</strong>
+<small>MCT-IP-CORE-01</small>
+</div>
 
-    <strong>Internet</strong>
+<div class="node" id="node-ip" style="left:350px;top:330px" onclick="inspectNode('ip')">
+<div class="icon">🌐</div>
+<strong>IP Router</strong>
+<small>MCT-IP-031</small>
+</div>
 
-    <small>External Network</small>
+<div class="node" id="node-trans" style="left:150px;top:330px" onclick="inspectNode('trans')">
+<div class="icon">📡</div>
+<strong>Transmission</strong>
+<small>MCT-TR-014</small>
+</div>
+
+<div class="node" id="node-ran" style="left:650px;top:330px" onclick="inspectNode('ran')">
+<div class="icon">📱</div>
+<strong>RAN Site</strong>
+<small>MCT-RAN-207</small>
+</div>
+
+<div class="node" id="node-micro" style="left:170px;top:450px" onclick="inspectNode('micro')">
+<div class="icon">📶</div>
+<strong>Microwave</strong>
+<small>SLL-MW-014</small>
+</div>
+
+<div class="node" id="node-remote" style="left:20px;top:450px" onclick="inspectNode('remote')">
+<div class="icon">🏢</div>
+<strong>Remote Site</strong>
+<small>SLL-REMOTE-02</small>
+</div>
+
+<div class="node" id="node-cell" style="left:760px;top:450px" onclick="inspectNode('cell')">
+<div class="icon">📱</div>
+<strong>Cell Site</strong>
+<small>MCT-CELL-207</small>
+</div>
 
 </div>
 
-
-<div class="node"
-     id="node-core"
-     style="left:430px;top:145px;"
-     onclick="inspectNode('core')">
-
-    <div class="icon">🖥️</div>
-
-    <strong>IP Core</strong>
-
-    <small>MCT-IP-CORE-01</small>
-
-</div>
-
-
-<div class="node"
-     id="node-ip"
-     style="left:350px;top:275px;"
-     onclick="inspectNode('ip')">
-
-    <div class="icon">🌐</div>
-
-    <strong>IP Router</strong>
-
-    <small>MCT-IP-031</small>
-
-</div>
-
-
-<div class="node"
-     id="node-trans"
-     style="left:180px;top:275px;"
-     onclick="inspectNode('trans')">
-
-    <div class="icon">📡</div>
-
-    <strong>Transmission</strong>
-
-    <small>MCT-TR-014</small>
-
-</div>
-
-
-<div class="node"
-     id="node-ran"
-     style="left:610px;top:275px;"
-     onclick="inspectNode('ran')">
-
-    <div class="icon">📱</div>
-
-    <strong>RAN Site</strong>
-
-    <small>MCT-RAN-207</small>
-
-</div>
-
-
-<div class="node"
-     id="node-micro"
-     style="left:170px;top:405px;"
-     onclick="inspectNode('micro')">
-
-    <div class="icon">📶</div>
-
-    <strong>Microwave Link</strong>
-
-    <small>SLL-MW-014</small>
-
-</div>
-
-
-<div class="node"
-     id="node-remote"
-     style="left:20px;top:405px;"
-     onclick="inspectNode('remote')">
-
-    <div class="icon">🏢</div>
-
-    <strong>Remote Site</strong>
-
-    <small>SLL-REMOTE-02</small>
-
-</div>
-
-
-<div class="node"
-     id="node-cell"
-     style="left:720px;top:405px;"
-     onclick="inspectNode('cell')">
-
-    <div class="icon">📱</div>
-
-    <strong>Cell Site</strong>
-
-    <small>MCT-CELL-207</small>
-
-</div>
-
-
-</div>
-
-
-<div class="topology-legend">
-
-    <div class="legend-item">
-        <span class="dot green"></span>
-        Normal
-    </div>
-
-    <div class="legend-item">
-        <span class="dot yellow"></span>
-        Warning
-    </div>
-
-    <div class="legend-item">
-        <span class="dot red"></span>
-        Down / Critical
-    </div>
-
+<div class="legend">
+<span><i class="dot green"></i> Normal</span>
+<span><i class="dot yellow"></i> Major</span>
+<span><i class="dot red"></i> Emergency</span>
 </div>
 
 </div>
@@ -1168,121 +489,57 @@ textarea:focus{
 </section>
 
 
-<!-- ==========================
-     DEPARTMENTS
-========================== -->
+<!-- DEPARTMENTS -->
 
-<section id="departments"
-         class="page">
+<section id="departments" class="page">
 
 <div class="card">
 
-    <h2>
-        🏢 NOC Departments
-    </h2>
+<h2>🏢 NOC Departments</h2>
 
-    <p style="margin-top:10px;">
-
-        Department modules will connect to the same
-        incident and topology system.
-
-    </p>
+<p style="margin-top:10px">
+Each department has its own incident workflow.
+</p>
 
 </div>
 
 <br>
-
 
 <div class="departments">
 
-<div class="department"
-     onclick="departmentInfo('IP')">
-
-    <h3>🌐 IP</h3>
-
-    <p>
-        IP topology, interfaces, routing,
-        alarms and connectivity.
-    </p>
-
+<div class="department" onclick="departmentInfo('IP')">
+<h3>🌐 IP</h3>
+<p>IP topology, interfaces, routing and connectivity.</p>
 </div>
 
-
-<div class="department"
-     onclick="departmentInfo('Transmission')">
-
-    <h3>📡 Transmission</h3>
-
-    <p>
-        Microwave, VSAT, fiber,
-        interfaces and transmission.
-    </p>
-
+<div class="department" onclick="departmentInfo('Transmission')">
+<h3>📡 Transmission</h3>
+<p>Microwave, VSAT, fiber and transport links.</p>
 </div>
 
-
-<div class="department"
-     onclick="departmentInfo('RAN')">
-
-    <h3>📱 RAN</h3>
-
-    <p>
-        Mobile sites, alarms,
-        KPIs and radio performance.
-    </p>
-
+<div class="department" onclick="departmentInfo('RAN')">
+<h3>📱 RAN</h3>
+<p>Mobile sites, radio alarms and KPIs.</p>
 </div>
 
-
-<div class="department"
-     onclick="departmentInfo('Fixed')">
-
-    <h3>🏢 Fixed</h3>
-
-    <p>
-        Fixed network services,
-        alarms and connectivity.
-    </p>
-
+<div class="department" onclick="departmentInfo('Fixed')">
+<h3>🏢 Fixed</h3>
+<p>Fixed network services and access incidents.</p>
 </div>
 
-
-<div class="department"
-     onclick="departmentInfo('Service Desk')">
-
-    <h3>🎧 Service Desk</h3>
-
-    <p>
-        Customer incidents,
-        communication and escalation.
-    </p>
-
+<div class="department" onclick="departmentInfo('Service Desk')">
+<h3>🎧 Service Desk</h3>
+<p>Customer incidents and escalation.</p>
 </div>
 
-
-<div class="department"
-     onclick="departmentInfo('SOC')">
-
-    <h3>🛡️ SOC</h3>
-
-    <p>
-        Security events,
-        alerts and monitoring.
-    </p>
-
+<div class="department" onclick="departmentInfo('SOC')">
+<h3>🛡️ SOC</h3>
+<p>Security alerts and incident monitoring.</p>
 </div>
 
-
-<div class="department"
-     onclick="departmentInfo('Agile Ops')">
-
-    <h3>⚙️ Agile Ops</h3>
-
-    <p>
-        Alarm monitoring,
-        events and operational workflow.
-    </p>
-
+<div class="department" onclick="departmentInfo('Agile Ops')">
+<h3>⚙️ Agile Ops</h3>
+<p>Alarm monitoring, correlation and operations.</p>
 </div>
 
 </div>
@@ -1290,32 +547,21 @@ textarea:focus{
 </section>
 
 
-<!-- ==========================
-     SCENARIOS
-========================== -->
+<!-- SCENARIOS -->
 
-<section id="scenarios"
-         class="page">
+<section id="scenarios" class="page">
 
 <div class="card">
 
-    <h2>
-        🎯 Training Scenario
-    </h2>
+<h2>🎯 Training Scenarios</h2>
 
-    <p style="margin:10px 0 18px;">
+<p style="margin:10px 0 18px">
+Practice real NOC decision-making.
+</p>
 
-        Practice prioritization, investigation,
-        escalation and incident handling.
-
-    </p>
-
-    <button class="primary"
-            onclick="startScenario()">
-
-        Start Random Scenario
-
-    </button>
+<button class="primary" onclick="startScenario()">
+Start Random Scenario
+</button>
 
 </div>
 
@@ -1323,78 +569,60 @@ textarea:focus{
 
 <div class="card">
 
-    <h3>
-        Scenario workflow
-    </h3>
+<h3>Workflow</h3>
 
-    <p style="line-height:1.8;margin-top:10px;">
-
-        Alarm → Investigation → Ticket →
-        Work Order → Topology → Communication →
-        Resolution
-
-    </p>
+<p style="margin-top:12px;line-height:2">
+🚨 Alarm → 🔎 Investigate → 🎫 Ticket →
+🔧 Work Order → 🗺️ Topology → 📧 Communicate → ✅ Resolve
+</p>
 
 </div>
 
 </section>
 
 
-<!-- ==========================
-     KPI
-========================== -->
+<!-- KPI -->
 
-<section id="kpi"
-         class="page">
+<section id="kpi" class="page">
 
 <div class="cards">
 
-    <div class="card">
-        <h3>Network Availability</h3>
-        <div class="big-number">99.2%</div>
-    </div>
+<div class="card">
+<h3>Network Availability</h3>
+<div class="big-number">99.2%</div>
+</div>
 
-    <div class="card">
-        <h3>SLA Compliance</h3>
-        <div class="big-number">96%</div>
-    </div>
+<div class="card">
+<h3>SLA Compliance</h3>
+<div class="big-number">96%</div>
+</div>
 
-    <div class="card">
-        <h3>Avg Response</h3>
-        <div class="big-number">8 min</div>
-    </div>
+<div class="card">
+<h3>Average Response</h3>
+<div class="big-number">8 min</div>
+</div>
 
-    <div class="card">
-        <h3>Open Tickets</h3>
-        <div class="big-number"
-             id="kpiTickets">
-            0
-        </div>
-    </div>
+<div class="card">
+<h3>Open Tickets</h3>
+<div class="big-number" id="kpiTickets">0</div>
+</div>
 
 </div>
 
 </section>
 
 
-<!-- ==========================
-     LOG
-========================== -->
+<!-- LOG -->
 
-<section id="log"
-         class="page">
+<section id="log" class="page">
 
 <div class="card">
 
-    <h2>
-        📝 Activity Log
-    </h2>
+<h2>📝 Activity Log</h2>
 
-    <p style="margin-top:10px;">
-
-        All simulator actions are recorded here.
-
-    </p>
+<p style="margin-top:10px">
+Every simulator action is recorded here.
+</p>
 
 </div>
 
@@ -1407,19 +635,13 @@ textarea:focus{
 </div>
 
 
-<!-- ==========================
-     MODAL
-========================== -->
+<!-- MODAL -->
 
-<div class="modal"
-     id="modal">
+<div class="modal" id="modal">
 
 <div class="modal-box">
 
-<span class="close"
-      onclick="closeModal()">
-    ✕
-</span>
+<span class="close" onclick="closeModal()">✕</span>
 
 <div id="modalContent"></div>
 
@@ -1429,10 +651,6 @@ textarea:focus{
 
 
 <script>
-
-/* ==========================================
-   GLOBAL DATA
-========================================== */
 
 let alarms=[];
 let tickets=[];
@@ -1447,2185 +665,1269 @@ let ticketCounter=48000;
 let workOrderCounter=10000;
 
 
-/* ==========================================
-   CLOCK
-========================================== */
+/* CLOCK */
 
 function updateClock(){
-
-    const now=new Date();
-
-    document.getElementById("clock")
-        .textContent=
-        now.toLocaleTimeString();
-
+document.getElementById("clock").textContent=
+new Date().toLocaleTimeString();
 }
 
 setInterval(updateClock,1000);
 updateClock();
 
 
-/* ==========================================
-   NAVIGATION
-========================================== */
+/* NAVIGATION */
 
 function showPage(id,button){
 
-    document.querySelectorAll(".page")
-        .forEach(p=>p.classList.remove("active"));
+document.querySelectorAll(".page")
+.forEach(p=>p.classList.remove("active"));
 
-    const page=document.getElementById(id);
+document.getElementById(id).classList.add("active");
 
-    if(page){
-        page.classList.add("active");
-    }
+document.querySelectorAll(".nav-btn")
+.forEach(b=>b.classList.remove("active"));
 
-    document.querySelectorAll(".nav-btn")
-        .forEach(b=>b.classList.remove("active"));
-
-    if(button){
-        button.classList.add("active");
-    }
+if(button)button.classList.add("active");
 
 }
 
 
-/* ==========================================
-   LOG
-========================================== */
+/* LOG */
 
 function addLog(message){
 
-    const container=
-        document.getElementById("activityLog");
+const div=document.createElement("div");
 
-    const div=
-        document.createElement("div");
+div.className="log";
 
-    div.className="log";
+div.innerHTML=`
+<small>${new Date().toLocaleTimeString()}</small>
+<br>
+${message}
+`;
 
-    div.innerHTML=`
-
-        <small>
-            ${new Date().toLocaleTimeString()}
-        </small>
-
-        <br>
-
-        ${message}
-
-    `;
-
-    container.prepend(div);
+document.getElementById("activityLog").prepend(div);
 
 }
 
 
-/* ==========================================
-   GENERATE ALARM
-========================================== */
+/* ALARM TYPES */
 
-function generateAlarm(){
+const possibleAlarms=[
 
-    const possible=[
+{
+type:"IP Core Interface Down",
+department:"IP",
+site:"MCT-IP-031",
+severity:"Emergency",
+sla:15,
+node:"ip"
+},
 
-        {
-            type:"IP Core Interface Down",
-            department:"IP",
-            site:"MCT-IP-031",
-            priority:"P1",
-            sla:15,
-            node:"ip"
-        },
+{
+type:"Microwave Link Down",
+department:"Transmission",
+site:"SLL-MW-014",
+severity:"Emergency",
+sla:15,
+node:"micro"
+},
 
-        {
-            type:"Microwave Link Down",
-            department:"Transmission",
-            site:"SLL-MW-014",
-            priority:"P1",
-            sla:15,
-            node:"micro"
-        },
+{
+type:"RAN Site Degradation",
+department:"RAN",
+site:"MCT-RAN-207",
+severity:"Major",
+sla:30,
+node:"ran"
+},
 
-        {
-            type:"RAN Site Degradation",
-            department:"RAN",
-            site:"MCT-RAN-207",
-            priority:"P2",
-            sla:30,
-            node:"ran"
-        },
+{
+type:"Fixed Service Alarm",
+department:"Fixed",
+site:"SLL-FIX-112",
+severity:"Major",
+sla:30,
+node:"remote"
+},
 
-        {
-            type:"Fixed Service Alarm",
-            department:"Fixed",
-            site:"SLL-FIX-112",
-            priority:"P2",
-            sla:30,
-            node:"remote"
-        },
+{
+type:"SOC Security Event",
+department:"SOC",
+site:"MCT-SOC-008",
+severity:"Emergency",
+sla:15,
+node:"core"
+},
 
-        {
-            type:"SOC Security Event",
-            department:"SOC",
-            site:"MCT-SOC-008",
-            priority:"P1",
-            sla:15,
-            node:"core"
-        }
+{
+type:"Minor Interface Warning",
+department:"IP",
+site:"MCT-IP-044",
+severity:"Minor",
+sla:60,
+node:"ip"
+},
 
-    ];
-
-
-    const selected=
-        possible[
-            Math.floor(
-                Math.random()*possible.length
-            )
-        ];
-
-
-    const alarm={
-
-        id:++alarmCounter,
-
-        type:selected.type,
-
-        department:selected.department,
-
-        site:selected.site,
-
-        priority:selected.priority,
-
-        sla:selected.sla,
-
-        remaining:selected.sla*60,
-
-        node:selected.node,
-
-        acknowledged:false,
-
-        ticketCreated:false
-
-    };
-
-
-    alarms.push(alarm);
-
-
-    /* AUTOMATIC TICKET */
-
-    createAutomaticTicket(alarm);
-
-
-    /* TOPOLOGY */
-
-    highlightTopology(
-        alarm.node
-    );
-
-
-    /* EMAIL */
-
-    createAutomaticEmail(alarm);
-
-
-    addLog(
-        `🚨 ${alarm.priority} alarm received: 
-        ${alarm.type} at ${alarm.site}`
-    );
-
-
-    renderAlarms();
-    updateDashboard();
-
-
-    showPage(
-        "alarms",
-        document.querySelectorAll(".nav-btn")[1]
-    );
-
+{
+type:"Minor RAN Performance Alert",
+department:"RAN",
+site:"MCT-RAN-221",
+severity:"Minor",
+sla:60,
+node:"ran"
 }
-
-
-/* ==========================================
-   AUTOMATIC TICKET
-========================================== */
-
-function createAutomaticTicket(alarm){
-
-    if(alarm.ticketCreated)
-        return;
-
-
-    const ticket={
-
-        id:
-            "SMA-"+(++ticketCounter),
-
-        alarmId:
-            "AL-"+alarm.id,
-
-        type:
-            alarm.type,
-
-        department:
-            alarm.department,
-
-        site:
-            alarm.site,
-
-        priority:
-            alarm.priority,
-
-        status:
-            "New",
-
-        created:
-            new Date().toLocaleTimeString()
-
-    };
-
-
-    tickets.push(ticket);
-
-    alarm.ticketCreated=true;
-
-
-    /* AUTOMATIC WORK ORDER */
-
-    createAutomaticWorkOrder(
-        ticket
-    );
-
-
-    score+=5;
-    progress+=5;
-
-
-    addLog(
-        `🎫 Automatic ticket ${ticket.id}
-        created from AL-${alarm.id}`
-    );
-
-
-    renderTickets();
-    updateDashboard();
-
-}
-
-
-/* ==========================================
-   AUTOMATIC WORK ORDER
-========================================== */
-
-function createAutomaticWorkOrder(ticket){
-
-    const workOrder={
-
-        id:
-            "WO-"+(++workOrderCounter),
-
-        ticketId:
-            ticket.id,
-
-        department:
-            ticket.department,
-
-        site:
-            ticket.site,
-
-        task:
-            "Investigate "+ticket.type,
-
-        priority:
-            ticket.priority,
-
-        status:
-            "Pending",
-
-        assigned:
-            ticket.department+" Team"
-
-    };
-
-
-    workOrders.push(workOrder);
-
-
-    addLog(
-        `🔧 Automatic Work Order ${workOrder.id}
-        created and linked to ${ticket.id}`
-    );
-
-
-    renderWorkOrders();
-    updateDashboard();
-
-}
-
-
-/* ==========================================
-   RENDER ALARMS
-========================================== */
-
-function renderAlarms(){
-
-    const container=
-        document.getElementById(
-            "alarmContainer"
-        );
-
-    container.innerHTML="";
-
-
-    if(alarms.length===0){
-
-        container.innerHTML=`
-
-            <div class="card">
-                No active alarms 🌸
-            </div>
-
-        `;
-
-        return;
-    }
-
-
-    alarms.forEach(alarm=>{
-
-        const div=
-            document.createElement("div");
-
-        div.className=
-            "alarm "+
-            (
-                alarm.priority==="P2"
-                ?"p2"
-                :""
-            );
-
-
-        const minutes=
-            Math.floor(
-                alarm.remaining/60
-            );
-
-        const seconds=
-            alarm.remaining%60;
-
-
-        const ticket=
-            tickets.find(
-                t=>t.alarmId==="AL-"+alarm.id
-            );
-
-
-        div.innerHTML=`
-
-            <div class="alarm-head">
-
-                <strong>
-                    🚨 ${alarm.type}
-                </strong>
-
-                <span class="priority">
-                    ${alarm.priority}
-                </span>
-
-            </div>
-
-
-            <p>
-                <strong>Alarm:</strong>
-                AL-${alarm.id}
-            </p>
-
-            <p>
-                <strong>Site:</strong>
-                ${alarm.site}
-            </p>
-
-            <p>
-                <strong>Department:</strong>
-                ${alarm.department}
-            </p>
-
-            <p>
-                <strong>SLA:</strong>
-                ${alarm.sla} minutes
-            </p>
-
-
-            <p class="timer">
-
-                ⏱️
-
-                ${minutes}:
-                ${String(seconds).padStart(2,"0")}
-
-                remaining
-
-            </p>
-
-
-            <br>
-
-
-            <button
-                class="primary"
-                onclick="acknowledgeAlarm(${alarm.id})">
-
-                ✓ Acknowledge
-
-            </button>
-
-
-            <button
-                class="secondary"
-                onclick="focusTopology('${alarm.node}')"
-                style="margin-left:6px;">
-
-                🗺️ View Topology
-
-            </button>
-
-
-            <br><br>
-
-
-            <small>
-
-                Automatic Ticket:
-                <strong>
-                    ${ticket ? ticket.id : "Creating..."}
-                </strong>
-
-            </small>
-
-        `;
-
-
-        container.appendChild(div);
-
-    });
-
-}
-
-
-/* ==========================================
-   SLA TIMER
-========================================== */
-
-setInterval(()=>{
-
-    alarms.forEach(alarm=>{
-
-        if(alarm.remaining>0){
-
-            alarm.remaining--;
-
-        }
-
-    });
-
-    renderAlarms();
-
-},1000);
-
-
-/* ==========================================
-   ACKNOWLEDGE
-========================================== */
-
-function acknowledgeAlarm(id){
-
-    const alarm=
-        alarms.find(
-            a=>a.id===id
-        );
-
-
-    if(!alarm)
-        return;
-
-
-    if(alarm.acknowledged){
-
-        alert(
-            "This alarm has already been acknowledged."
-        );
-
-        return;
-    }
-
-
-    alarm.acknowledged=true;
-
-
-    score+=5;
-    progress+=5;
-
-
-    const ticket=
-        tickets.find(
-            t=>t.alarmId==="AL-"+id
-        );
-
-
-    if(ticket){
-
-        ticket.status=
-            "Investigating";
-
-    }
-
-
-    addLog(
-        `✅ AL-${id} acknowledged.
-        Investigation started.`
-    );
-
-
-    renderAlarms();
-    renderTickets();
-    updateDashboard();
-
-}
-
-
-/* ==========================================
-   TICKETS
-========================================== */
-
-function renderTickets(){
-
-    const container=
-        document.getElementById(
-            "ticketContainer"
-        );
-
-    container.innerHTML="";
-
-
-    if(tickets.length===0){
-
-        container.innerHTML=`
-
-            <div class="ticket">
-                No tickets yet 🌸
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
-    tickets.forEach(ticket=>{
-
-        const div=
-            document.createElement("div");
-
-        div.className="ticket";
-
-
-        const workOrder=
-            workOrders.find(
-                w=>w.ticketId===ticket.id
-            );
-
-
-        div.innerHTML=`
-
-            <h3>
-                🎫 ${ticket.id}
-            </h3>
-
-
-            <div class="info-grid">
-
-                <div class="info">
-
-                    <small>
-                        Alarm
-                    </small>
-
-                    ${ticket.alarmId}
-
-                </div>
-
-
-                <div class="info">
-
-                    <small>
-                        Incident
-                    </small>
-
-                    ${ticket.type}
-
-                </div>
-
-
-                <div class="info">
-
-                    <small>
-                        Department
-                    </small>
-
-                    ${ticket.department}
-
-                </div>
-
-
-                <div class="info">
-
-                    <small>
-                        Priority
-                    </small>
-
-                    ${ticket.priority}
-
-                </div>
-
-
-                <div class="info">
-
-                    <small>
-                        Status
-                    </small>
-
-                    ${ticket.status}
-
-                </div>
-
-
-                <div class="info">
-
-                    <small>
-                        Work Order
-                    </small>
-
-                    ${workOrder ?
-                        workOrder.id :
-                        "None"}
-
-                </div>
-
-            </div>
-
-
-            <button
-                class="primary"
-                onclick="updateTicket('${ticket.id}')">
-
-                Update Ticket
-
-            </button>
-
-        `;
-
-
-        container.appendChild(div);
-
-    });
-
-}
-
-
-/* ==========================================
-   UPDATE TICKET
-========================================== */
-
-function updateTicket(id){
-
-    const ticket=
-        tickets.find(
-            t=>t.id===id
-        );
-
-
-    if(!ticket)
-        return;
-
-
-    document.getElementById(
-        "modalContent"
-    ).innerHTML=`
-
-        <h2>
-            🎫 ${ticket.id}
-        </h2>
-
-
-        <p>
-            ${ticket.type}
-        </p>
-
-
-        <br>
-
-
-        <label>
-            Status
-        </label>
-
-
-        <br><br>
-
-
-        <select id="ticketStatus"
-                style="
-                width:100%;
-                padding:12px;
-                border:2px solid #ffd7e9;
-                border-radius:12px;
-                ">
-
-            <option>
-                New
-            </option>
-
-            <option>
-                Investigating
-            </option>
-
-            <option>
-                Escalated
-            </option>
-
-            <option>
-                Resolved
-            </option>
-
-            <option>
-                Closed
-            </option>
-
-        </select>
-
-
-        <br><br>
-
-
-        <label>
-            Investigation Notes
-        </label>
-
-
-        <br><br>
-
-
-        <textarea
-            id="ticketNotes"
-            placeholder="Write investigation notes...">
-        </textarea>
-
-
-        <br><br>
-
-
-        <button
-            class="primary"
-            onclick="saveTicket('${ticket.id}')">
-
-            Save Update
-
-        </button>
-
-    `;
-
-
-    document.getElementById(
-        "modal"
-    ).classList.add("show");
-
-}
-
-
-/* ==========================================
-   SAVE TICKET
-========================================== */
-
-function saveTicket(id){
-
-    const ticket=
-        tickets.find(
-            t=>t.id===id
-        );
-
-
-    ticket.status=
-        document.getElementById(
-            "ticketStatus"
-        ).value;
-
-
-    const notes=
-        document.getElementById(
-            "ticketNotes"
-        ).value;
-
-
-    score+=5;
-    progress+=5;
-
-
-    addLog(
-        `📝 ${ticket.id}
-        updated to ${ticket.status}`
-    );
-
-
-    if(notes){
-
-        addLog(
-            `🔎 Investigation notes added
-            to ${ticket.id}`
-        );
-
-    }
-
-
-    closeModal();
-
-    renderTickets();
-
-    updateDashboard();
-
-}
-
-
-/* ==========================================
-   WORK ORDERS
-========================================== */
-
-function renderWorkOrders(){
-
-    const container=
-        document.getElementById(
-            "workOrderContainer"
-        );
-
-    container.innerHTML="";
-
-
-    if(workOrders.length===0){
-
-        container.innerHTML=`
-
-            <div class="workorder">
-                No work orders yet 🌸
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
-    workOrders.forEach(wo=>{
-
-        const div=
-            document.createElement("div");
-
-        div.className="workorder";
-
-
-        div.innerHTML=`
-
-            <h3>
-                🔧 ${wo.id}
-            </h3>
-
-
-            <div class="info-grid">
-
-                <div class="info">
-
-                    <small>
-                        Linked Ticket
-                    </small>
-
-                    ${wo.ticketId}
-
-                </div>
-
-
-                <div class="info">
-
-                    <small>
-                        Department
-                    </small>
-
-                    ${wo.department}
-
-                </div>
-
-
-                <div class="info">
-
-                    <small>
-                        Site
-                    </small>
-
-                    ${wo.site}
-
-                </div>
-
-
-                <div class="info">
-
-                    <small>
-                        Priority
-                    </small>
-
-                    ${wo.priority}
-
-                </div>
-
-
-                <div class="info">
-
-                    <small>
-                        Assigned
-                    </small>
-
-                    ${wo.assigned}
-
-                </div>
-
-
-                <div class="info">
-
-                    <small>
-                        Status
-                    </small>
-
-                    ${wo.status}
-
-                </div>
-
-            </div>
-
-
-            <p>
-
-                <strong>
-                    Task:
-                </strong>
-
-                ${wo.task}
-
-            </p>
-
-
-            <br>
-
-
-            <button
-                class="primary"
-                onclick="updateWorkOrder('${wo.id}')">
-
-                Update Work Order
-
-            </button>
-
-        `;
-
-
-        container.appendChild(div);
-
-    });
-
-}
-
-
-/* ==========================================
-   UPDATE WORK ORDER
-========================================== */
-
-function updateWorkOrder(id){
-
-    const wo=
-        workOrders.find(
-            w=>w.id===id
-        );
-
-
-    document.getElementById(
-        "modalContent"
-    ).innerHTML=`
-
-        <h2>
-            🔧 ${wo.id}
-        </h2>
-
-
-        <p>
-            ${wo.task}
-        </p>
-
-
-        <br>
-
-
-        <select
-            id="woStatus"
-            style="
-            width:100%;
-            padding:12px;
-            border:2px solid #ffd7e9;
-            border-radius:12px;
-            ">
-
-            <option>
-                Pending
-            </option>
-
-            <option>
-                Assigned
-            </option>
-
-            <option>
-                In Progress
-            </option>
-
-            <option>
-                Completed
-            </option>
-
-        </select>
-
-
-        <br><br>
-
-
-        <button
-            class="primary"
-            onclick="saveWorkOrder('${wo.id}')">
-
-            Save Work Order
-
-        </button>
-
-    `;
-
-
-    document.getElementById(
-        "modal"
-    ).classList.add("show");
-
-}
-
-
-/* ==========================================
-   SAVE WORK ORDER
-========================================== */
-
-function saveWorkOrder(id){
-
-    const wo=
-        workOrders.find(
-            w=>w.id===id
-        );
-
-
-    wo.status=
-        document.getElementById(
-            "woStatus"
-        ).value;
-
-
-    score+=5;
-    progress+=5;
-
-
-    addLog(
-        `🔧 ${wo.id}
-        updated to ${wo.status}`
-    );
-
-
-    closeModal();
-
-    renderWorkOrders();
-
-    updateDashboard();
-
-}
-
-
-/* ==========================================
-   AUTOMATIC EMAIL
-========================================== */
-
-function createAutomaticEmail(alarm){
-
-    const ticket=
-        tickets.find(
-            t=>t.alarmId==="AL-"+alarm.id
-        );
-
-
-    const wo=
-        workOrders.find(
-            w=>w.ticketId===ticket.id
-        );
-
-
-    const email={
-
-        id:
-            Date.now(),
-
-        subject:
-            `${alarm.priority} Incident — ${alarm.type}`,
-
-        from:
-            "NOC Monitoring",
-
-        body:`
-
-            <strong>
-                Automated NOC Notification
-            </strong>
-
-            <br><br>
-
-            A network alarm has been detected.
-
-            <br><br>
-
-            <strong>
-                Alarm:
-            </strong>
-            AL-${alarm.id}
-
-            <br>
-
-            <strong>
-                Incident:
-            </strong>
-            ${alarm.type}
-
-            <br>
-
-            <strong>
-                Department:
-            </strong>
-            ${alarm.department}
-
-            <br>
-
-            <strong>
-                Priority:
-            </strong>
-            ${alarm.priority}
-
-            <br>
-
-            <strong>
-                SLA:
-            </strong>
-            ${alarm.sla} minutes
-
-            <br>
-
-            <strong>
-                Ticket:
-            </strong>
-            ${ticket.id}
-
-            <br>
-
-            <strong>
-                Work Order:
-            </strong>
-            ${wo.id}
-
-            <br><br>
-
-            Please acknowledge and begin investigation.
-
-        `
-
-    };
-
-
-    emails.unshift(email);
-
-    renderEmails();
-
-    addLog(
-        `📧 Automatic notification sent
-        for ${ticket.id}`
-    );
-
-}
-
-
-/* ==========================================
-   EMAILS
-========================================== */
-
-function renderEmails(){
-
-    const list=
-        document.getElementById(
-            "emailList"
-        );
-
-
-    list.innerHTML="";
-
-
-    if(emails.length===0){
-
-        list.innerHTML=`
-
-            <p>
-                No new emails.
-            </p>
-
-        `;
-
-        return;
-
-    }
-
-
-    emails.forEach(email=>{
-
-        const item=
-            document.createElement("div");
-
-        item.className="email-item";
-
-
-        item.innerHTML=`
-
-            <strong>
-                ${email.subject}
-            </strong>
-
-            <small>
-                From: ${email.from}
-            </small>
-
-        `;
-
-
-        item.onclick=
-            ()=>openEmail(email.id);
-
-
-        list.appendChild(item);
-
-    });
-
-}
-
-
-/* ==========================================
-   OPEN EMAIL
-========================================== */
-
-function openEmail(id){
-
-    const email=
-        emails.find(
-            e=>e.id===id
-        );
-
-
-    if(!email)
-        return;
-
-
-    document.getElementById(
-        "emailView"
-    ).innerHTML=`
-
-        <h2>
-            📧 ${email.subject}
-        </h2>
-
-
-        <p>
-
-            <strong>
-                From:
-            </strong>
-
-            ${email.from}
-
-        </p>
-
-
-        <div class="email-body">
-
-            ${email.body}
-
-        </div>
-
-
-        <h3>
-            ✉️ Reply
-        </h3>
-
-
-        <br>
-
-
-        <textarea
-            id="emailReply"
-            placeholder="Write your professional response...">
-        </textarea>
-
-
-        <br><br>
-
-
-        <button
-            class="primary"
-            onclick="sendEmailReply('${email.id}')">
-
-            Send Reply
-
-        </button>
-
-    `;
-
-}
-
-
-/* ==========================================
-   SEND EMAIL REPLY
-========================================== */
-
-function sendEmailReply(id){
-
-    const reply=
-        document.getElementById(
-            "emailReply"
-        ).value.trim();
-
-
-    if(!reply){
-
-        alert(
-            "Please write a response."
-        );
-
-        return;
-
-    }
-
-
-    score+=5;
-    progress+=5;
-
-
-    addLog(
-        "📧 Email reply sent successfully."
-    );
-
-
-    alert(
-        "📧 Email sent successfully."
-    );
-
-
-    updateDashboard();
-
-}
-
-
-/* ==========================================
-   TOPOLOGY DATA
-========================================== */
-
-const topologyData={
-
-    internet:{
-        name:"Internet",
-        department:"External",
-        status:"Normal",
-        connections:["IP Core"],
-        services:["Internet Connectivity"]
-    },
-
-    core:{
-        name:"IP Core",
-        department:"IP",
-        status:"Normal",
-        connections:["Internet","IP Router","Transmission","RAN"],
-        services:["Core Network"]
-    },
-
-    ip:{
-        name:"IP Router MCT-IP-031",
-        department:"IP",
-        status:"Normal",
-        connections:["IP Core"],
-        services:["IP Connectivity"]
-    },
-
-    trans:{
-        name:"Transmission Node MCT-TR-014",
-        department:"Transmission",
-        status:"Normal",
-        connections:["IP Core","Microwave Link"],
-        services:["Transport"]
-    },
-
-    ran:{
-        name:"RAN Site MCT-RAN-207",
-        department:"RAN",
-        status:"Normal",
-        connections:["IP Core","Cell Site"],
-        services:["Mobile Access"]
-    },
-
-    micro:{
-        name:"Microwave Link SLL-MW-014",
-        department:"Transmission",
-        status:"Normal",
-        connections:["Transmission","Remote Site"],
-        services:["Microwave Transport"]
-    },
-
-    remote:{
-        name:"Remote Site SLL-REMOTE-02",
-        department:"Fixed",
-        status:"Normal",
-        connections:["Microwave Link"],
-        services:["Fixed Services"]
-    },
-
-    cell:{
-        name:"Cell Site MCT-CELL-207",
-        department:"RAN",
-        status:"Normal",
-        connections:["RAN Site"],
-        services:["Mobile Service"]
-
-    }
-
-};
-
-
-/* ==========================================
-   INSPECT NODE
-========================================== */
-
-function inspectNode(id){
-
-    const node=
-        topologyData[id];
-
-
-    const relatedAlarms=
-        alarms.filter(
-            a=>a.node===id
-        );
-
-
-    const relatedTickets=
-        tickets.filter(
-            t=>relatedAlarms.some(
-                a=>"AL-"+a.id===t.alarmId
-            )
-        );
-
-
-    document.getElementById(
-        "modalContent"
-    ).innerHTML=`
-
-        <h2>
-            🗺️ ${node.name}
-        </h2>
-
-
-        <div class="info-grid">
-
-            <div class="info">
-
-                <small>
-                    Department
-                </small>
-
-                ${node.department}
-
-            </div>
-
-
-            <div class="info">
-
-                <small>
-                    Status
-                </small>
-
-                ${
-                    relatedAlarms.length
-                    ? "🔴 Alarm Active"
-                    : "🟢 Normal"
-                }
-
-            </div>
-
-
-            <div class="info">
-
-                <small>
-                    Related Alarms
-                </small>
-
-                ${relatedAlarms.length}
-
-            </div>
-
-
-            <div class="info">
-
-                <small>
-                    Related Tickets
-                </small>
-
-                ${relatedTickets.length}
-
-            </div>
-
-        </div>
-
-
-        <h3>
-            🔗 Connected Elements
-        </h3>
-
-
-        <div class="email-body">
-
-            ${node.connections
-                .map(c=>`• ${c}`)
-                .join("<br>")}
-
-        </div>
-
-
-        <h3>
-            📡 Services
-        </h3>
-
-
-        <div class="email-body">
-
-            ${node.services
-                .map(s=>`• ${s}`)
-                .join("<br>")}
-
-        </div>
-
-
-        ${
-            relatedAlarms.length
-
-            ?
-
-            `
-
-            <div class="email-body">
-
-                <strong>
-                    🚨 Active Incident
-                </strong>
-
-                <br><br>
-
-                ${relatedAlarms
-                    .map(a=>
-                        `AL-${a.id} — ${a.type}`
-                    )
-                    .join("<br>")}
-
-            </div>
-
-            `
-
-            :
-
-            ""
-
-        }
-
-
-        <button
-            class="primary"
-            onclick="closeModal()">
-
-            Close
-
-        </button>
-
-    `;
-
-
-    document.getElementById(
-        "modal"
-    ).classList.add("show");
-
-}
-
-
-/* ==========================================
-   TOPOLOGY HIGHLIGHT
-========================================== */
-
-function highlightTopology(nodeId){
-
-    document.querySelectorAll(".node")
-        .forEach(
-            n=>n.classList.remove("down")
-        );
-
-
-    const node=
-        document.getElementById(
-            "node-"+nodeId
-        );
-
-
-    if(node){
-
-        node.classList.add("down");
-
-    }
-
-
-    const linkMap={
-
-        micro:[
-            "link-trans-micro",
-            "link-micro-remote"
-        ],
-
-        trans:[
-            "link-core-trans",
-            "link-trans-micro"
-        ],
-
-        ip:[
-            "link-core-ip"
-        ],
-
-        ran:[
-            "link-core-ran",
-            "link-ran-cell"
-        ],
-
-        core:[
-            "link-internet-core",
-            "link-core-ip",
-            "link-core-trans",
-            "link-core-ran"
-        ],
-
-        remote:[
-            "link-micro-remote"
-        ],
-
-        cell:[
-            "link-ran-cell"
-        ]
-
-    };
-
-
-    document.querySelectorAll(".link")
-        .forEach(
-            l=>l.classList.remove("down")
-        );
-
-
-    if(linkMap[nodeId]){
-
-        linkMap[nodeId].forEach(
-            id=>{
-
-                const link=
-                    document.getElementById(id);
-
-                if(link){
-                    link.classList.add("down");
-                }
-
-            }
-        );
-
-    }
-
-}
-
-
-/* ==========================================
-   FOCUS TOPOLOGY
-========================================== */
-
-function focusTopology(node){
-
-    highlightTopology(node);
-
-    showPage(
-        "topology",
-        document.querySelectorAll(".nav-btn")[5]
-    );
-
-    setTimeout(
-        ()=>inspectNode(node),
-        300
-    );
-
-}
-
-
-/* ==========================================
-   DEPARTMENT INFO
-========================================== */
-
-function departmentInfo(name){
-
-    document.getElementById(
-        "modalContent"
-    ).innerHTML=`
-
-        <h2>
-            🏢 ${name}
-        </h2>
-
-
-        <div class="email-body">
-
-            The ${name} module is connected
-            to the same alarm, ticket, work order
-            and topology environment.
-
-            <br><br>
-
-            We will build the detailed
-            department workflow here next.
-
-        </div>
-
-
-        <button
-            class="primary"
-            onclick="closeModal()">
-
-            Close
-
-        </button>
-
-    `;
-
-
-    document.getElementById(
-        "modal"
-    ).classList.add("show");
-
-}
-
-
-/* ==========================================
-   TRAINING SCENARIOS
-========================================== */
-
-const scenarios=[
-
-    {
-
-        department:"IP",
-
-        title:"IP Core Interface Failure",
-
-        priority:"P1",
-
-        situation:
-            "An IP Core interface has gone down and multiple connectivity alarms are appearing.",
-
-        choices:[
-
-            {
-                text:
-                    "Acknowledge the alarm and investigate related alarms",
-
-                correct:true,
-
-                points:10
-            },
-
-            {
-                text:
-                    "Immediately restart the router",
-
-                correct:false,
-
-                points:-20
-            },
-
-            {
-                text:
-                    "Close the alarm",
-
-                correct:false,
-
-                points:-20
-            }
-
-        ]
-
-    },
-
-
-    {
-
-        department:"Transmission",
-
-        title:"Microwave Link Failure",
-
-        priority:"P1",
-
-        situation:
-            "A microwave link has gone down and the remote site is unreachable.",
-
-        choices:[
-
-            {
-                text:
-                    "Check the topology and related transmission alarms",
-
-                correct:true,
-
-                points:10
-            },
-
-            {
-                text:
-                    "Close the alarm",
-
-                correct:false,
-
-                points:-20
-            },
-
-            {
-                text:
-                    "Ignore it",
-
-                correct:false,
-
-                points:-15
-            }
-
-        ]
-
-    },
-
-
-    {
-
-        department:"RAN",
-
-        title:"RAN Performance Degradation",
-
-        priority:"P2",
-
-        situation:
-            "A RAN site is showing abnormal KPI values.",
-
-        choices:[
-
-            {
-                text:
-                    "Check KPIs and correlate related alarms",
-
-                correct:true,
-
-                points:10
-            },
-
-            {
-                text:
-                    "Ignore the degradation",
-
-                correct:false,
-
-                points:-10
-            },
-
-            {
-                text:
-                    "Immediately shut down the site",
-
-                correct:false,
-
-                points:-20
-            }
-
-        ]
-
-    }
 
 ];
 
 
-/* ==========================================
-   START SCENARIO
-========================================== */
+/* GENERATE ALARM */
 
-function startScenario(){
+function generateAlarm(){
 
-    const scenario=
-        scenarios[
-            Math.floor(
-                Math.random()*scenarios.length
-            )
-        ];
+const selected=
+possibleAlarms[
+Math.floor(Math.random()*possibleAlarms.length)
+];
 
+const alarm={
 
-    document.getElementById(
-        "modalContent"
-    ).innerHTML=`
+id:++alarmCounter,
+type:selected.type,
+department:selected.department,
+site:selected.site,
+severity:selected.severity,
+sla:selected.sla,
+remaining:selected.sla*60,
+node:selected.node,
+acknowledged:false
 
-        <h2>
-            🎯 Training Scenario
-        </h2>
+};
 
+alarms.push(alarm);
 
-        <h3 style="color:#d95794;">
-            ${scenario.title}
-        </h3>
-
-
-        <br>
-
-
-        <p>
-
-            <strong>
-                Department:
-            </strong>
-
-            ${scenario.department}
-
-        </p>
-
-
-        <p>
-
-            <strong>
-                Priority:
-            </strong>
-
-            ${scenario.priority}
-
-        </p>
-
-
-        <br>
-
-
-        <div class="email-body">
-
-            ${scenario.situation}
-
-        </div>
-
-
-        <h3>
-            What do you do first?
-        </h3>
-
-
-        <br>
-
-
-        <div id="choices"></div>
-
-    `;
-
-
-    const container=
-        document.getElementById(
-            "choices"
-        );
-
-
-    scenario.choices.forEach(
-        choice=>{
-
-            const button=
-                document.createElement(
-                    "button"
-                );
-
-            button.className="choice";
-
-            button.textContent=
-                choice.text;
-
-
-            button.onclick=()=>{
-
-                score+=choice.points;
-
-                if(choice.correct){
-
-                    progress+=5;
-
-                    addLog(
-                        "✅ Correct training decision."
-                    );
-
-                    alert(
-                        "✅ Correct decision!"
-                    );
-
-                }
-                else{
-
-                    progress-=3;
-
-                    if(progress<0)
-                        progress=0;
-
-                    addLog(
-                        "⚠️ Incorrect training decision."
-                    );
-
-                    alert(
-                        "⚠️ Decision needs review."
-                    );
-
-                }
-
-
-                closeModal();
-
-                updateDashboard();
-
-            };
-
-
-            container.appendChild(
-                button
-            );
-
-        }
-    );
-
-
-    document.getElementById(
-        "modal"
-    ).classList.add("show");
-
-}
-
-
-/* ==========================================
-   DASHBOARD
-========================================== */
-
-function updateDashboard(){
-
-    document.getElementById(
-        "alarmCount"
-    ).textContent=
-        alarms.length;
-
-
-    document.getElementById(
-        "ticketCount"
-    ).textContent=
-        tickets.length;
-
-
-    document.getElementById(
-        "workOrderCount"
-    ).textContent=
-        workOrders.length;
-
-
-    document.getElementById(
-        "kpiTickets"
-    ).textContent=
-        tickets.length;
-
-
-    document.getElementById(
-        "score"
-    ).textContent=
-        Math.max(
-            0,
-            score
-        );
-
-
-    const percent=
-        Math.min(
-            100,
-            progress
-        );
-
-
-    document.getElementById(
-        "progressBar"
-    ).style.width=
-        percent+"%";
-
-
-    document.getElementById(
-        "progressText"
-    ).textContent=
-        percent+"% completed";
-
-}
-
-
-/* ==========================================
-   MODAL
-========================================== */
-
-function closeModal(){
-
-    document.getElementById(
-        "modal"
-    ).classList.remove("show");
-
-}
-
-
-/* ==========================================
-   INITIALIZE
-========================================== */
+createTicket(alarm);
+highlightTopology(alarm.node,alarm.severity);
+createEmail(alarm);
 
 addLog(
-    "🌸 NOC Training Simulator started."
+`🚨 <strong>${alarm.severity}</strong> alarm:
+${alarm.type} at ${alarm.site}`
 );
 
-renderEmails();
+renderAll();
+
+showPage(
+"alarms",
+document.querySelectorAll(".nav-btn")[1]
+);
+
+}
+
+
+/* CREATE TICKET */
+
+function createTicket(alarm){
+
+const ticket={
+
+id:"SMA-"+(++ticketCounter),
+alarmId:"AL-"+alarm.id,
+type:alarm.type,
+department:alarm.department,
+site:alarm.site,
+severity:alarm.severity,
+status:"New",
+created:new Date().toLocaleTimeString()
+
+};
+
+tickets.push(ticket);
+
+createWorkOrder(ticket);
+
+addLog(
+`🎫 Ticket <strong>${ticket.id}</strong>
+automatically created.`
+);
+
+}
+
+
+/* CREATE WORK ORDER */
+
+function createWorkOrder(ticket){
+
+const wo={
+
+id:"WO-"+(++workOrderCounter),
+ticketId:ticket.id,
+department:ticket.department,
+site:ticket.site,
+severity:ticket.severity,
+task:"Investigate "+ticket.type,
+assigned:ticket.department+" Team",
+status:"Pending"
+
+};
+
+workOrders.push(wo);
+
+addLog(
+`🔧 Work Order <strong>${wo.id}</strong>
+automatically created for ${ticket.id}.`
+);
+
+
+/* EMAIL */
+
+}
+
+function createEmail(alarm){
+
+const ticket=
+tickets.find(t=>t.alarmId==="AL-"+alarm.id);
+
+const wo=
+workOrders.find(w=>w.ticketId===ticket.id);
+
+const email={
+
+id:Date.now(),
+
+subject:
+`${alarm.severity} — ${alarm.type}`,
+
+from:"NOC Monitoring",
+
+body:`
+
+<strong>Automated NOC Notification</strong>
+
+<br><br>
+
+A network event has been detected.
+
+<br><br>
+
+<strong>Alarm:</strong> AL-${alarm.id}<br>
+<strong>Severity:</strong> ${alarm.severity}<br>
+<strong>Department:</strong> ${alarm.department}<br>
+<strong>Site:</strong> ${alarm.site}<br>
+<strong>SLA:</strong> ${alarm.sla} minutes<br>
+<strong>Ticket:</strong> ${ticket.id}<br>
+<strong>Work Order:</strong> ${wo.id}
+
+<br><br>
+
+Please acknowledge the alarm and begin investigation.
+
+`
+
+};
+
+emails.unshift(email);
+
+addLog(
+`📧 Notification email generated for ${ticket.id}.`
+);
+
+}
+
+
+/* RENDER ALARMS */
+
+function renderAlarms(){
+
+const container=document.getElementById("alarmContainer");
+
+container.innerHTML="";
+
+if(!alarms.length){
+
+container.innerHTML=
+`<div class="card">No active alarms 🌸</div>`;
+
+return;
+
+}
+
+alarms.forEach(alarm=>{
+
+const div=document.createElement("div");
+
+let className="alarm";
+
+if(alarm.severity==="Major")className+=" major";
+if(alarm.severity==="Minor")className+=" minor";
+
+div.className=className;
+
+const min=Math.floor(alarm.remaining/60);
+const sec=alarm.remaining%60;
+
+const ticket=
+tickets.find(t=>t.alarmId==="AL-"+alarm.id);
+
+div.innerHTML=`
+
+<div class="alarm-head">
+
+<strong>🚨 ${alarm.type}</strong>
+
+<span class="priority ${
+alarm.severity==="Major"?"major":
+alarm.severity==="Minor"?"minor":""
+}">
+${alarm.severity}
+</span>
+
+</div>
+
+<p><strong>Alarm:</strong> AL-${alarm.id}</p>
+<p><strong>Site:</strong> ${alarm.site}</p>
+<p><strong>Department:</strong> ${alarm.department}</p>
+
+<p class="timer">
+⏱️ ${min}:${String(sec).padStart(2,"0")}
+remaining
+</p>
+
+<br>
+
+<button class="primary"
+onclick="acknowledgeAlarm(${alarm.id})">
+✓ Acknowledge
+</button>
+
+<button class="secondary"
+onclick="focusTopology('${alarm.node}')"
+style="margin-left:6px">
+🗺️ Investigate Topology
+</button>
+
+<br><br>
+
+<span class="status">
+${ticket.id}
+</span>
+
+`;
+
+container.appendChild(div);
+
+});
+
+}
+
+
+/* SLA */
+
+setInterval(()=>{
+
+alarms.forEach(a=>{
+if(a.remaining>0)a.remaining--;
+});
 
 renderAlarms();
 
-renderTickets();
+},1000);
 
-renderWorkOrders();
+
+/* ACKNOWLEDGE */
+
+function acknowledgeAlarm(id){
+
+const alarm=alarms.find(a=>a.id===id);
+
+if(!alarm)return;
+
+if(alarm.acknowledged){
+
+alert("This alarm is already acknowledged.");
+
+return;
+
+}
+
+alarm.acknowledged=true;
+
+const ticket=
+tickets.find(t=>t.alarmId==="AL-"+id);
+
+if(ticket)ticket.status="Investigating";
+
+score+=5;
+progress+=5;
+
+addLog(
+`✅ AL-${id} acknowledged.
+Investigation started.`
+);
+
+renderAll();
+
+}
+
+
+/* TICKETS */
+
+function renderTickets(){
+
+const container=document.getElementById("ticketContainer");
+
+container.innerHTML="";
+
+if(!tickets.length){
+
+container.innerHTML=
+`<div class="ticket">No tickets yet 🌸</div>`;
+
+return;
+
+}
+
+tickets.forEach(ticket=>{
+
+const wo=
+workOrders.find(w=>w.ticketId===ticket.id);
+
+const div=document.createElement("div");
+
+div.className="ticket";
+
+div.innerHTML=`
+
+<h3>🎫 ${ticket.id}</h3>
+
+<div class="info-grid">
+
+<div class="info">
+<small>Alarm</small>
+${ticket.alarmId}
+</div>
+
+<div class="info">
+<small>Incident</small>
+${ticket.type}
+</div>
+
+<div class="info">
+<small>Severity</small>
+${ticket.severity}
+</div>
+
+<div class="info">
+<small>Department</small>
+${ticket.department}
+</div>
+
+<div class="info">
+<small>Status</small>
+${ticket.status}
+</div>
+
+<div class="info">
+<small>Work Order</small>
+${wo.id}
+</div>
+
+</div>
+
+<button class="primary"
+onclick="editTicket('${ticket.id}')">
+Update Ticket
+</button>
+
+`;
+
+container.appendChild(div);
+
+});
+
+}
+
+
+/* EDIT TICKET */
+
+function editTicket(id){
+
+const ticket=tickets.find(t=>t.id===id);
+
+document.getElementById("modalContent").innerHTML=`
+
+<h2>🎫 ${ticket.id}</h2>
+
+<p>${ticket.type}</p>
+
+<br>
+
+<label>Status</label>
+<br><br>
+
+<select id="ticketStatus">
+
+<option ${ticket.status==="New"?"selected":""}>New</option>
+<option ${ticket.status==="Investigating"?"selected":""}>Investigating</option>
+<option ${ticket.status==="Escalated"?"selected":""}>Escalated</option>
+<option ${ticket.status==="Resolved"?"selected":""}>Resolved</option>
+<option ${ticket.status==="Closed"?"selected":""}>Closed</option>
+
+</select>
+
+<br><br>
+
+<label>Investigation Notes</label>
+<br><br>
+
+<textarea id="ticketNotes"
+placeholder="Describe what you found..."></textarea>
+
+<br><br>
+
+<button class="primary"
+onclick="saveTicket('${id}')">
+Save
+</button>
+
+`;
+
+document.getElementById("modal").classList.add("show");
+
+}
+
+
+function saveTicket(id){
+
+const ticket=tickets.find(t=>t.id===id);
+
+ticket.status=document.getElementById("ticketStatus").value;
+
+const notes=document.getElementById("ticketNotes").value;
+
+score+=5;
+progress+=5;
+
+addLog(
+`📝 ${ticket.id} updated to ${ticket.status}.`
+);
+
+if(notes)
+addLog(`🔎 Investigation notes added to ${ticket.id}.`);
+
+closeModal();
+renderAll();
+
+}
+
+
+/* WORK ORDERS */
+
+function renderWorkOrders(){
+
+const container=document.getElementById("workOrderContainer");
+
+container.innerHTML="";
+
+if(!workOrders.length){
+
+container.innerHTML=
+`<div class="workorder">No work orders yet 🌸</div>`;
+
+return;
+
+}
+
+workOrders.forEach(wo=>{
+
+const div=document.createElement("div");
+
+div.className="workorder";
+
+div.innerHTML=`
+
+<h3>🔧 ${wo.id}</h3>
+
+<div class="info-grid">
+
+<div class="info">
+<small>Ticket</small>
+${wo.ticketId}
+</div>
+
+<div class="info">
+<small>Department</small>
+${wo.department}
+</div>
+
+<div class="info">
+<small>Site</small>
+${wo.site}
+</div>
+
+<div class="info">
+<small>Severity</small>
+${wo.severity}
+</div>
+
+<div class="info">
+<small>Assigned</small>
+${wo.assigned}
+</div>
+
+<div class="info">
+<small>Status</small>
+${wo.status}
+</div>
+
+</div>
+
+<p><strong>Task:</strong> ${wo.task}</p>
+
+<br>
+
+<button class="primary"
+onclick="editWorkOrder('${wo.id}')">
+Update Work Order
+</button>
+
+`;
+
+container.appendChild(div);
+
+});
+
+}
+
+
+/* EDIT WORK ORDER */
+
+function editWorkOrder(id){
+
+const wo=workOrders.find(w=>w.id===id);
+
+document.getElementById("modalContent").innerHTML=`
+
+<h2>🔧 ${wo.id}</h2>
+
+<p>${wo.task}</p>
+
+<br>
+
+<select id="woStatus">
+
+<option>Pending</option>
+<option>Assigned</option>
+<option>In Progress</option>
+<option>Completed</option>
+
+</select>
+
+<br><br>
+
+<button class="primary"
+onclick="saveWorkOrder('${id}')">
+Save
+</button>
+
+`;
+
+document.getElementById("modal").classList.add("show");
+
+}
+
+
+function saveWorkOrder(id){
+
+const wo=workOrders.find(w=>w.id===id);
+
+wo.status=document.getElementById("woStatus").value;
+
+score+=5;
+progress+=5;
+
+addLog(
+`🔧 ${wo.id} updated to ${wo.status}.`
+);
+
+closeModal();
+renderAll();
+
+}
+
+
+/* EMAILS */
+
+function renderEmails(){
+
+const list=document.getElementById("emailList");
+
+list.innerHTML="";
+
+if(!emails.length){
+
+list.innerHTML="<p>No new emails.</p>";
+
+return;
+
+}
+
+emails.forEach(email=>{
+
+const item=document.createElement("div");
+
+item.className="email-item";
+
+item.innerHTML=`
+
+<strong>${email.subject}</strong>
+
+<small>From: ${email.from}</small>
+
+`;
+
+item.onclick=()=>openEmail(email.id);
+
+list.appendChild(item);
+
+});
+
+}
+
+
+function openEmail(id){
+
+const email=emails.find(e=>e.id===id);
+
+document.getElementById("emailView").innerHTML=`
+
+<h2>📧 ${email.subject}</h2>
+
+<p style="margin-top:10px">
+<strong>From:</strong> ${email.from}
+</p>
+
+<div class="email-body">
+${email.body}
+</div>
+
+<h3>✉️ Reply</h3>
+
+<br>
+
+<textarea id="emailReply"
+placeholder="Write your response..."></textarea>
+
+<br><br>
+
+<button class="primary"
+onclick="sendReply()">
+Send Reply
+</button>
+
+`;
+
+}
+
+
+function sendReply(){
+
+const text=document.getElementById("emailReply").value.trim();
+
+if(!text){
+
+alert("Please write a response first.");
+
+return;
+
+}
+
+score+=5;
+progress+=5;
+
+addLog("📧 Professional email response sent.");
+
+alert("📧 Email sent successfully.");
 
 updateDashboard();
+
+}
+
+
+/* TOPOLOGY */
+
+const topologyData={
+
+internet:{
+name:"Internet",
+department:"External",
+connections:["IP Core"],
+services:["Internet Connectivity"]
+},
+
+core:{
+name:"IP Core",
+department:"IP",
+connections:["Internet","IP Router","Transmission","RAN"],
+services:["Core Network"]
+},
+
+ip:{
+name:"IP Router MCT-IP-031",
+department:"IP",
+connections:["IP Core"],
+services:["IP Connectivity"]
+},
+
+trans:{
+name:"Transmission MCT-TR-014",
+department:"Transmission",
+connections:["IP Core","Microwave"],
+services:["Transport"]
+},
+
+ran:{
+name:"RAN Site MCT-RAN-207",
+department:"RAN",
+connections:["IP Core","Cell Site"],
+services:["Mobile Access"]
+},
+
+micro:{
+name:"Microwave SLL-MW-014",
+department:"Transmission",
+connections:["Transmission","Remote Site"],
+services:["Microwave Transport"]
+},
+
+remote:{
+name:"Remote Site SLL-REMOTE-02",
+department:"Fixed",
+connections:["Microwave"],
+services:["Fixed Services"]
+},
+
+cell:{
+name:"Cell Site MCT-CELL-207",
+department:"RAN",
+connections:["RAN Site"],
+services:["Mobile Service"]
+
+}
+
+};
+
+
+/* INSPECT NODE */
+
+function inspectNode(id){
+
+const node=topologyData[id];
+
+const relatedAlarms=
+alarms.filter(a=>a.node===id);
+
+const relatedTickets=
+tickets.filter(t=>
+relatedAlarms.some(a=>"AL-"+a.id===t.alarmId)
+);
+
+document.getElementById("modalContent").innerHTML=`
+
+<h2>🗺️ ${node.name}</h2>
+
+<div class="info-grid">
+
+<div class="info">
+<small>Department</small>
+${node.department}
+</div>
+
+<div class="info">
+<small>Status</small>
+${relatedAlarms.length?"🔴 Alarm Active":"🟢 Normal"}
+</div>
+
+<div class="info">
+<small>Related Alarms</small>
+${relatedAlarms.length}
+</div>
+
+<div class="info">
+<small>Related Tickets</small>
+${relatedTickets.length}
+</div>
+
+</div>
+
+<h3>🔗 Connected Elements</h3>
+
+<div class="email-body">
+${node.connections.map(x=>"• "+x).join("<br>")}
+</div>
+
+<h3>📡 Services</h3>
+
+<div class="email-body">
+${node.services.map(x=>"• "+x).join("<br>")}
+</div>
+
+${relatedAlarms.length?`
+
+<div class="email-body">
+
+<strong>🚨 Active Incident</strong>
+
+<br><br>
+
+${relatedAlarms.map(a=>
+`AL-${a.id} — ${a.type} — ${a.severity}`
+).join("<br>")}
+
+</div>
+
+`:""}
+
+<button class="primary" onclick="closeModal()">Close</button>
+
+`;
+
+document.getElementById("modal").classList.add("show");
+
+}
+
+
+/* TOPOLOGY HIGHLIGHT */
+
+function highlightTopology(node,severity){
+
+document.querySelectorAll(".node")
+.forEach(n=>n.classList.remove("down","major"));
+
+document.querySelectorAll(".link")
+.forEach(l=>l.classList.remove("down","major"));
+
+const target=document.getElementById("node-"+node);
+
+if(target){
+
+if(severity==="Emergency")
+target.classList.add("down");
+
+else if(severity==="Major")
+target.classList.add("major");
+
+}
+
+const maps={
+
+core:["l1","l2","l3","l4"],
+
+ip:["l2","l3"],
+
+trans:["l3","l5"],
+
+micro:["l5","l6"],
+
+remote:["l6"],
+
+ran:["l4","l7"],
+
+cell:["l7"]
+
+};
+
+if(maps[node]){
+
+maps[node].forEach(id=>{
+
+const link=document.getElementById(id);
+
+if(severity==="Emergency")
+link.classList.add("down");
+
+else if(severity==="Major")
+link.classList.add("major");
+
+});
+
+}
+
+}
+
+
+function focusTopology(node){
+
+highlightTopology(node,"Emergency");
+
+showPage(
+"topology",
+document.querySelectorAll(".nav-btn")[5]
+);
+
+setTimeout(()=>inspectNode(node),250);
+
+}
+
+
+/* DEPARTMENTS */
+
+function departmentInfo(name){
+
+const descriptions={
+
+IP:
+"Handles IP connectivity, routing, interfaces and IP topology.",
+
+Transmission:
+"Handles microwave, VSAT, fiber and transport infrastructure.",
+
+RAN:
+"Handles radio access sites, mobile alarms and performance KPIs.",
+
+Fixed:
+"Handles fixed network services and access connectivity.",
+
+"Service Desk":
+"Handles customer incidents, communication and escalation.",
+
+SOC:
+"Handles security monitoring, alerts and security incidents.",
+
+"Agile Ops":
+"Handles alarm monitoring, event correlation and operational workflow."
+
+};
+
+document.getElementById("modalContent").innerHTML=`
+
+<h2>🏢 ${name}</h2>
+
+<div class="email-body">
+
+<strong>Department Role</strong>
+
+<br><br>
+
+${descriptions[name]}
+
+<br><br>
+
+<strong>Future workflow</strong>
+
+<br><br>
+
+Alarm → Investigation → Ticket →
+Work Order → Escalation → Resolution
+
+</div>
+
+<button class="primary" onclick="closeModal()">Close</button>
+
+`;
+
+document.getElementById("modal").classList.add("show");
+
+}
+
+
+/* SCENARIOS */
+
+const scenarios=[
+
+{
+department:"IP",
+title:"Emergency IP Core Failure",
+severity:"Emergency",
+question:"An IP Core interface is down and multiple connectivity alarms appear. What should you do first?",
+choices:[
+["Acknowledge the alarm and investigate related alarms",true],
+["Immediately restart the router",false],
+["Close the alarm",false]
+]
+},
+
+{
+department:"Transmission",
+title:"Emergency Microwave Failure",
+severity:"Emergency",
+question:"A microwave link is down and a remote site is unreachable. What is your first action?",
+choices:[
+["Check the topology and correlate transmission alarms",true],
+["Close the alarm",false],
+["Ignore the event",false]
+]
+},
+
+{
+department:"RAN",
+title:"Major RAN Degradation",
+severity:"Major",
+question:"A RAN site is showing abnormal performance. What should you investigate?",
+choices:[
+["Check site KPIs and correlate related alarms",true],
+["Immediately shut down the site",false],
+["Ignore the KPI degradation",false]
+]
+},
+
+{
+department:"Service Desk",
+title:"Customer Service Complaint",
+severity:"Major",
+question:"A customer reports loss of service. What should happen first?",
+choices:[
+["Create/verify the incident and check for related network alarms",true],
+["Tell the customer to wait without investigation",false],
+["Close the complaint immediately",false]
+]
+},
+
+{
+department:"SOC",
+title:"Emergency Security Alert",
+severity:"Emergency",
+question:"A security monitoring alert is received. What should happen first?",
+choices:[
+["Acknowledge and investigate/classify the security event",true],
+["Delete the alert",false],
+["Ignore it",false]
+]
+}
+
+];
+
+
+function startScenario(){
+
+const s=
+scenarios[
+Math.floor(Math.random()*scenarios.length)
+];
+
+document.getElementById("modalContent").innerHTML=`
+
+<h2>🎯 Training Scenario</h2>
+
+<h3>${s.title}</h3>
+
+<br>
+
+<p>
+<strong>Department:</strong> ${s.department}
+</p>
+
+<p>
+<strong>Severity:</strong> ${s.severity}
+</p>
+
+<br>
+
+<div class="email-body">
+${s.question}
+</div>
+
+<h3>What do you do?</h3>
+
+<br>
+
+<div id="choices"></div>
+
+`;
+
+const choices=document.getElementById("choices");
+
+s.choices.forEach(c=>{
+
+const button=document.createElement("button");
+
+button.className="choice";
+
+button.textContent=c[0];
+
+button.onclick=()=>{
+
+if(c[1]){
+
+score+=10;
+progress+=5;
+
+addLog("✅ Correct training decision.");
+
+alert("✅ Correct decision!");
+
+}else{
+
+score-=10;
+
+if(score<0)score=0;
+
+addLog("⚠️ Incorrect training decision.");
+
+alert("⚠️ Review the correct NOC procedure.");
+
+}
+
+closeModal();
+updateDashboard();
+
+};
+
+choices.appendChild(button);
+
+});
+
+document.getElementById("modal").classList.add("show");
+
+}
+
+
+/* DASHBOARD */
+
+function updateDashboard(){
+
+document.getElementById("alarmCount").textContent=alarms.length;
+document.getElementById("ticketCount").textContent=tickets.length;
+document.getElementById("workOrderCount").textContent=workOrders.length;
+document.getElementById("kpiTickets").textContent=tickets.length;
+document.getElementById("score").textContent=Math.max(0,score);
+
+const percentage=Math.min(100,progress);
+
+document.getElementById("progressBar").style.width=percentage+"%";
+document.getElementById("progressText").textContent=
+percentage+"% completed";
+
+}
+
+
+/* RENDER ALL */
+
+function renderAll(){
+
+renderAlarms();
+renderTickets();
+renderWorkOrders();
+renderEmails();
+updateDashboard();
+
+}
+
+
+/* MODAL */
+
+function closeModal(){
+
+document.getElementById("modal").classList.remove("show");
+
+}
+
+
+/* START */
+
+addLog("🌸 NOC Training Simulator started.");
+renderAll();
 
 </script>
 
