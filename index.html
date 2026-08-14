@@ -366,27 +366,28 @@
             line-height: 1.5;
         }
 
-        /* LIVE SVG PIXEL CHARACTER & WANDERING ENGINE */
+        /* HIGH-QUALITY LIVE AUTONOMOUS CHARACTER (DRAGGABLE & POLISHED) */
         #live-avatar-container {
             position: fixed;
             bottom: 30px;
             right: 40px;
-            width: 130px;
-            height: 180px;
+            width: 140px;
+            height: 200px;
             z-index: 9999;
-            cursor: pointer;
-            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), left 0.8s ease, bottom 0.8s ease;
+            cursor: grab;
             user-select: none;
+            touch-action: none;
+            filter: drop-shadow(0 10px 15px rgba(214, 51, 132, 0.25));
         }
 
-        #live-avatar-container:hover {
-            transform: scale(1.1);
+        #live-avatar-container:active {
+            cursor: grabbing;
         }
 
         /* Speech bubble above live avatar */
         .avatar-speech {
             position: absolute;
-            bottom: 190px;
+            bottom: 210px;
             right: -20px;
             background: white;
             border: 2px solid var(--primary);
@@ -395,7 +396,7 @@
             border-radius: 12px;
             font-size: 11px;
             font-weight: bold;
-            width: 160px;
+            width: 170px;
             box-shadow: 0 4px 12px rgba(255, 77, 136, 0.2);
             pointer-events: none;
             transition: opacity 0.3s ease;
@@ -422,22 +423,22 @@
 
         /* Idle floating / breathing animation */
         .anim-idle {
-            animation: characterIdle 2s ease-in-out infinite;
+            animation: characterIdle 2.2s ease-in-out infinite;
             transform-origin: bottom center;
         }
         @keyframes characterIdle {
             0%, 100% { transform: translateY(0) scaleY(1); }
-            50% { transform: translateY(-4px) scaleY(0.99); }
+            50% { transform: translateY(-5px) scaleY(0.98); }
         }
 
         /* Walking animation when moving */
         .anim-walk {
-            animation: characterWalk 0.4s ease-in-out infinite alternate;
+            animation: characterWalk 0.35s ease-in-out infinite alternate;
             transform-origin: bottom center;
         }
         @keyframes characterWalk {
-            0% { transform: translateY(0) rotate(-3deg); }
-            100% { transform: translateY(-6px) rotate(3deg); }
+            0% { transform: translateY(0) rotate(-4deg); }
+            100% { transform: translateY(-8px) rotate(4deg); }
         }
 
         /* Excited jump animation */
@@ -446,17 +447,17 @@
         }
         @keyframes characterJump {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-30px) rotate(5deg); }
+            50% { transform: translateY(-35px) rotate(6deg); }
         }
 
-        /* Companion companion pet rabbit micro-bounce */
+        /* Companion pet micro-bounce */
         .pet-rabbit {
-            animation: rabbitBounce 1.5s ease-in-out infinite;
+            animation: rabbitBounce 1.4s ease-in-out infinite;
             transform-origin: center;
         }
         @keyframes rabbitBounce {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
+            50% { transform: translateY(-6px); }
         }
     </style>
 </head>
@@ -539,7 +540,7 @@
                     <div class="action-buttons">
                         <button class="action-btn" onclick="triggerRandomAlarm('Critical')">🚨 Generate Critical Alarm (Mistake Test)</button>
                         <button class="action-btn" onclick="triggerRandomAlarm('Major')">⚠️ Generate Major Alarm</button>
-                        <button class="action-btn" onclick="simulateIncomingEmail()">📧 Simulate NOC Email</button>
+                        <button class="action-btn" onclick="simulateIncomingEmail()">📧 Simulate NOC Email Now</button>
                         <button class="action-btn" onclick="showPage('troubleshoot', document.querySelector('[onclick*=\'troubleshoot\']'))">🛠️ Launch Troubleshooting Lab</button>
                     </div>
                 </div>
@@ -607,7 +608,7 @@
 
             <!-- EMAILS PAGE -->
             <section id="emails" class="page">
-                <h1>Shared NOC Mailbox</h1>
+                <h1>Shared NOC Mailbox (Auto-syncs every 5 mins)</h1>
                 <div class="control-card">
                     <p>Read incoming operational dispatches and supervisor updates.</p>
                     <div id="emailInboxContainer">
@@ -750,56 +751,57 @@
         </div>
     </div>
 
-    <!-- LIVE ANIMATED AUTONOMOUS CHARACTER WIDGET -->
+    <!-- HIGH-QUALITY DRAGGABLE AUTONOMOUS CHARACTER WIDGET -->
     <div id="live-avatar-container" onclick="avatarClicked()">
-        <div class="avatar-speech" id="avatarSpeech">Hi! I'm watching your network progress! Click me!</div>
-        <svg class="live-character anim-idle" id="liveAvatarSvg" viewBox="0 0 100 130">
-            <!-- Long Pixelated Dark Hair Background -->
-            <rect x="18" y="25" width="64" height="85" fill="#2d2d2d" rx="4"/>
-            <rect x="12" y="32" width="12" height="60" fill="#2d2d2d"/>
-            <rect x="76" y="32" width="12" height="60" fill="#2d2d2d"/>
+        <div class="avatar-speech" id="avatarSpeech">Hi! Drag me anywhere so I'm not in your way! ✨</div>
+        <svg class="live-character anim-idle" id="liveAvatarSvg" viewBox="0 0 110 140">
+            <!-- Long Glossy Dark Anime Hair (Back Layer) -->
+            <path d="M 22 35 Q 15 75 20 115 Q 35 125 50 115 Q 65 125 80 115 Q 85 75 78 35 Z" fill="#222222"/>
+            
+            <!-- Professional Gamer/NOC Headset (Band) -->
+            <path d="M 22 45 A 33 33 0 0 1 88 45" stroke="#ff4d88" stroke-width="5" fill="none" stroke-linecap="round"/>
+            <rect x="17" y="42" width="10" height="16" fill="#ffffff" rx="3" stroke="#ff4d88" stroke-width="2"/>
+            <rect x="83" y="42" width="10" height="16" fill="#ffffff" rx="3" stroke="#ff4d88" stroke-width="2"/>
+            <!-- Mic boom -->
+            <path d="M 88 55 Q 92 70 80 76" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <circle cx="80" cy="76" r="3" fill="#ff4d88"/>
 
-            <!-- White Headset -->
-            <path d="M 22 45 A 28 28 0 0 1 78 45" stroke="#ffffff" stroke-width="6" fill="none" stroke-linecap="round"/>
-            <rect x="18" y="42" width="8" height="14" fill="#e0e0e0" rx="2"/>
-            <rect x="74" y="42" width="8" height="14" fill="#e0e0e0" rx="2"/>
+            <!-- Face / Skin (Smoothed & Enhanced aesthetic) -->
+            <rect x="30" y="38" width="50" height="46" fill="#f5d6c6" rx="8"/>
 
-            <!-- Face / Skin -->
-            <rect x="28" y="36" width="44" height="42" fill="#d4aa8e" rx="4"/>
-
-            <!-- Eyes (Dynamic expression container) -->
+            <!-- Cute Anime Eyes (Dynamic expression container) -->
             <g id="avatarEyes">
-                <rect x="34" y="48" width="10" height="10" fill="#1a1a1a"/>
-                <rect x="36" y="50" width="4" height="4" fill="#ffffff"/>
-                <rect x="56" y="48" width="10" height="10" fill="#1a1a1a"/>
-                <rect x="58" y="50" width="4" height="4" fill="#ffffff"/>
+                <rect x="38" y="50" width="10" height="11" fill="#2b2b2b" rx="2"/>
+                <rect x="40" y="52" width="4" height="5" fill="#ffffff"/>
+                <rect x="62" y="50" width="10" height="11" fill="#2b2b2b" rx="2"/>
+                <rect x="64" y="52" width="4" height="5" fill="#ffffff"/>
+                <!-- Blushing Cheeks -->
+                <circle cx="36" cy="64" r="5" fill="#ff94b8" opacity="0.6"/>
+                <circle cx="74" cy="64" r="5" fill="#ff94b8" opacity="0.6"/>
             </g>
 
             <!-- Mouth (Dynamic expression container) -->
             <g id="avatarMouth">
-                <!-- Neutral / Content Mouth -->
-                <rect x="46" y="66" width="8" height="3" fill="#8c5840"/>
+                <rect x="49" y="68" width="12" height="4" fill="#a75544" rx="2"/>
             </g>
 
-            <!-- Cute Outfit: White Jacket & Dark Tie -->
-            <rect x="25" y="78" width="50" height="45" fill="#fcfcfc" rx="3"/>
-            <polygon points="50,78 44,105 56,105" fill="#222222"/> <!-- Tie -->
-            <rect x="32" y="78" width="10" height="40" fill="#ffffff"/>
-            <rect x="58" y="78" width="10" height="40" fill="#ffffff"/>
-            <rect x="35" y="80" width="6" height="35" fill="#e0e0e0"/>
-            <rect x="59" y="80" width="6" height="35" fill="#e0e0e0"/>
+            <!-- Front Bangs / Hair Fringe -->
+            <path d="M 28 36 Q 55 48 82 36 Q 75 44 65 40 Q 55 46 45 40 Q 35 44 28 36 Z" fill="#2b2b2b"/>
 
-            <!-- Skirt -->
-            <rect x="28" y="118" width="44" height="10" fill="#4a5d78"/>
+            <!-- Stylish Outfit: Pink & White Executive Blazer -->
+            <polygon points="30,82 80,82 85,128 25,128" fill="#ffffff" rx="4"/>
+            <polygon points="55,82 38,128 72,128" fill="#ff4d88"/> <!-- Inner top -->
+            <polygon points="55,82 45,110 65,110" fill="#ffffff"/> <!-- Collar -->
+            <polygon points="52,105 55,120 58,105" fill="#222222"/> <!-- Cute Tie -->
 
             <!-- Little Companion Bunny Pet -->
-            <g class="pet-rabbit" transform="translate(72, 95)">
-                <rect x="0" y="8" width="18" height="16" fill="#ffffff" rx="4"/>
-                <rect x="3" y="0" width="3" height="10" fill="#ffffff"/>
-                <rect x="12" y="0" width="3" height="10" fill="#ffffff"/>
-                <circle cx="5" cy="13" r="1.5" fill="#111"/>
-                <circle cx="13" cy="13" r="1.5" fill="#111"/>
-                <circle cx="9" cy="16" r="2" fill="#ffb6c1"/>
+            <g class="pet-rabbit" transform="translate(82, 100)">
+                <rect x="0" y="8" width="20" height="18" fill="#ffffff" rx="5"/>
+                <rect x="3" y="-2" width="3" height="12" fill="#ffffff" rx="1"/>
+                <rect x="14" y="-2" width="3" height="12" fill="#ffffff" rx="1"/>
+                <circle cx="6" cy="14" r="1.5" fill="#222"/>
+                <circle cx="14" cy="14" r="1.5" fill="#222"/>
+                <circle cx="10" cy="17" r="2" fill="#ffb6c1"/>
             </g>
         </svg>
     </div>
@@ -831,24 +833,23 @@
             eyes: document.getElementById('avatarEyes'),
             mouth: document.getElementById('avatarMouth'),
             posX: window.innerWidth - 170,
-            posY: window.innerHeight - 220,
-            isMoving: false,
+            posY: window.innerHeight - 240,
 
             setExpression(mood) {
                 if (mood === 'happy') {
-                    this.mouth.innerHTML = '<path d="M 44 66 Q 50 74 56 66" stroke="#8c5840" stroke-width="3" fill="none" stroke-linecap="round"/>';
-                    this.eyes.innerHTML = '<path d="M 34 52 Q 39 46 44 52 M 56 52 Q 61 46 66 52" stroke="#1a1a1a" stroke-width="3" fill="none" stroke-linecap="round"/>';
+                    this.mouth.innerHTML = '<path d="M 46 68 Q 55 76 64 68" stroke="#a75544" stroke-width="3" fill="none" stroke-linecap="round"/>';
+                    this.eyes.innerHTML = '<path d="M 38 54 Q 43 46 48 54 M 62 54 Q 67 46 72 54" stroke="#2b2b2b" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="36" cy="64" r="5" fill="#ff94b8" opacity="0.6"/><circle cx="74" cy="64" r="5" fill="#ff94b8" opacity="0.6"/>';
                 } else if (mood === 'frown') {
-                    // MISTAKE / ERROR REACTION: Frowns down!
-                    this.mouth.innerHTML = '<path d="M 44 70 Q 50 63 56 70" stroke="#c0392b" stroke-width="3" fill="none" stroke-linecap="round"/>';
-                    this.eyes.innerHTML = '<path d="M 34 48 L 44 53 M 56 53 L 66 48" stroke="#c0392b" stroke-width="3" stroke-linecap="round"/>';
+                    // MISTAKE / ERROR REACTION: Frowns down when a mistake occurs!
+                    this.mouth.innerHTML = '<path d="M 46 72 Q 55 64 64 72" stroke="#c0392b" stroke-width="3" fill="none" stroke-linecap="round"/>';
+                    this.eyes.innerHTML = '<path d="M 38 50 L 48 55 M 62 55 L 72 50" stroke="#c0392b" stroke-width="3" stroke-linecap="round"/><circle cx="36" cy="64" r="5" fill="#ff94b8" opacity="0.6"/><circle cx="74" cy="64" r="5" fill="#ff94b8" opacity="0.6"/>';
                 } else if (mood === 'curious') {
-                    this.mouth.innerHTML = '<circle cx="50" cy="68" r="3" fill="#8c5840"/>';
-                    this.eyes.innerHTML = '<rect x="34" y="47" width="10" height="10" fill="#1a1a1a"/><rect x="58" y="47" width="10" height="10" fill="#1a1a1a"/><circle cx="38" cy="49" r="2" fill="white"/><circle cx="62" cy="49" r="2" fill="white"/>';
+                    this.mouth.innerHTML = '<circle cx="55" cy="70" r="3" fill="#a75544"/>';
+                    this.eyes.innerHTML = '<rect x="38" y="50" width="10" height="11" fill="#2b2b2b" rx="2"/><rect x="62" y="50" width="10" height="11" fill="#2b2b2b" rx="2"/><circle cx="42" cy="53" r="2" fill="white"/><circle cx="66" cy="53" r="2" fill="white"/><circle cx="36" cy="64" r="5" fill="#ff94b8" opacity="0.6"/><circle cx="74" cy="64" r="5" fill="#ff94b8" opacity="0.6"/>';
                 } else {
                     // Default neutral
-                    this.mouth.innerHTML = '<rect x="46" y="66" width="8" height="3" fill="#8c5840"/>';
-                    this.eyes.innerHTML = '<rect x="34" y="48" width="10" height="10" fill="#1a1a1a"/><rect x="36" y="50" width="4" height="4" fill="#ffffff"/><rect x="56" y="48" width="10" height="10" fill="#1a1a1a"/><rect x="58" y="50" width="4" height="4" fill="#ffffff"/>';
+                    this.mouth.innerHTML = '<rect x="49" y="68" width="12" height="4" fill="#a75544" rx="2"/>';
+                    this.eyes.innerHTML = '<rect x="38" y="50" width="10" height="11" fill="#2b2b2b" rx="2"/><rect x="40" y="52" width="4" height="5" fill="#ffffff"/><rect x="62" y="50" width="10" height="11" fill="#2b2b2b" rx="2"/><rect x="64" y="52" width="4" height="5" fill="#ffffff"/><circle cx="36" cy="64" r="5" fill="#ff94b8" opacity="0.6"/><circle cx="74" cy="64" r="5" fill="#ff94b8" opacity="0.6"/>';
                 }
             },
 
@@ -868,8 +869,8 @@
                 this.svg.classList.remove('anim-idle');
                 this.svg.classList.add('anim-walk');
                 
-                this.posX = Math.max(20, Math.min(window.innerWidth - 150, targetX));
-                this.posY = Math.max(80, Math.min(window.innerHeight - 200, targetY));
+                this.posX = Math.max(20, Math.min(window.innerWidth - 160, targetX));
+                this.posY = Math.max(60, Math.min(window.innerHeight - 220, targetY));
                 
                 this.el.style.left = this.posX + 'px';
                 this.el.style.top = this.posY + 'px';
@@ -889,38 +890,85 @@
             }
         };
 
-        // Initialize position on screen
+        // DRAGGABLE MOUSE & TOUCH SUPPORT SO SHE NEVER BLOCKS YOUR VISION
+        let isDragging = false;
+        let startX, startY, initialX, initialY;
+
+        avatar.el.addEventListener('pointerdown', (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            const rect = avatar.el.getBoundingClientRect();
+            initialX = rect.left;
+            initialY = rect.top;
+            avatar.el.setPointerCapture(e.pointerId);
+            avatar.svg.classList.remove('anim-idle');
+            avatar.svg.classList.add('anim-walk');
+            avatar.speak("Moving me out of your way? Got it! ✨", 'curious', 2500);
+            e.stopPropagation();
+        });
+
+        avatar.el.addEventListener('pointermove', (e) => {
+            if (!isDragging) return;
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            avatar.posX = Math.max(10, Math.min(window.innerWidth - 150, initialX + dx));
+            avatar.posY = Math.max(10, Math.min(window.innerHeight - 200, initialY + dy));
+            
+            avatar.el.style.left = avatar.posX + 'px';
+            avatar.el.style.top = avatar.posY + 'px';
+            avatar.el.style.bottom = 'auto';
+            avatar.el.style.right = 'auto';
+        });
+
+        avatar.el.addEventListener('pointerup', (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            avatar.svg.classList.remove('anim-walk');
+            avatar.svg.classList.add('anim-idle');
+            avatar.el.releasePointerCapture(e.pointerId);
+        });
+
+        // Initialize position on screen & Start 5-Minute Automated Email Interval
         window.addEventListener('load', () => {
-            avatar.el.style.left = (window.innerWidth - 170) + 'px';
-            avatar.el.style.top = (window.innerHeight - 220) + 'px';
+            avatar.posX = window.innerWidth - 170;
+            avatar.posY = window.innerHeight - 240;
+            avatar.el.style.left = avatar.posX + 'px';
+            avatar.el.style.top = avatar.posY + 'px';
             avatar.el.style.bottom = 'auto';
             avatar.el.style.right = 'auto';
 
-            // Autonomous Brain Wandering Loop every 14 seconds
+            // AUTOMATED EMAIL GENERATOR EVERY 5 MINUTES (300,000 ms)
             setInterval(() => {
-                if (Math.random() > 0.4) {
+                simulateIncomingEmail();
+            }, 300000);
+
+            // Autonomous Brain Wandering Loop every 16 seconds
+            setInterval(() => {
+                if (!isDragging && Math.random() > 0.4) {
                     const rx = Math.random() * (window.innerWidth - 300) + 50;
                     const ry = Math.random() * (window.innerHeight - 300) + 80;
                     avatar.walkTo(rx, ry, () => {
                         const thoughts = [
-                            "Just checking optical parameters across Oman! 🌐",
-                            "Everything is running smoothly right now.",
-                            "Click any module to start earning XP!",
-                            "I love hanging out in the NOC simulator with you!"
+                            "Monitoring fiber links across Oman! 🌐",
+                            "Auto-emails sync every 5 minutes in the mailbox.",
+                            "Tip: You can drag me anywhere if I'm in your way!",
+                            "Everything is running smoothly right now."
                         ];
                         avatar.speak(thoughts[Math.floor(Math.random() * thoughts.length)], 'curious');
                     });
                 }
-            }, 14000);
+            }, 16000);
         });
 
         function avatarClicked() {
+            if (isDragging) return;
             avatar.jump();
             const clicks = [
-                "Ouch! That tickles! Let's keep monitoring the network.",
-                "Ready for action! Check out the alarms panel if there are faults.",
+                "Ouch! That tickles! Drag me if I'm blocking your vision.",
+                "Ready for action! Check out the alarms panel.",
                 "You're doing great! Keep solving those tickets! ✨",
-                "Need help? Try launching the Troubleshooting Lab!"
+                "Automated NOC email sync active every 5 minutes!"
             ];
             avatar.speak(clicks[Math.floor(Math.random() * clicks.length)], 'happy');
         }
@@ -935,17 +983,16 @@
             }
             logActivity(`Navigated to page: ${pageId}`);
 
-            // Companion autonomous reaction to navigation
             if(pageId === 'alarms') {
-                avatar.walkTo(window.innerWidth - 250, 150, () => {
-                    avatar.speak("Uh oh! Inspecting alarms? Let's clear them out!", 'frown');
+                avatar.walkTo(window.innerWidth - 260, 160, () => {
+                    avatar.speak("Inspecting alarms? Let's clear them out!", 'frown');
                 });
             } else if(pageId === 'topology') {
                 avatar.walkTo(150, 200, () => {
                     avatar.speak("Oman's fiber map looks amazing from here!", 'happy');
                 });
             } else if(pageId === 'dashboard') {
-                avatar.walkTo(window.innerWidth - 170, window.innerHeight - 220, () => {
+                avatar.walkTo(window.innerWidth - 170, window.innerHeight - 240, () => {
                     avatar.speak("Back to command central!", 'neutral');
                 });
             }
@@ -1002,7 +1049,7 @@
             logActivity(`Generated ${severity} alarm: ${alarm.id}`);
 
             // BRAIN MISTAKE REACTION: When a critical alarm / mistake occurs, she frowns and panics!
-            avatar.walkTo(window.innerWidth / 2 - 60, 180, () => {
+            avatar.walkTo(window.innerWidth / 2 - 70, 180, () => {
                 avatar.jump();
                 avatar.speak(`Oh no! A ${severity} mistake/fault just hit the network! Quick, fix it!`, 'frown', 6000);
             });
@@ -1049,8 +1096,6 @@
             renderTickets();
             updateUI();
             logActivity(`Converted alarm to ticket ${ticket.id}`);
-            
-            // Happy reaction when resolving mistakes
             avatar.speak("Ticket created! Excellent job catching that fault!", 'happy');
         }
 
@@ -1090,19 +1135,25 @@
         }
 
         function simulateIncomingEmail() {
+            const emailSubjects = [
+                'Operational Priority Update: Sohar Ring',
+                'Scheduled Maintenance: Muscat Core Router 1',
+                'DWDM Optical Power Telemetry Report',
+                'BGP Peering Latency Alert Notice'
+            ];
             const email = {
                 id: Date.now(),
                 sender: 'supervisor@oman-noc.om',
-                subject: 'Operational Priority Update',
-                snippet: 'Please verify optical power telemetry across all Sohar transport rings.',
+                subject: emailSubjects[Math.floor(Math.random() * emailSubjects.length)],
+                snippet: 'Automated 5-minute telemetry sync complete. Verify node status.',
                 read: false
             };
             state.emails.push(email);
             renderEmails();
             updateUI();
-            addNotification('New NOC email received from Supervisor.');
-            logActivity('Simulated incoming email.');
-            avatar.speak("You've got mail from the boss! 📧", 'curious');
+            addNotification('New automatic NOC email received.');
+            logActivity('Automated email synced into shared mailbox.');
+            avatar.speak("New automatic email synced to mailbox! 📧", 'curious');
         }
 
         function renderEmails() {
