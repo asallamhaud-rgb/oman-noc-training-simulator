@@ -366,13 +366,50 @@
             line-height: 1.5;
         }
 
-        /* MINECRAFT CUTESY PIXEL-ART STYLE CHARACTER (DRAGGABLE & CHIBI) */
+        /* Email Specific UI */
+        .email-list-item {
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--white);
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .email-list-item:hover {
+            background: var(--primary-light);
+        }
+        .email-detail-view {
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 10px;
+        }
+        .email-reply-box {
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .email-reply-box textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            outline: none;
+            font-size: 13px;
+            resize: vertical;
+        }
+
+        /* MINECRAFT CUTESY GIRLY PIXEL-ART CHARACTER WIDGET */
         #live-avatar-container {
             position: fixed;
             bottom: 30px;
             right: 40px;
-            width: 140px;
-            height: 200px;
+            width: 150px;
+            height: 220px;
             z-index: 9999;
             cursor: grab;
             user-select: none;
@@ -384,10 +421,9 @@
             cursor: grabbing;
         }
 
-        /* Speech bubble above live avatar */
         .avatar-speech {
             position: absolute;
-            bottom: 210px;
+            bottom: 225px;
             right: -20px;
             background: white;
             border: 2px solid var(--primary);
@@ -396,7 +432,7 @@
             border-radius: 12px;
             font-size: 11px;
             font-weight: bold;
-            width: 170px;
+            width: 180px;
             box-shadow: 0 4px 12px rgba(255, 77, 136, 0.2);
             pointer-events: none;
             transition: opacity 0.3s ease;
@@ -414,15 +450,13 @@
             width: 0;
         }
 
-        /* SVG Pixel/Blocky Minecraft Cutesy Character */
         svg.live-character {
             width: 100%;
             height: 100%;
             overflow: visible;
-            shape-rendering: crispEdges; /* Forces clean pixelated blocks */
+            shape-rendering: crispEdges;
         }
 
-        /* Idle floating / breathing animation */
         .anim-idle {
             animation: characterIdle 2.2s ease-in-out infinite;
             transform-origin: bottom center;
@@ -432,7 +466,6 @@
             50% { transform: translateY(-4px); }
         }
 
-        /* Walking animation */
         .anim-walk {
             animation: characterWalk 0.35s ease-in-out infinite alternate;
             transform-origin: bottom center;
@@ -442,7 +475,6 @@
             100% { transform: translateY(-6px) rotate(3deg); }
         }
 
-        /* Excited jump animation */
         .anim-jump {
             animation: characterJump 0.5s cubic-bezier(0.28, 0.84, 0.42, 1) 3;
         }
@@ -451,7 +483,6 @@
             50% { transform: translateY(-30px) rotate(4deg); }
         }
 
-        /* Companion pet micro-bounce */
         .pet-block {
             animation: petBounce 1.4s ease-in-out infinite;
             transform-origin: center;
@@ -474,7 +505,7 @@
         <button class="nav-btn" onclick="showPage('alarms', this)"><span>🚨 Alarms</span> <span class="badge" id="alarmBadge">0</span></button>
         <button class="nav-btn" onclick="showPage('tickets', this)"><span>🎫 Tickets / Incidents</span> <span class="badge" id="ticketBadge">0</span></button>
         <button class="nav-btn" onclick="showPage('workorders', this)"><span>🔧 Work Orders</span></button>
-        <button class="nav-btn" onclick="showPage('emails', this)"><span>📧 Shared Mailbox</span> <span class="badge" id="emailBadge">0</span></button>
+        <button class="nav-btn" onclick="showPage('emails', this)"><span>📧 Shared Mailbox</span> <span class="badge" id="emailBadge">1</span></button>
         <button class="nav-btn" onclick="showPage('chat', this)"><span>💬 Team Chat</span> <span class="badge" id="chatBadge">0</span></button>
         <button class="nav-btn" onclick="showPage('notifications', this)"><span>🔔 Notifications</span> <span class="badge" id="notifBadge">0</span></button>
 
@@ -523,7 +554,7 @@
                     </div>
                     <div class="card">
                         <h3>Unread Emails</h3>
-                        <div class="value" id="dashEmailCount">0</div>
+                        <div class="value" id="dashEmailCount">1</div>
                     </div>
                     <div class="card">
                         <h3>Completed Modules</h3>
@@ -537,11 +568,11 @@
 
                 <div class="control-card">
                     <h2>🌸 Oman NOC Control Center Quick Actions</h2>
-                    <p>Simulate realistic network fault events, trigger automated NOC emails, or jump directly into guided troubleshooting scenarios across Muscat, Salalah, Sohar, and Duqm infrastructure.</p>
+                    <p>Simulate realistic network fault events, trigger manual NOC emails, or jump directly into guided troubleshooting scenarios across Muscat, Salalah, Sohar, and Duqm infrastructure.</p>
                     <div class="action-buttons">
-                        <button class="action-btn" onclick="triggerRandomAlarm('Critical')">🚨 Generate Critical Alarm (Mistake Test)</button>
+                        <button class="action-btn" onclick="triggerRandomAlarm('Critical')">🚨 Generate Critical Alarm</button>
                         <button class="action-btn" onclick="triggerRandomAlarm('Major')">⚠️ Generate Major Alarm</button>
-                        <button class="action-btn" onclick="simulateIncomingEmail()">📧 Simulate NOC Email Now</button>
+                        <button class="action-btn" onclick="simulateIncomingEmail()">📧 Simulate New NOC Email</button>
                         <button class="action-btn" onclick="showPage('troubleshoot', document.querySelector('[onclick*=\'troubleshoot\']'))">🛠️ Launch Troubleshooting Lab</button>
                     </div>
                 </div>
@@ -602,19 +633,18 @@
             <!-- WORK ORDERS PAGE -->
             <section id="workorders" class="page">
                 <h1>Field Engineering Work Orders</h1>
-                <div class="control-card">
-                    <p>Track field dispatch requests sent to regional engineering teams.</p>
-                </div>
+                <div class="control-card"><p>Track field dispatch requests sent to regional engineering teams.</p></div>
             </section>
 
             <!-- EMAILS PAGE -->
             <section id="emails" class="page">
                 <h1>Shared NOC Mailbox</h1>
                 <div class="control-card">
-                    <p>Read incoming operational dispatches and supervisor updates.</p>
+                    <p>Read incoming operational dispatches, reply to supervisors, and receive automated responses.</p>
                     <div id="emailInboxContainer">
-                        <p style="color: var(--text-muted); text-align: center; padding: 20px;">Inbox is empty.</p>
+                        <!-- Populated dynamically -->
                     </div>
+                    <div id="emailDetailContainer" style="display: none;"></div>
                 </div>
             </section>
 
@@ -658,9 +688,7 @@
             <!-- TOPOLOGY PAGE -->
             <section id="topology" class="page">
                 <h1>Oman Telecom Network Topology</h1>
-                <div class="control-card">
-                    <p>Visual backbone connectivity map linking Muscat Core, Sohar DWDM rings, and Salalah microwave links.</p>
-                </div>
+                <div class="control-card"><p>Visual backbone connectivity map linking Muscat Core, Sohar DWDM rings, and Salalah microwave links.</p></div>
             </section>
 
             <!-- SITES PAGE -->
@@ -752,49 +780,60 @@
         </div>
     </div>
 
-    <!-- DRAGGABLE MINECRAFT CUTESY PIXEL-ART CHARACTER WIDGET -->
+    <!-- DRAGGABLE MINECRAFT CUTESY GIRLY PIXEL-ART CHARACTER WIDGET -->
     <div id="live-avatar-container" onclick="avatarClicked()">
         <div class="avatar-speech" id="avatarSpeech">Hi! Drag me anywhere so I'm not in your way! ✨</div>
-        <svg class="live-character anim-idle" id="liveAvatarSvg" viewBox="0 0 100 130">
-            <!-- Minecraft / Chibi Head Block Base -->
-            <rect x="22" y="22" width="56" height="52" fill="#f5d6c6" stroke="#d4ab96" stroke-width="2"/>
+        <svg class="live-character anim-idle" id="liveAvatarSvg" viewBox="0 0 100 140">
+            <!-- Head Block Base -->
+            <rect x="22" y="24" width="56" height="50" fill="#f5d6c6" stroke="#d4ab96" stroke-width="2"/>
             
-            <!-- Pixel Hair (Chibi Dark Hair Helmet style) -->
-            <rect x="20" y="18" width="60" height="16" fill="#1e1e1e"/>
-            <rect x="18" y="26" width="8" height="38" fill="#1e1e1e"/>
-            <rect x="74" y="26" width="8" height="38" fill="#1e1e1e"/>
+            <!-- Long Cute Flowing Hair (Minecraft Blocky Anime Style) -->
+            <rect x="20" y="20" width="60" height="16" fill="#7a3b2e"/>
+            <rect x="16" y="28" width="10" height="65" fill="#7a3b2e"/> <!-- Left Long Hair Strand -->
+            <rect x="74" y="28" width="10" height="65" fill="#7a3b2e"/> <!-- Right Long Hair Strand -->
+            <rect x="18" y="32" width="6" height="50" fill="#622e23"/> <!-- Hair Shadow -->
+            <rect x="76" y="32" width="6" height="50" fill="#622e23"/>
 
-            <!-- Cutesy Gamer Headset (Blocky Minecraft style) -->
-            <rect x="15" y="40" width="8" height="16" fill="#ff4d88" stroke="#b0236a" stroke-width="1.5"/>
-            <rect x="77" y="40" width="8" height="16" fill="#ff4d88" stroke="#b0236a" stroke-width="1.5"/>
-            <path d="M 19 40 H 81" stroke="#ff4d88" stroke-width="4" fill="none"/>
-            <!-- Mic Boom -->
-            <rect x="77" y="52" width="4" height="10" fill="#ffffff"/>
-            <rect x="75" y="60" width="6" height="6" fill="#ff4d88"/>
+            <!-- Cute Bow Headband Accessory -->
+            <rect x="42" y="16" width="16" height="8" fill="#ff4d88" stroke="#b0236a" stroke-width="1.5"/>
+            <polygon points="42,16 34,12 34,24" fill="#ff4d88"/>
+            <polygon points="58,16 66,12 66,24" fill="#ff4d88"/>
 
-            <!-- Cute Pixel Eyes Container -->
+            <!-- Cute Gamer Headset -->
+            <rect x="14" y="42" width="8" height="16" fill="#ff4d88" stroke="#b0236a" stroke-width="1.5"/>
+            <rect x="78" y="42" width="8" height="16" fill="#ff4d88" stroke="#b0236a" stroke-width="1.5"/>
+            <path d="M 18 42 H 82" stroke="#ff4d88" stroke-width="4" fill="none"/>
+            <rect x="78" y="54" width="4" height="10" fill="#ffffff"/>
+            <rect x="76" y="62" width="6" height="6" fill="#ff4d88"/>
+
+            <!-- Big Anime Pixel Eyes -->
             <g id="avatarEyes">
-                <rect x="30" y="38" width="10" height="12" fill="#2b2b2b"/>
-                <rect x="32" y="40" width="4" height="6" fill="#ffffff"/>
-                <rect x="60" y="38" width="10" height="12" fill="#2b2b2b"/>
-                <rect x="62" y="40" width="4" height="6" fill="#ffffff"/>
+                <rect x="30" y="38" width="10" height="13" fill="#2b2b2b"/>
+                <rect x="32" y="40" width="4" height="7" fill="#ffffff"/>
+                <rect x="34" y="46" width="2" height="3" fill="#ffffff"/>
+                
+                <rect x="60" y="38" width="10" height="13" fill="#2b2b2b"/>
+                <rect x="62" y="40" width="4" height="7" fill="#ffffff"/>
+                <rect x="64" y="46" width="2" height="3" fill="#ffffff"/>
+
                 <!-- Rosy Cheeks -->
                 <rect x="28" y="54" width="10" height="6" fill="#ff94b8" opacity="0.8"/>
                 <rect x="62" y="54" width="10" height="6" fill="#ff94b8" opacity="0.8"/>
             </g>
 
-            <!-- Mouth Container -->
+            <!-- Mouth -->
             <g id="avatarMouth">
                 <rect x="46" y="54" width="8" height="4" fill="#a75544"/>
             </g>
 
-            <!-- Minecraft Chibi Body / Pink & White Executive Top -->
-            <rect x="30" y="74" width="40" height="36" fill="#ffffff" stroke="#ffd7e9" stroke-width="2"/>
-            <polygon points="50,74 38,98 62,98" fill="#ff4d88"/> <!-- Pink V-neck vest -->
-            <rect x="47" y="94" width="6" height="12" fill="#1e1e1e"/> <!-- Tie -->
+            <!-- Girly Cute Pastel Outfit (Pink & White Ruffled Dress / Top) -->
+            <rect x="28" y="74" width="44" height="40" fill="#ffffff" stroke="#ffd7e9" stroke-width="2"/>
+            <path d="M 28 78 Q 50 90 72 78" fill="none" stroke="#ff4d88" stroke-width="3"/> <!-- Ruffle trim -->
+            <polygon points="50,78 40,102 60,102" fill="#ff4d88"/>
+            <rect x="47" y="96" width="6" height="10" fill="#ffffff"/> <!-- Bow tie detail -->
 
-            <!-- Tiny Blocky Companion Pet (Chibi Cutesy Rabbit Box) -->
-            <g class="pet-block" transform="translate(70, 92)">
+            <!-- Tiny Blocky Companion Pet (Chibi Cutesy Bunny Box) -->
+            <g class="pet-block" transform="translate(72, 94)">
                 <rect x="0" y="4" width="18" height="18" fill="#ffffff" stroke="#dddddd" stroke-width="1"/>
                 <rect x="3" y="-2" width="3" height="8" fill="#ffffff"/>
                 <rect x="12" y="-2" width="3" height="8" fill="#ffffff"/>
@@ -813,7 +852,17 @@
             score: 100,
             alarms: [],
             tickets: [],
-            emails: [],
+            emails: [
+                {
+                    id: 1,
+                    sender: 'supervisor@oman-noc.om',
+                    subject: 'Welcome to Oman NOC Trainee Portal',
+                    snippet: 'Welcome aboard! Please verify your setup and check in once you review the network guidelines.',
+                    body: 'Hello Trainee Engineer,\n\nWelcome to the Oman Network Operations Center training portal. Your initial assignment is to familiarize yourself with the interface, monitor alarms, and respond to operational dispatches whenever required.\n\nPlease reply to this email confirming your readiness.\n\nBest regards,\nNOC Operations Supervisor',
+                    read: false,
+                    reply: null
+                }
+            ],
             notifications: [],
             completedModules: 0,
             chatHistory: {
@@ -824,15 +873,14 @@
             currentChannel: 'IP Core'
         };
 
-        // Autonomous Brain Expressions & Sentient States
         const avatar = {
             el: document.getElementById('live-avatar-container'),
             speech: document.getElementById('avatarSpeech'),
             svg: document.getElementById('liveAvatarSvg'),
             eyes: document.getElementById('avatarEyes'),
             mouth: document.getElementById('avatarMouth'),
-            posX: window.innerWidth - 170,
-            posY: window.innerHeight - 240,
+            posX: window.innerWidth - 180,
+            posY: window.innerHeight - 250,
 
             setExpression(mood) {
                 if (mood === 'happy') {
@@ -846,7 +894,7 @@
                     this.eyes.innerHTML = '<rect x="32" y="38" width="8" height="12" fill="#2b2b2b"/><rect x="58" y="38" width="8" height="12" fill="#2b2b2b"/><rect x="28" y="54" width="10" height="6" fill="#ff94b8" opacity="0.8"/><rect x="62" y="54" width="10" height="6" fill="#ff94b8" opacity="0.8"/>';
                 } else {
                     this.mouth.innerHTML = '<rect x="46" y="54" width="8" height="4" fill="#a75544"/>';
-                    this.eyes.innerHTML = '<rect x="30" y="38" width="10" height="12" fill="#2b2b2b"/><rect x="32" y="40" width="4" height="6" fill="#ffffff"/><rect x="60" y="38" width="10" height="12" fill="#2b2b2b"/><rect x="62" y="40" width="4" height="6" fill="#ffffff"/><rect x="28" y="54" width="10" height="6" fill="#ff94b8" opacity="0.8"/><rect x="62" y="54" width="10" height="6" fill="#ff94b8" opacity="0.8"/>';
+                    this.eyes.innerHTML = '<rect x="30" y="38" width="10" height="13" fill="#2b2b2b"/><rect x="32" y="40" width="4" height="7" fill="#ffffff"/><rect x="60" y="38" width="10" height="13" fill="#2b2b2b"/><rect x="62" y="40" width="4" height="7" fill="#ffffff"/><rect x="28" y="54" width="10" height="6" fill="#ff94b8" opacity="0.8"/><rect x="62" y="54" width="10" height="6" fill="#ff94b8" opacity="0.8"/>';
                 }
             },
 
@@ -866,8 +914,8 @@
                 this.svg.classList.remove('anim-idle');
                 this.svg.classList.add('anim-walk');
                 
-                this.posX = Math.max(20, Math.min(window.innerWidth - 160, targetX));
-                this.posY = Math.max(60, Math.min(window.innerHeight - 220, targetY));
+                this.posX = Math.max(20, Math.min(window.innerWidth - 170, targetX));
+                this.posY = Math.max(60, Math.min(window.innerHeight - 230, targetY));
                 
                 this.el.style.left = this.posX + 'px';
                 this.el.style.top = this.posY + 'px';
@@ -887,7 +935,7 @@
             }
         };
 
-        // DRAGGABLE MOUSE & TOUCH SUPPORT SO SHE NEVER BLOCKS YOUR VISION
+        // DRAGGABLE MOUSE & TOUCH SUPPORT
         let isDragging = false;
         let startX, startY, initialX, initialY;
 
@@ -901,7 +949,7 @@
             avatar.el.setPointerCapture(e.pointerId);
             avatar.svg.classList.remove('anim-idle');
             avatar.svg.classList.add('anim-walk');
-            avatar.speak("Moving me out of your way? Got it! ✨", 'curious', 2500);
+            avatar.speak("Moving me out of your way? ✨", 'curious', 2500);
             e.stopPropagation();
         });
 
@@ -909,8 +957,8 @@
             if (!isDragging) return;
             const dx = e.clientX - startX;
             const dy = e.clientY - startY;
-            avatar.posX = Math.max(10, Math.min(window.innerWidth - 150, initialX + dx));
-            avatar.posY = Math.max(10, Math.min(window.innerHeight - 200, initialY + dy));
+            avatar.posX = Math.max(10, Math.min(window.innerWidth - 160, initialX + dx));
+            avatar.posY = Math.max(10, Math.min(window.innerHeight - 220, initialY + dy));
             
             avatar.el.style.left = avatar.posX + 'px';
             avatar.el.style.top = avatar.posY + 'px';
@@ -926,16 +974,15 @@
             avatar.el.releasePointerCapture(e.pointerId);
         });
 
-        // Initialize position on screen
         window.addEventListener('load', () => {
-            avatar.posX = window.innerWidth - 170;
-            avatar.posY = window.innerHeight - 240;
+            avatar.posX = window.innerWidth - 180;
+            avatar.posY = window.innerHeight - 250;
             avatar.el.style.left = avatar.posX + 'px';
             avatar.el.style.top = avatar.posY + 'px';
             avatar.el.style.bottom = 'auto';
             avatar.el.style.right = 'auto';
+            renderEmails();
 
-            // Autonomous Brain Wandering Loop every 16 seconds
             setInterval(() => {
                 if (!isDragging && Math.random() > 0.4) {
                     const rx = Math.random() * (window.innerWidth - 300) + 50;
@@ -944,7 +991,7 @@
                         const thoughts = [
                             "Monitoring fiber links across Oman! 🌐",
                             "Tip: You can drag me anywhere if I'm in your way!",
-                            "Everything is running smoothly right now."
+                            "Check your inbox to reply to supervisor emails!"
                         ];
                         avatar.speak(thoughts[Math.floor(Math.random() * thoughts.length)], 'curious');
                     });
@@ -957,8 +1004,8 @@
             avatar.jump();
             const clicks = [
                 "Ouch! That tickles! Drag me if I'm blocking your vision.",
-                "Ready for action! Check out the alarms panel.",
-                "You're doing great! Keep solving those tickets! ✨"
+                "Ready for action! Check out the emails panel.",
+                "You're doing great! Keep replying to those supervisors! ✨"
             ];
             avatar.speak(clicks[Math.floor(Math.random() * clicks.length)], 'happy');
         }
@@ -973,16 +1020,13 @@
             }
             logActivity(`Navigated to page: ${pageId}`);
 
-            if(pageId === 'alarms') {
+            if(pageId === 'emails') {
+                renderEmails();
                 avatar.walkTo(window.innerWidth - 260, 160, () => {
-                    avatar.speak("Inspecting alarms? Let's clear them out!", 'frown');
-                });
-            } else if(pageId === 'topology') {
-                avatar.walkTo(150, 200, () => {
-                    avatar.speak("Oman's fiber map looks amazing from here!", 'happy');
+                    avatar.speak("Checking email dispatches!", 'happy');
                 });
             } else if(pageId === 'dashboard') {
-                avatar.walkTo(window.innerWidth - 170, window.innerHeight - 240, () => {
+                avatar.walkTo(window.innerWidth - 180, window.innerHeight - 250, () => {
                     avatar.speak("Back to command central!", 'neutral');
                 });
             }
@@ -1040,7 +1084,7 @@
 
             avatar.walkTo(window.innerWidth / 2 - 70, 180, () => {
                 avatar.jump();
-                avatar.speak(`Oh no! A ${severity} fault just hit the network! Quick, fix it!`, 'frown', 6000);
+                avatar.speak(`Oh no! A ${severity} fault just hit the network!`, 'frown', 6000);
             });
         }
 
@@ -1085,7 +1129,7 @@
             renderTickets();
             updateUI();
             logActivity(`Converted alarm to ticket ${ticket.id}`);
-            avatar.speak("Ticket created! Excellent job catching that fault!", 'happy');
+            avatar.speak("Ticket created! Excellent job!", 'happy');
         }
 
         function renderTickets() {
@@ -1124,40 +1168,141 @@
         }
 
         function simulateIncomingEmail() {
-            const emailSubjects = [
+            const subjects = [
                 'Operational Priority Update: Sohar Ring',
                 'Scheduled Maintenance: Muscat Core Router 1',
                 'DWDM Optical Power Telemetry Report',
                 'BGP Peering Latency Alert Notice'
             ];
+            const bodies = [
+                'Please review the current telemetry data coming out of the Sohar industrial fiber ring and report any signal degradation.',
+                'We are scheduling router reboots tonight at 02:00 GST. Ensure standby routes are active.',
+                'Optical transceivers on the Duqm link are running slightly warm. Please verify status.',
+                'BGP latency spiked on the Muscat core. Did you notice any anomalies?'
+            ];
+            const randIdx = Math.floor(Math.random() * subjects.length);
             const email = {
                 id: Date.now(),
                 sender: 'supervisor@oman-noc.om',
-                subject: emailSubjects[Math.floor(Math.random() * emailSubjects.length)],
-                snippet: 'Telemetry report complete. Verify node status.',
-                read: false
+                subject: subjects[randIdx],
+                snippet: bodies[randIdx].substring(0, 50) + '...',
+                body: bodies[randIdx],
+                read: false,
+                reply: null
             };
             state.emails.push(email);
             renderEmails();
             updateUI();
             addNotification('New NOC email received.');
-            logActivity('Email simulated into shared mailbox.');
-            avatar.speak("New email received in mailbox! 📧", 'curious');
+            logActivity('Manual NOC email generated.');
+            avatar.speak("New manual email received! 📧", 'curious');
         }
 
         function renderEmails() {
             const container = document.getElementById('emailInboxContainer');
+            const detailContainer = document.getElementById('emailDetailContainer');
+            detailContainer.style.display = 'none';
+            container.style.display = 'block';
+
             if (state.emails.length === 0) {
                 container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">Inbox is empty.</p>';
                 return;
             }
             container.innerHTML = '';
-            state.emails.forEach(email => {
+            state.emails.forEach((email) => {
                 const div = document.createElement('div');
-                div.style.cssText = 'padding: 12px; border-bottom: 1px solid #eee; background: white; border-radius: 8px; margin-bottom: 8px;';
-                div.innerHTML = `<strong>From:</strong> ${email.sender}<br><strong>Subject:</strong> ${email.subject}<p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">${email.snippet}</p>`;
+                div.className = 'email-list-item';
+                div.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <strong>${email.sender}</strong>
+                        <span style="font-size: 11px; color: var(--text-muted);">${email.read ? 'Read' : '<span style="color:var(--primary); font-weight:bold;">Unread</span>'}</span>
+                    </div>
+                    <div style="font-size: 14px; font-weight: bold; color: var(--primary-dark);">${email.subject}</div>
+                    <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">${email.snippet}</div>
+                `;
+                div.onclick = () => openEmailDetail(email.id);
                 container.appendChild(div);
             });
+        }
+
+        function openEmailDetail(id) {
+            const email = state.emails.find(e => e.id === id);
+            if (!email) return;
+            email.read = true;
+            updateUI();
+
+            const container = document.getElementById('emailInboxContainer');
+            const detailContainer = document.getElementById('emailDetailContainer');
+            container.style.display = 'none';
+            detailContainer.style.display = 'block';
+
+            let replySection = '';
+            if (email.reply) {
+                replySection = `
+                    <div style="margin-top: 15px; padding: 12px; background: #f8f9fa; border-radius: 8px; border: 1px solid var(--border-color);">
+                        <strong>Your Reply:</strong>
+                        <p style="font-size: 13px; margin-top: 4px;">${email.reply.text}</p>
+                        <hr style="margin: 10px 0; border: none; border-top: 1px solid #ddd;">
+                        <strong>Supervisor Response (${email.reply.time}):</strong>
+                        <p style="font-size: 13px; color: var(--primary-dark); margin-top: 4px; font-weight: bold;">${email.reply.response}</p>
+                    </div>
+                    <button class="action-btn" style="margin-top: 15px;" onclick="renderEmails()">← Back to Inbox</button>
+                `;
+            } else {
+                replySection = `
+                    <div class="email-reply-box">
+                        <textarea id="emailReplyInput" placeholder="Type your reply to the supervisor..."></textarea>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn-sm" onclick="sendEmailReply(${email.id})">Send Reply</button>
+                            <button class="action-btn" style="padding: 5px 12px; font-size: 11px;" onclick="renderEmails()">Cancel</button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            detailContainer.innerHTML = `
+                <button class="action-btn" style="margin-bottom: 12px; padding: 4px 10px; font-size: 11px;" onclick="renderEmails()">← Back to Inbox</button>
+                <h3 style="color: var(--primary-dark); margin-bottom: 8px;">${email.subject}</h3>
+                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">From: ${email.sender}</div>
+                <div style="font-size: 13px; line-height: 1.5; white-space: pre-wrap; background: #fafafa; padding: 15px; border-radius: 8px; border: 1px solid #eee;">${email.body}</div>
+                ${replySection}
+            `;
+        }
+
+        function sendEmailReply(id) {
+            const input = document.getElementById('emailReplyInput');
+            const text = input ? input.value.trim() : '';
+            if (!text) {
+                alert('Please type a reply before sending.');
+                return;
+            }
+
+            const email = state.emails.find(e => e.id === id);
+            if (!email) return;
+
+            const responses = [
+                "Received and noted! Thanks for keeping a close eye on the network telemetry.",
+                "Excellent update. Keep monitoring the link status for any further fluctuations.",
+                "Good observation. I have logged your response in the shift report.",
+                "Understood. Proceed with your standard troubleshooting checks."
+            ];
+            const autoResponse = responses[Math.floor(Math.random() * responses.length)];
+
+            email.reply = {
+                text: text,
+                time: new Date().toLocaleTimeString(),
+                response: autoResponse
+            };
+
+            state.xp += 20;
+            state.score += 5;
+            updateUI();
+            addNotification(`Supervisor replied to your email! (+20 XP)`);
+            logActivity(`Replied to email from ${email.sender}`);
+            avatar.jump();
+            avatar.speak("Supervisor replied! Great communication! 🌸", 'happy');
+
+            openEmailDetail(id);
         }
 
         function switchChat(channel) {
