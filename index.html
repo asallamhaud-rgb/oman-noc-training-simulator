@@ -817,508 +817,265 @@
                 <rect x="64" y="46" width="2" height="3" fill="#ffffff"/>
 
                 <!-- Rosy Cheeks -->
-                <rect x="28" y="54" width="10" height="6" fill="#ff94b8" opacity="0.8"/>
-                <rect x="62" y="54" width="10" height="6" fill="#ff94b8" opacity="0.8"/>
-            </g>
-
-            <!-- Mouth -->
-            <g id="avatarMouth">
-                <rect x="46" y="54" width="8" height="4" fill="#a75544"/>
-            </g>
-
-            <!-- Girly Cute Pastel Outfit (Pink & White Ruffled Dress / Top) -->
-            <rect x="28" y="74" width="44" height="40" fill="#ffffff" stroke="#ffd7e9" stroke-width="2"/>
-            <path d="M 28 78 Q 50 90 72 78" fill="none" stroke="#ff4d88" stroke-width="3"/> <!-- Ruffle trim -->
-            <polygon points="50,78 40,102 60,102" fill="#ff4d88"/>
-            <rect x="47" y="96" width="6" height="10" fill="#ffffff"/> <!-- Bow tie detail -->
-
-            <!-- Tiny Blocky Companion Pet (Chibi Cutesy Bunny Box) -->
-            <g class="pet-block" transform="translate(72, 94)">
-                <rect x="0" y="4" width="18" height="18" fill="#ffffff" stroke="#dddddd" stroke-width="1"/>
-                <rect x="3" y="-2" width="3" height="8" fill="#ffffff"/>
-                <rect x="12" y="-2" width="3" height="8" fill="#ffffff"/>
-                <rect x="4" y="9" width="2" height="2" fill="#111"/>
-                <rect x="12" y="9" width="2" height="2" fill="#111"/>
-                <rect x="7" y="12" width="4" height="3" fill="#ff94b8"/>
+                <rect x="28" y="54" width="10" height="6" fill="#ff8da1" opacity="0.7"/>
+                <rect x="62" y="54" width="10" height="6" fill="#ff8da1" opacity="0.7"/>
             </g>
         </svg>
     </div>
 
-    <!-- JavaScript Application & AI Brain Logic -->
+    <!-- JavaScript Simulator Core -->
     <script>
-        let state = {
+        // State variables
+        let traineeState = {
             level: 1,
             xp: 0,
             score: 100,
-            alarms: [],
-            tickets: [],
-            emails: [
-                {
-                    id: 1,
-                    sender: 'supervisor@oman-noc.om',
-                    subject: 'Welcome to Oman NOC Trainee Portal',
-                    snippet: 'Welcome aboard! Please verify your setup and check in once you review the network guidelines.',
-                    body: 'Hello Trainee Engineer,\n\nWelcome to the Oman Network Operations Center training portal. Your initial assignment is to familiarize yourself with the interface, monitor alarms, and respond to operational dispatches whenever required.\n\nPlease reply to this email confirming your readiness.\n\nBest regards,\nNOC Operations Supervisor',
-                    read: false,
-                    reply: null
-                }
-            ],
-            notifications: [],
             completedModules: 0,
-            chatHistory: {
-                'IP Core': [{sender: 'IP Team', text: 'Hello NOC trainee, let us know if you spot any BGP peer flapping.'}],
-                'Transmission': [{sender: 'DWDM Team', text: 'All optical channels balanced across Muscat-Sohar.'}],
-                'Supervisor': [{sender: 'Supervisor', text: 'Complete your training modules to rank up!'}]
-            },
-            currentChannel: 'IP Core'
+            totalModules: 1
         };
 
-        const avatar = {
-            el: document.getElementById('live-avatar-container'),
-            speech: document.getElementById('avatarSpeech'),
-            svg: document.getElementById('liveAvatarSvg'),
-            eyes: document.getElementById('avatarEyes'),
-            mouth: document.getElementById('avatarMouth'),
-            posX: window.innerWidth - 180,
-            posY: window.innerHeight - 250,
-
-            setExpression(mood) {
-                if (mood === 'happy') {
-                    this.mouth.innerHTML = '<rect x="44" y="52" width="12" height="6" fill="#a75544"/><rect x="46" y="52" width="8" height="2" fill="#ffffff"/>';
-                    this.eyes.innerHTML = '<rect x="30" y="40" width="10" height="8" fill="#2b2b2b"/><rect x="60" y="40" width="10" height="8" fill="#2b2b2b"/><rect x="28" y="54" width="10" height="6" fill="#ff94b8" opacity="0.8"/><rect x="62" y="54" width="10" height="6" fill="#ff94b8" opacity="0.8"/>';
-                } else if (mood === 'frown') {
-                    this.mouth.innerHTML = '<rect x="46" y="56" width="8" height="4" fill="#c0392b"/>';
-                    this.eyes.innerHTML = '<rect x="30" y="38" width="10" height="10" fill="#c0392b"/><rect x="60" y="38" width="10" height="10" fill="#c0392b"/><rect x="28" y="54" width="10" height="6" fill="#ff94b8" opacity="0.8"/><rect x="62" y="54" width="10" height="6" fill="#ff94b8" opacity="0.8"/>';
-                } else if (mood === 'curious') {
-                    this.mouth.innerHTML = '<rect x="48" y="54" width="4" height="4" fill="#a75544"/>';
-                    this.eyes.innerHTML = '<rect x="32" y="38" width="8" height="12" fill="#2b2b2b"/><rect x="58" y="38" width="8" height="12" fill="#2b2b2b"/><rect x="28" y="54" width="10" height="6" fill="#ff94b8" opacity="0.8"/><rect x="62" y="54" width="10" height="6" fill="#ff94b8" opacity="0.8"/>';
-                } else {
-                    this.mouth.innerHTML = '<rect x="46" y="54" width="8" height="4" fill="#a75544"/>';
-                    this.eyes.innerHTML = '<rect x="30" y="38" width="10" height="13" fill="#2b2b2b"/><rect x="32" y="40" width="4" height="7" fill="#ffffff"/><rect x="60" y="38" width="10" height="13" fill="#2b2b2b"/><rect x="62" y="40" width="4" height="7" fill="#ffffff"/><rect x="28" y="54" width="10" height="6" fill="#ff94b8" opacity="0.8"/><rect x="62" y="54" width="10" height="6" fill="#ff94b8" opacity="0.8"/>';
-                }
-            },
-
-            speak(text, mood = 'neutral', duration = 4000) {
-                this.speech.textContent = text;
-                this.speech.style.opacity = '1';
-                this.setExpression(mood);
-                
-                if (this.speechTimeout) clearTimeout(this.speechTimeout);
-                this.speechTimeout = setTimeout(() => {
-                    this.speech.style.opacity = '0';
-                    this.setExpression('neutral');
-                }, duration);
-            },
-
-            walkTo(targetX, targetY, callback) {
-                this.svg.classList.remove('anim-idle');
-                this.svg.classList.add('anim-walk');
-                
-                this.posX = Math.max(20, Math.min(window.innerWidth - 170, targetX));
-                this.posY = Math.max(60, Math.min(window.innerHeight - 230, targetY));
-                
-                this.el.style.left = this.posX + 'px';
-                this.el.style.top = this.posY + 'px';
-                this.el.style.bottom = 'auto';
-                this.el.style.right = 'auto';
-
-                setTimeout(() => {
-                    this.svg.classList.remove('anim-walk');
-                    this.svg.classList.add('anim-idle');
-                    if (callback) callback();
-                }, 850);
-            },
-
-            jump() {
-                this.svg.classList.add('anim-jump');
-                setTimeout(() => this.svg.classList.remove('anim-jump'), 1500);
+        let alarms = [];
+        let tickets = [];
+        let emails = [
+            {
+                id: 1,
+                sender: "supervisor@oman-noc.om",
+                subject: "Welcome to Oman NOC Training Program",
+                date: "Aug 14, 2026",
+                content: "Dear Trainee,\n\nWelcome to the Oman Network Operations Center training simulator. Please review the dashboard, monitor incoming alarms across Muscat and regional nodes, and complete your assigned learning modules.\n\nBest regards,\nNOC Operations Director",
+                read: false
             }
-        };
-
-        // DRAGGABLE MOUSE & TOUCH SUPPORT
-        let isDragging = false;
-        let startX, startY, initialX, initialY;
-
-        avatar.el.addEventListener('pointerdown', (e) => {
-            isDragging = true;
-            startX = e.clientX;
-            startY = e.clientY;
-            const rect = avatar.el.getBoundingClientRect();
-            initialX = rect.left;
-            initialY = rect.top;
-            avatar.el.setPointerCapture(e.pointerId);
-            avatar.svg.classList.remove('anim-idle');
-            avatar.svg.classList.add('anim-walk');
-            avatar.speak("Moving me out of your way? ✨", 'curious', 2500);
-            e.stopPropagation();
-        });
-
-        avatar.el.addEventListener('pointermove', (e) => {
-            if (!isDragging) return;
-            const dx = e.clientX - startX;
-            const dy = e.clientY - startY;
-            avatar.posX = Math.max(10, Math.min(window.innerWidth - 160, initialX + dx));
-            avatar.posY = Math.max(10, Math.min(window.innerHeight - 220, initialY + dy));
-            
-            avatar.el.style.left = avatar.posX + 'px';
-            avatar.el.style.top = avatar.posY + 'px';
-            avatar.el.style.bottom = 'auto';
-            avatar.el.style.right = 'auto';
-        });
-
-        avatar.el.addEventListener('pointerup', (e) => {
-            if (!isDragging) return;
-            isDragging = false;
-            avatar.svg.classList.remove('anim-walk');
-            avatar.svg.classList.add('anim-idle');
-            avatar.el.releasePointerCapture(e.pointerId);
-        });
-
-        window.addEventListener('load', () => {
-            avatar.posX = window.innerWidth - 180;
-            avatar.posY = window.innerHeight - 250;
-            avatar.el.style.left = avatar.posX + 'px';
-            avatar.el.style.top = avatar.posY + 'px';
-            avatar.el.style.bottom = 'auto';
-            avatar.el.style.right = 'auto';
-            renderEmails();
-
-            setInterval(() => {
-                if (!isDragging && Math.random() > 0.4) {
-                    const rx = Math.random() * (window.innerWidth - 300) + 50;
-                    const ry = Math.random() * (window.innerHeight - 300) + 80;
-                    avatar.walkTo(rx, ry, () => {
-                        const thoughts = [
-                            "Monitoring fiber links across Oman! 🌐",
-                            "Tip: You can drag me anywhere if I'm in your way!",
-                            "Check your inbox to reply to supervisor emails!"
-                        ];
-                        avatar.speak(thoughts[Math.floor(Math.random() * thoughts.length)], 'curious');
-                    });
-                }
-            }, 16000);
-        });
-
-        function avatarClicked() {
-            if (isDragging) return;
-            avatar.jump();
-            const clicks = [
-                "Ouch! That tickles! Drag me if I'm blocking your vision.",
-                "Ready for action! Check out the emails panel.",
-                "You're doing great! Keep replying to those supervisors! ✨"
-            ];
-            avatar.speak(clicks[Math.floor(Math.random() * clicks.length)], 'happy');
-        }
+        ];
 
         function showPage(pageId, btnElement) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
-            
+
             if (btnElement) {
                 document.querySelectorAll('.sidebar .nav-btn').forEach(b => b.classList.remove('active'));
                 btnElement.classList.add('active');
             }
-            logActivity(`Navigated to page: ${pageId}`);
 
-            if(pageId === 'emails') {
-                renderEmails();
-                avatar.walkTo(window.innerWidth - 260, 160, () => {
-                    avatar.speak("Checking email dispatches!", 'happy');
-                });
-            } else if(pageId === 'dashboard') {
-                avatar.walkTo(window.innerWidth - 180, window.innerHeight - 250, () => {
-                    avatar.speak("Back to command central!", 'neutral');
-                });
-            }
+            const titleMap = {
+                dashboard: "Trainee Dashboard",
+                alarms: "Alarm Management Center",
+                tickets: "Incident & Trouble Ticket Management",
+                workorders: "Field Engineering Work Orders",
+                emails: "Shared NOC Mailbox",
+                chat: "Internal Team Chat & Escalation",
+                notifications: "Operational Notification Center",
+                topology: "Oman Telecom Network Topology",
+                sites: "Fictional Oman Telecommunication Sites",
+                devices: "Network Device Inventory",
+                search: "Global Database Search",
+                modules: "NOC Training Curriculum & Modules",
+                troubleshoot: "Interactive Troubleshooting Simulator",
+                kb: "NOC Knowledge Base",
+                handover: "Shift Handover Notes",
+                notes: "Personal Trainee Notes",
+                reports: "Training Reports & Performance",
+                activity: "Activity & Audit Log"
+            };
+
+            document.getElementById('pageTitle').textContent = titleMap[pageId] || "Oman NOC Simulation";
+            if (pageId === 'emails') renderEmails();
         }
 
-        function logActivity(message) {
+        function logActivity(text) {
             const container = document.getElementById('auditLogContainer');
-            if (container) {
-                const timestamp = new Date().toLocaleTimeString();
-                const div = document.createElement('div');
-                div.textContent = `[${timestamp}] ${message}`;
-                container.prepend(div);
-            }
+            const entry = document.createElement('div');
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${text}`;
+            container.prepend(entry);
         }
 
         function updateUI() {
-            document.getElementById('dashAlarmCount').textContent = state.alarms.length;
-            document.getElementById('dashTicketCount').textContent = state.tickets.length;
-            document.getElementById('dashEmailCount').textContent = state.emails.filter(e => !e.read).length;
-            document.getElementById('dashModuleCount').textContent = `${state.completedModules} / 2`;
-            document.getElementById('dashProgress').textContent = `${Math.round((state.completedModules / 2) * 100)}%`;
+            document.getElementById('traineeLevel').textContent = traineeState.level;
+            document.getElementById('traineeXP').textContent = traineeState.xp;
+            document.getElementById('traineeScore').textContent = traineeState.score;
+            document.getElementById('dashAlarmCount').textContent = alarms.length;
+            document.getElementById('dashTicketCount').textContent = tickets.length;
+            document.getElementById('dashModuleCount').textContent = `${traineeState.completedModules} / ${traineeState.totalModules}`;
+            
+            const progress = Math.round((traineeState.completedModules / traineeState.totalModules) * 100);
+            document.getElementById('dashProgress').textContent = `${progress}%`;
 
-            document.getElementById('alarmBadge').textContent = state.alarms.length;
-            document.getElementById('ticketBadge').textContent = state.tickets.length;
-            document.getElementById('emailBadge').textContent = state.emails.filter(e => !e.read).length;
-            document.getElementById('chatBadge').textContent = 1;
-            document.getElementById('notifBadge').textContent = state.notifications.length;
-
-            document.getElementById('traineeLevel').textContent = state.level;
-            document.getElementById('traineeXP').textContent = state.xp;
-            document.getElementById('traineeScore').textContent = state.score;
+            document.getElementById('alarmBadge').textContent = alarms.length;
+            document.getElementById('ticketBadge').textContent = tickets.length;
+            document.getElementById('dashEmailCount').textContent = emails.filter(e => !e.read).length;
+            document.getElementById('emailBadge').textContent = emails.filter(e => !e.read).length;
         }
 
         function triggerRandomAlarm(severity) {
-            const devices = ['Muscat-Core-RT01', 'Sohar-DWDM-MUX02'];
-            const sites = ['MCT-CORE-01', 'SHR-TRN-02'];
-            const techs = ['IP Core / BGP', 'DWDM Transport'];
+            const id = 'ALM-' + Math.floor(1000 + Math.random() * 9000);
+            const devices = ['MCT-CORE-RT01', 'SHR-DWDM-MUX02', 'SLL-MW-RTE04', 'DQM-LTE-BS09'];
+            const sites = ['Muscat', 'Sohar', 'Salalah', 'Duqm'];
+            const techs = ['IP Core', 'DWDM Transport', 'Microwave', 'LTE RAN'];
             
-            const idx = Math.floor(Math.random() * devices.length);
-            const alarm = {
-                id: 'ALM-' + Math.floor(1000 + Math.random() * 9000),
-                severity: severity,
-                device: devices[idx],
-                site: sites[idx],
-                technology: techs[idx],
+            const index = Math.floor(Math.random() * devices.length);
+            const newAlarm = {
+                id,
+                severity,
+                device: devices[index],
+                site: sites[index],
+                tech: techs[index],
                 time: new Date().toLocaleTimeString(),
                 status: 'Active'
             };
 
-            state.alarms.push(alarm);
-            addNotification(`New ${severity} alarm on ${alarm.device}`);
+            alarms.push(newAlarm);
+            logActivity(`Generated ${severity} alarm ${id} on ${newAlarm.device} (${newAlarm.site}).`);
             renderAlarms();
             updateUI();
-            logActivity(`Generated ${severity} alarm: ${alarm.id}`);
-
-            avatar.walkTo(window.innerWidth / 2 - 70, 180, () => {
-                avatar.jump();
-                avatar.speak(`Oh no! A ${severity} fault just hit the network!`, 'frown', 6000);
-            });
         }
 
         function renderAlarms() {
             const tbody = document.getElementById('alarmTableBody');
-            if (state.alarms.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--text-muted);">No alarms in queue. Generate an alarm to begin.</td></tr>';
+            if (alarms.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted);">No alarms in queue. Generate an alarm to begin.</td></tr>`;
                 return;
             }
-            tbody.innerHTML = '';
-            state.alarms.forEach((alm, index) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${alm.id}</td>
-                    <td><span class="badge-critical">${alm.severity}</span></td>
-                    <td>${alm.device}</td>
-                    <td>${alm.site}</td>
-                    <td>${alm.technology}</td>
-                    <td>${alm.time}</td>
-                    <td>${alm.status}</td>
-                    <td><button class="btn-sm" onclick="convertAlarmToTicket(${index})">Create Ticket</button></td>
-                `;
-                tbody.appendChild(tr);
-            });
+
+            tbody.innerHTML = alarms.map(a => `
+                <tr>
+                    <td><b>${a.id}</b></td>
+                    <td><span class="${a.severity === 'Critical' ? 'badge-critical' : 'badge-major'}">${a.severity}</span></td>
+                    <td>${a.device}</td>
+                    <td>${a.site}</td>
+                    <td>${a.tech}</td>
+                    <td>${a.time}</td>
+                    <td>${a.status}</td>
+                    <td>
+                        <button class="btn-sm" onclick="convertAlarmToTicket('${a.id}')">Escalate</button>
+                    </td>
+                </tr>
+            `).join('');
         }
 
-        function convertAlarmToTicket(index) {
-            const alm = state.alarms[index];
-            state.alarms.splice(index, 1);
-            
-            const ticket = {
-                id: 'INC-' + Math.floor(1000 + Math.random() * 9000),
-                priority: alm.severity,
-                alarmRef: alm.id,
-                siteDevice: `${alm.site} / ${alm.device}`,
-                sla: 'On Track',
-                status: 'Investigation'
-            };
+        function convertAlarmToTicket(alarmId) {
+            const alarm = alarms.find(a => a.id === alarmId);
+            if (!alarm) return;
 
-            state.tickets.push(ticket);
+            alarms = alarms.filter(a => a.id !== alarmId);
+            const ticketId = 'INC-' + Math.floor(1000 + Math.random() * 9000);
+            
+            tickets.push({
+                id: ticketId,
+                priority: alarm.severity,
+                alarmRef: alarm.id,
+                target: `${alarm.site} / ${alarm.device}`,
+                sla: 'Within SLA',
+                status: 'Open'
+            });
+
+            logActivity(`Escalated alarm ${alarmId} into Incident ticket ${ticketId}.`);
             renderAlarms();
             renderTickets();
             updateUI();
-            logActivity(`Converted alarm to ticket ${ticket.id}`);
-            avatar.speak("Ticket created! Excellent job!", 'happy');
         }
 
         function renderTickets() {
             const tbody = document.getElementById('ticketTableBody');
-            if (state.tickets.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-muted);">No active tickets. Convert acknowledged alarms into tickets.</td></tr>';
+            if (tickets.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted);">No active tickets. Convert acknowledged alarms into tickets.</td></tr>`;
                 return;
             }
-            tbody.innerHTML = '';
-            state.tickets.forEach((tkt, index) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${tkt.id}</td>
-                    <td>${tkt.priority}</td>
-                    <td>${tkt.alarmRef}</td>
-                    <td>${tkt.siteDevice}</td>
-                    <td><span class="badge-success">${tkt.sla}</span></td>
-                    <td>${tkt.status}</td>
-                    <td><button class="btn-sm" onclick="resolveTicket(${index})">Resolve</button></td>
-                `;
-                tbody.appendChild(tr);
-            });
+
+            tbody.innerHTML = tickets.map(t => `
+                <tr>
+                    <td><b>${t.id}</b></td>
+                    <td><span class="${t.priority === 'Critical' ? 'badge-critical' : 'badge-major'}">${t.priority}</span></td>
+                    <td>${t.alarmRef}</td>
+                    <td>${t.target}</td>
+                    <td>${t.sla}</td>
+                    <td>${t.status}</td>
+                    <td>
+                        <button class="btn-sm" onclick="resolveTicket('${t.id}')">Resolve</button>
+                    </td>
+                </tr>
+            `).join('');
         }
 
-        function resolveTicket(index) {
-            const tkt = state.tickets[index];
-            state.tickets.splice(index, 1);
-            state.xp += 25;
-            state.score += 10;
+        function resolveTicket(ticketId) {
+            tickets = tickets.filter(t => t.id !== ticketId);
+            traineeState.xp += 30;
+            logActivity(`Resolved incident ticket ${ticketId}. Awarded +30 XP.`);
             renderTickets();
             updateUI();
-            addNotification(`Ticket ${tkt.id} resolved successfully! (+25 XP)`);
-            logActivity(`Resolved ticket ${tkt.id}`);
-            avatar.jump();
-            avatar.speak("Yay! Network restored! (+25 XP)", 'happy');
-        }
-
-        function simulateIncomingEmail() {
-            const subjects = [
-                'Operational Priority Update: Sohar Ring',
-                'Scheduled Maintenance: Muscat Core Router 1',
-                'DWDM Optical Power Telemetry Report',
-                'BGP Peering Latency Alert Notice'
-            ];
-            const bodies = [
-                'Please review the current telemetry data coming out of the Sohar industrial fiber ring and report any signal degradation.',
-                'We are scheduling router reboots tonight at 02:00 GST. Ensure standby routes are active.',
-                'Optical transceivers on the Duqm link are running slightly warm. Please verify status.',
-                'BGP latency spiked on the Muscat core. Did you notice any anomalies?'
-            ];
-            const randIdx = Math.floor(Math.random() * subjects.length);
-            const email = {
-                id: Date.now(),
-                sender: 'supervisor@oman-noc.om',
-                subject: subjects[randIdx],
-                snippet: bodies[randIdx].substring(0, 50) + '...',
-                body: bodies[randIdx],
-                read: false,
-                reply: null
-            };
-            state.emails.push(email);
-            renderEmails();
-            updateUI();
-            addNotification('New NOC email received.');
-            logActivity('Manual NOC email generated.');
-            avatar.speak("New manual email received! 📧", 'curious');
         }
 
         function renderEmails() {
             const container = document.getElementById('emailInboxContainer');
-            const detailContainer = document.getElementById('emailDetailContainer');
-            detailContainer.style.display = 'none';
-            container.style.display = 'block';
-
-            if (state.emails.length === 0) {
-                container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">Inbox is empty.</p>';
-                return;
-            }
-            container.innerHTML = '';
-            state.emails.forEach((email) => {
-                const div = document.createElement('div');
-                div.className = 'email-list-item';
-                div.innerHTML = `
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                        <strong>${email.sender}</strong>
-                        <span style="font-size: 11px; color: var(--text-muted);">${email.read ? 'Read' : '<span style="color:var(--primary); font-weight:bold;">Unread</span>'}</span>
+            container.innerHTML = emails.map(e => `
+                <div class="email-list-item" onclick="openEmail(${e.id})" style="font-weight: ${e.read ? 'normal' : 'bold'};">
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">
+                        <span>From: ${e.sender}</span>
+                        <span>${e.date}</span>
                     </div>
-                    <div style="font-size: 14px; font-weight: bold; color: var(--primary-dark);">${email.subject}</div>
-                    <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">${email.snippet}</div>
-                `;
-                div.onclick = () => openEmailDetail(email.id);
-                container.appendChild(div);
-            });
+                    <div>${e.subject}</div>
+                </div>
+            `).join('');
         }
 
-        function openEmailDetail(id) {
-            const email = state.emails.find(e => e.id === id);
+        function openEmail(id) {
+            const email = emails.find(e => e.id === id);
             if (!email) return;
             email.read = true;
             updateUI();
 
-            const container = document.getElementById('emailInboxContainer');
-            const detailContainer = document.getElementById('emailDetailContainer');
-            container.style.display = 'none';
-            detailContainer.style.display = 'block';
-
-            let replySection = '';
-            if (email.reply) {
-                replySection = `
-                    <div style="margin-top: 15px; padding: 12px; background: #f8f9fa; border-radius: 8px; border: 1px solid var(--border-color);">
-                        <strong>Your Reply:</strong>
-                        <p style="font-size: 13px; margin-top: 4px;">${email.reply.text}</p>
-                        <hr style="margin: 10px 0; border: none; border-top: 1px solid #ddd;">
-                        <strong>Supervisor Response (${email.reply.time}):</strong>
-                        <p style="font-size: 13px; color: var(--primary-dark); margin-top: 4px; font-weight: bold;">${email.reply.response}</p>
-                    </div>
-                    <button class="action-btn" style="margin-top: 15px;" onclick="renderEmails()">← Back to Inbox</button>
-                `;
-            } else {
-                replySection = `
+            const detail = document.getElementById('emailDetailContainer');
+            detail.style.display = 'block';
+            detail.innerHTML = `
+                <div class="email-detail-view">
+                    <button class="btn-sm" style="margin-bottom: 10px;" onclick="document.getElementById('emailDetailContainer').style.display='none'">← Back to Inbox</button>
+                    <h3 style="color: var(--primary-dark); margin-bottom: 5px;">${email.subject}</h3>
+                    <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">From: ${email.sender} | Date: ${email.date}</div>
+                    <p style="font-size: 13px; line-height: 1.5; white-space: pre-line; margin-bottom: 20px;">${email.content}</p>
                     <div class="email-reply-box">
-                        <textarea id="emailReplyInput" placeholder="Type your reply to the supervisor..."></textarea>
-                        <div style="display: flex; gap: 10px;">
-                            <button class="btn-sm" onclick="sendEmailReply(${email.id})">Send Reply</button>
-                            <button class="action-btn" style="padding: 5px 12px; font-size: 11px;" onclick="renderEmails()">Cancel</button>
-                        </div>
+                        <textarea placeholder="Write reply to supervisor..."></textarea>
+                        <button class="btn-sm" style="align-self: flex-start;" onclick="alert('Reply sent successfully to NOC supervisor!'); document.getElementById('emailDetailContainer').style.display='none';">Send Reply</button>
                     </div>
-                `;
-            }
-
-            detailContainer.innerHTML = `
-                <button class="action-btn" style="margin-bottom: 12px; padding: 4px 10px; font-size: 11px;" onclick="renderEmails()">← Back to Inbox</button>
-                <h3 style="color: var(--primary-dark); margin-bottom: 8px;">${email.subject}</h3>
-                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">From: ${email.sender}</div>
-                <div style="font-size: 13px; line-height: 1.5; white-space: pre-wrap; background: #fafafa; padding: 15px; border-radius: 8px; border: 1px solid #eee;">${email.body}</div>
-                ${replySection}
+                </div>
             `;
         }
 
-        function sendEmailReply(id) {
-            const input = document.getElementById('emailReplyInput');
-            const text = input ? input.value.trim() : '';
-            if (!text) {
-                alert('Please type a reply before sending.');
-                return;
-            }
-
-            const email = state.emails.find(e => e.id === id);
-            if (!email) return;
-
-            const responses = [
-                "Received and noted! Thanks for keeping a close eye on the network telemetry.",
-                "Excellent update. Keep monitoring the link status for any further fluctuations.",
-                "Good observation. I have logged your response in the shift report.",
-                "Understood. Proceed with your standard troubleshooting checks."
-            ];
-            const autoResponse = responses[Math.floor(Math.random() * responses.length)];
-
-            email.reply = {
-                text: text,
-                time: new Date().toLocaleTimeString(),
-                response: autoResponse
-            };
-
-            state.xp += 20;
-            state.score += 5;
+        function simulateIncomingEmail() {
+            emails.push({
+                id: emails.length + 1,
+                sender: "operations@oman-noc.om",
+                subject: "Urgent: Maintenance Window Notice for Sohar DWDM Ring",
+                date: "Today",
+                content: "Attention Trainees,\n\nA planned maintenance window is scheduled for the Sohar DWDM ring tonight from 02:00 to 04:00 GST. Ensure all backup circuits are verified.",
+                read: false
+            });
+            logActivity("Received new operational email notification.");
             updateUI();
-            addNotification(`Supervisor replied to your email! (+20 XP)`);
-            logActivity(`Replied to email from ${email.sender}`);
-            avatar.jump();
-            avatar.speak("Supervisor replied! Great communication! 🌸", 'happy');
-
-            openEmailDetail(id);
+            if(document.getElementById('emails').classList.contains('active')) renderEmails();
         }
 
-        function switchChat(channel) {
-            state.currentChannel = channel;
-            document.getElementById('activeChatTitle').textContent = `Chat: ${channel} Team`;
-            const box = document.getElementById('chatMessagesBox');
-            box.innerHTML = '';
-            if (state.chatHistory[channel]) {
-                state.chatHistory[channel].forEach(msg => {
-                    const bubble = document.createElement('div');
-                    bubble.className = `chat-bubble ${msg.sender === 'You' ? 'chat-outgoing' : 'chat-incoming'}`;
-                    bubble.textContent = `${msg.sender}: ${msg.text}`;
-                    box.appendChild(bubble);
-                });
+        function completeModule(num) {
+            traineeState.completedModules = 1;
+            traineeState.xp += 50;
+            logActivity(`Completed Training Module ${num}. Awarded +50 XP.`);
+            updateUI();
+            alert('Module completed successfully! +50 XP earned.');
+        }
+
+        function resolveTroubleshootStep(step) {
+            if (step === 1) {
+                alert('Alarm acknowledged and ticket created successfully for Sohar Optical Fiber Cut.');
+                logActivity('Troubleshooting Lab Step 1 completed.');
+            } else if (step === 2) {
+                alert('Field engineering team dispatched successfully to Sohar site location. Scenario resolved!');
+                traineeState.xp += 40;
+                logActivity('Troubleshooting Lab Scenario 1 fully completed. +40 XP.');
+                updateUI();
             }
-            logActivity(`Switched chat channel to ${channel}`);
+        }
+
+        function switchChat(team) {
+            document.getElementById('activeChatTitle').textContent = `Chat: ${team} Team`;
+            const box = document.getElementById('chatMessagesBox');
+            box.innerHTML = `<div class="chat-bubble chat-incoming">Connected to ${team} communications channel. Send message below.</div>`;
         }
 
         function sendChatMessage() {
@@ -1326,67 +1083,82 @@
             const text = input.value.trim();
             if (!text) return;
 
-            if (!state.chatHistory[state.currentChannel]) {
-                state.chatHistory[state.currentChannel] = [];
-            }
-            state.chatHistory[state.currentChannel].push({sender: 'You', text: text});
+            const box = document.getElementById('chatMessagesBox');
+            box.innerHTML += `<div class="chat-bubble chat-outgoing">${text}</div>`;
             input.value = '';
 
-            const box = document.getElementById('chatMessagesBox');
-            const bubble = document.createElement('div');
-            bubble.className = 'chat-bubble chat-outgoing';
-            bubble.textContent = `You: ${text}`;
-            box.appendChild(bubble);
+            setTimeout(() => {
+                box.innerHTML += `<div class="chat-bubble chat-incoming">Acknowledged. The team is reviewing your message. Good work!</div>`;
+                box.scrollTop = box.scrollHeight;
+            }, 800);
+
             box.scrollTop = box.scrollHeight;
-            logActivity(`Sent message in ${state.currentChannel} chat`);
-        }
-
-        function addNotification(text) {
-            state.notifications.push(text);
-            const container = document.getElementById('notificationsContainer');
-            if (container.querySelector('p')) {
-                container.innerHTML = '';
-            }
-            const div = document.createElement('div');
-            div.style.cssText = 'padding: 10px 14px; background: white; border: 1px solid var(--border-color); border-radius: 8px; font-size: 13px;';
-            div.textContent = text;
-            container.prepend(div);
-            updateUI();
-        }
-
-        function completeModule(num) {
-            state.completedModules = Math.min(2, state.completedModules + 1);
-            state.xp += 50;
-            updateUI();
-            addNotification(`Completed Training Module ${num}! (+50 XP)`);
-            logActivity(`Completed Training Module ${num}`);
-            avatar.jump();
-            avatar.speak("Leveling up! You're getting smarter! 🌟", 'happy');
-        }
-
-        function resolveTroubleshootStep(step) {
-            if (step === 1) {
-                alert('Correct! Alarm acknowledged and ticket generated.');
-                state.xp += 30;
-                updateUI();
-            } else {
-                alert('Field team dispatched. Incident simulation completed successfully!');
-                state.xp += 50;
-                state.completedModules = 2;
-                updateUI();
-                avatar.jump();
-                avatar.speak("Troubleshooting mastered! You're a pro! 🛠️", 'happy');
-            }
         }
 
         function executeGlobalSearch(query) {
-            const resultsBox = document.getElementById('globalSearchResults');
+            const results = document.getElementById('globalSearchResults');
             if (!query.trim()) {
-                resultsBox.textContent = 'Type query in the top header search bar to view results.';
+                results.innerHTML = "Type query in the top header search bar.";
                 return;
             }
-            resultsBox.innerHTML = `Searching database for: "<strong>${query}</strong>"... Found matching records.`;
+
+            results.innerHTML = `Searching database for keyword: "<b>${query}</b>"...<br><br>` +
+                `• Found matching Site: MCT-CORE-01 (Muscat)<br>` +
+                `• Found matching Device: SHR-DWDM-MUX02<br>` +
+                `• Found matching SOP: DWDM Optical Restoration Procedure`;
         }
+
+        // Draggable Widget Logic
+        const container = document.getElementById('live-avatar-container');
+        let isDragging = false;
+        let startX, startY, initialX, initialY;
+
+        container.addEventListener('pointerdown', (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            const rect = container.getBoundingClientRect();
+            initialX = window.innerWidth - rect.right;
+            initialY = window.innerHeight - rect.bottom;
+            container.setPointerCapture(e.pointerId);
+            document.getElementById('liveAvatarSvg').classList.add('anim-walk');
+        });
+
+        container.addEventListener('pointermove', (e) => {
+            if (!isDragging) return;
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            container.style.right = `${initialX - dx}px`;
+            container.style.bottom = `${initialY - dy}px`;
+        });
+
+        container.addEventListener('pointerup', (e) => {
+            isDragging = false;
+            container.releasePointerCapture(e.pointerId);
+            const svg = document.getElementById('liveAvatarSvg');
+            svg.classList.remove('anim-walk');
+            svg.classList.add('anim-jump');
+            setTimeout(() => svg.classList.remove('anim-jump'), 1500);
+        });
+
+        function avatarClicked() {
+            const speeches = [
+                "You're doing amazing! Keep monitoring those alarms! ✨",
+                "Don't forget to check your shared mailbox dispatches! 🌸",
+                "Oman NOC operations are running smoothly under your watch!",
+                "Need help? Check out the troubleshooting lab or knowledge base!"
+            ];
+            const speechBubble = document.getElementById('avatarSpeech');
+            const randomMsg = speeches[Math.floor(Math.random() * speeches.length)];
+            speechBubble.textContent = randomMsg;
+            speechBubble.style.opacity = '1';
+            setTimeout(() => {
+                speechBubble.style.opacity = '0';
+            }, 3500);
+        }
+
+        // Initialize default view
+        updateUI();
     </script>
 </body>
 </html>
