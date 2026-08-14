@@ -482,15 +482,6 @@
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-30px) rotate(4deg); }
         }
-
-        .pet-block {
-            animation: petBounce 1.4s ease-in-out infinite;
-            transform-origin: center;
-        }
-        @keyframes petBounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
     </style>
 </head>
 <body>
@@ -509,7 +500,8 @@
         <button class="nav-btn" onclick="showPage('chat', this)"><span>💬 Team Chat</span> <span class="badge" id="chatBadge">0</span></button>
         <button class="nav-btn" onclick="showPage('notifications', this)"><span>🔔 Notifications</span> <span class="badge" id="notifBadge">0</span></button>
 
-        <div class="nav-category">Network & Assets</div>
+        <div class="nav-category">Network & Configuration</div>
+        <button class="nav-btn" onclick="showPage('cli', this)"><span>💻 Device CLI & Config</span></button>
         <button class="nav-btn" onclick="showPage('topology', this)"><span>🌐 Network Topology</span></button>
         <button class="nav-btn" onclick="showPage('sites', this)"><span>🏢 Site Explorer</span></button>
         <button class="nav-btn" onclick="showPage('devices', this)"><span>💻 Device Inventory</span></button>
@@ -558,7 +550,7 @@
                     </div>
                     <div class="card">
                         <h3>Completed Modules</h3>
-                        <div class="value" id="dashModuleCount">0 / 2</div>
+                        <div class="value" id="dashModuleCount">0 / 1</div>
                     </div>
                     <div class="card">
                         <h3>Simulator Progress</h3>
@@ -568,12 +560,56 @@
 
                 <div class="control-card">
                     <h2>🌸 Oman NOC Control Center Quick Actions</h2>
-                    <p>Simulate realistic network fault events, trigger manual NOC emails, or jump directly into guided troubleshooting scenarios across Muscat, Salalah, Sohar, and Duqm infrastructure.</p>
+                    <p>Simulate realistic network fault events, trigger manual NOC emails, or test configuration commands via the live Device CLI.</p>
                     <div class="action-buttons">
                         <button class="action-btn" onclick="triggerRandomAlarm('Critical')">🚨 Generate Critical Alarm</button>
                         <button class="action-btn" onclick="triggerRandomAlarm('Major')">⚠️ Generate Major Alarm</button>
                         <button class="action-btn" onclick="simulateIncomingEmail()">📧 Simulate New NOC Email</button>
-                        <button class="action-btn" onclick="showPage('troubleshoot', document.querySelector('[onclick*=\'troubleshoot\']'))">🛠️ Launch Troubleshooting Lab</button>
+                        <button class="action-btn" onclick="showPage('cli', document.querySelector('[onclick*=\'cli\']'))">💻 Open Device CLI & Config</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- DEVICE CLI & CONFIGURATION PAGE (NEWLY ADDED & FULLY INTEGRATED) -->
+            <section id="cli" class="page">
+                <h1>Interactive Device CLI & Configuration Terminal</h1>
+                <div class="control-card">
+                    <p>Configure network devices, check VLANs, verify speeds and duplex settings, assign IP addresses, and run operational diagnostic commands.</p>
+                    
+                    <div style="display: flex; gap: 15px; margin-bottom: 15px; align-items: center; flex-wrap: wrap;">
+                        <label style="font-weight: bold; font-size: 13px; color: var(--primary-dark);">Select Target Device:</label>
+                        <select id="cliDeviceSelect" onchange="switchCliDevice()" style="padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 13px; background: white; outline: none; color: var(--text-main);">
+                            <option value="MCT-CORE-RT01">MCT-CORE-RT01 (Muscat Core Router)</option>
+                            <option value="SHR-DWDM-MUX02">SHR-DWDM-MUX02 (Sohar Transport Switch)</option>
+                            <option value="SLL-MW-RTE04">SLL-MW-RTE04 (Salalah Microwave Router)</option>
+                        </select>
+                        <button class="btn-sm" onclick="clearTerminal()">Clear Screen</button>
+                    </div>
+
+                    <div class="split-view">
+                        <!-- CLI Terminal Window -->
+                        <div style="background: #1e1e1e; color: #00ff66; border-radius: 12px; padding: 15px; font-family: monospace; display: flex; flex-direction: column; height: 440px; box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);">
+                            <div id="terminalOutput" style="flex: 1; overflow-y: auto; font-size: 12px; line-height: 1.4; white-space: pre-wrap; margin-bottom: 10px;">Oman NOC Network Equipment CLI (v2.6)
+Type 'enable' to enter privileged mode, then 'configure terminal' for global settings.
+Type 'help' for command guidance.</div>
+                            <div style="display: flex; gap: 8px; align-items: center; border-top: 1px solid #333; padding-top: 8px;">
+                                <span id="terminalPrompt" style="color: #ff4d88; font-weight: bold;">MCT-CORE-RT01&gt;</span>
+                                <input type="text" id="terminalInput" style="flex: 1; background: transparent; border: none; color: #fff; outline: none; font-family: monospace; font-size: 13px;" placeholder="Type command here (e.g. show vlan brief)..." onkeypress="if(event.key==='Enter')executeCliCommand()">
+                                <button class="btn-sm" onclick="executeCliCommand()">Send</button>
+                            </div>
+                        </div>
+
+                        <!-- Embedded Command Manual Guide -->
+                        <div style="background: var(--primary-light); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; overflow-y: auto; height: 440px;">
+                            <h3 style="color: var(--primary-dark); margin-bottom: 10px; font-size: 14px;">📖 CLI Command Manual & Quick Guide</h3>
+                            <div style="font-size: 12px; color: var(--text-main); line-height: 1.5; display: flex; flex-direction: column; gap: 10px;">
+                                <div><b>1. Access & Security (SSH Prep):</b><br>• <code>enable</code> -> Enter privileged mode<br>• <code>configure terminal</code> -> Enter config mode<br>• <code>username admin privilege 15 secret Pass123</code></div>
+                                <div><b>2. VLAN Configuration:</b><br>• <code>vlan 20</code> -> Create/enter VLAN 20<br>• <code>name TX_Department</code> -> Name the VLAN</div>
+                                <div><b>3. Port Speed, Duplex & IPs:</b><br>• <code>interface GigabitEthernet0/1</code><br>• <code>speed 1000</code> | <code>duplex full</code><br>• <code>ip address 192.168.20.1 255.255.255.0</code><br>• <code>no shutdown</code></div>
+                                <div><b>4. Verification Commands:</b><br>• <code>show vlan brief</code> -> List active VLANs<br>• <code>show ip interface brief</code> -> View port IPs & link states<br>• <code>show interfaces GigabitEthernet0/1</code> -> Port stats</div>
+                                <div><b>5. Saving & Navigation:</b><br>• <code>write memory</code> -> Save configuration<br>• <code>exit</code> -> Step back one mode</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -641,9 +677,7 @@
                 <h1>Shared NOC Mailbox</h1>
                 <div class="control-card">
                     <p>Read incoming operational dispatches, reply to supervisors, and receive automated responses.</p>
-                    <div id="emailInboxContainer">
-                        <!-- Populated dynamically -->
-                    </div>
+                    <div id="emailInboxContainer"></div>
                     <div id="emailDetailContainer" style="display: none;"></div>
                 </div>
             </section>
@@ -665,7 +699,7 @@
                             Chat: IP Core & Routing Team
                         </div>
                         <div class="chat-messages" id="chatMessagesBox">
-                            <div class="chat-bubble chat-incoming">Hello NOC trainee, let us know if you spot any BGP peer flapping on the Muscat core routers.</div>
+                            <div class="chat-bubble chat-incoming">Hello NOC trainee, use the new CLI tool to verify switch VLANs and port speeds across Muscat and Sohar nodes.</div>
                         </div>
                         <div class="chat-input-area">
                             <input type="text" id="chatInputBox" placeholder="Type message or question to team..." onkeypress="if(event.key==='Enter')sendChatMessage()">
@@ -727,7 +761,8 @@
                 <div class="control-card">
                     <div style="display: grid; gap: 15px;">
                         <div class="card">
-                            <h3>Module 1: Intro to Optical Transport (DWDM)</h3>
+                            <h3>Module 1: Router CLI & Configuration Mastery</h3>
+                            <p style="font-size: 12px; color: var(--text-muted); margin: 8px 0;">Learn how to configure VLANs, assign port speeds, and verify IP connectivity using the built-in CLI terminal.</p>
                             <button class="btn-sm" onclick="completeModule(1)">Complete Module (+50 XP)</button>
                         </div>
                     </div>
@@ -739,10 +774,10 @@
                 <h1>Interactive Troubleshooting Simulator</h1>
                 <div class="control-card">
                     <div style="background: var(--primary-light); padding: 20px; border-radius: 12px;">
-                        <h3 style="color: var(--primary-dark); margin-bottom: 10px;">Scenario 1: Sohar Optical Fiber Cut</h3>
+                        <h3 style="color: var(--primary-dark); margin-bottom: 10px;">Scenario 1: Sohar Optical Fiber Cut & Port Speed Tuning</h3>
                         <div class="action-buttons">
                             <button class="action-btn" onclick="resolveTroubleshootStep(1)">1. Acknowledge Alarm & Create Ticket</button>
-                            <button class="action-btn" onclick="resolveTroubleshootStep(2)">2. Dispatch Field Team to Sohar</button>
+                            <button class="action-btn" onclick="resolveTroubleshootStep(2)">2. Dispatch Field Team & Verify via CLI</button>
                         </div>
                     </div>
                 </div>
@@ -782,50 +817,31 @@
 
     <!-- DRAGGABLE MINECRAFT CUTESY GIRLY PIXEL-ART CHARACTER WIDGET -->
     <div id="live-avatar-container" onclick="avatarClicked()">
-        <div class="avatar-speech" id="avatarSpeech">Hi! Drag me anywhere so I'm not in your way! ✨</div>
+        <div class="avatar-speech" id="avatarSpeech">Hi! Use the new CLI screen to configure router ports! ✨</div>
         <svg class="live-character anim-idle" id="liveAvatarSvg" viewBox="0 0 100 140">
-            <!-- Head Block Base -->
             <rect x="22" y="24" width="56" height="50" fill="#f5d6c6" stroke="#d4ab96" stroke-width="2"/>
-            
-            <!-- Long Cute Flowing Hair (Minecraft Blocky Anime Style) -->
             <rect x="20" y="20" width="60" height="16" fill="#7a3b2e"/>
-            <rect x="16" y="28" width="10" height="65" fill="#7a3b2e"/> <!-- Left Long Hair Strand -->
-            <rect x="74" y="28" width="10" height="65" fill="#7a3b2e"/> <!-- Right Long Hair Strand -->
-            <rect x="18" y="32" width="6" height="50" fill="#622e23"/> <!-- Hair Shadow -->
+            <rect x="16" y="28" width="10" height="65" fill="#7a3b2e"/>
+            <rect x="74" y="28" width="10" height="65" fill="#7a3b2e"/>
+            <rect x="18" y="32" width="6" height="50" fill="#622e23"/>
             <rect x="76" y="32" width="6" height="50" fill="#622e23"/>
-
-            <!-- Cute Bow Headband Accessory -->
             <rect x="42" y="16" width="16" height="8" fill="#ff4d88" stroke="#b0236a" stroke-width="1.5"/>
             <polygon points="42,16 34,12 34,24" fill="#ff4d88"/>
             <polygon points="58,16 66,12 66,24" fill="#ff4d88"/>
-
-            <!-- Cute Gamer Headset -->
             <rect x="14" y="42" width="8" height="16" fill="#ff4d88" stroke="#b0236a" stroke-width="1.5"/>
             <rect x="78" y="42" width="8" height="16" fill="#ff4d88" stroke="#b0236a" stroke-width="1.5"/>
             <path d="M 18 42 H 82" stroke="#ff4d88" stroke-width="4" fill="none"/>
-            <rect x="78" y="54" width="4" height="10" fill="#ffffff"/>
-            <rect x="76" y="62" width="6" height="6" fill="#ff4d88"/>
-
-            <!-- Big Anime Pixel Eyes -->
-            <g id="avatarEyes">
-                <rect x="30" y="38" width="10" height="13" fill="#2b2b2b"/>
-                <rect x="32" y="40" width="4" height="7" fill="#ffffff"/>
-                <rect x="34" y="46" width="2" height="3" fill="#ffffff"/>
-                
-                <rect x="60" y="38" width="10" height="13" fill="#2b2b2b"/>
-                <rect x="62" y="40" width="4" height="7" fill="#ffffff"/>
-                <rect x="64" y="46" width="2" height="3" fill="#ffffff"/>
-
-                <!-- Rosy Cheeks -->
-                <rect x="28" y="54" width="10" height="6" fill="#ff8da1" opacity="0.7"/>
-                <rect x="62" y="54" width="10" height="6" fill="#ff8da1" opacity="0.7"/>
-            </g>
+            <rect x="30" y="38" width="10" height="13" fill="#2b2b2b"/>
+            <rect x="32" y="40" width="4" height="7" fill="#ffffff"/>
+            <rect x="60" y="38" width="10" height="13" fill="#2b2b2b"/>
+            <rect x="62" y="40" width="4" height="7" fill="#ffffff"/>
+            <rect x="28" y="54" width="10" height="6" fill="#ff8da1" opacity="0.7"/>
+            <rect x="62" y="54" width="10" height="6" fill="#ff8da1" opacity="0.7"/>
         </svg>
     </div>
 
     <!-- JavaScript Simulator Core -->
     <script>
-        // State variables
         let traineeState = {
             level: 1,
             xp: 0,
@@ -842,10 +858,18 @@
                 sender: "supervisor@oman-noc.om",
                 subject: "Welcome to Oman NOC Training Program",
                 date: "Aug 14, 2026",
-                content: "Dear Trainee,\n\nWelcome to the Oman Network Operations Center training simulator. Please review the dashboard, monitor incoming alarms across Muscat and regional nodes, and complete your assigned learning modules.\n\nBest regards,\nNOC Operations Director",
+                content: "Dear Trainee,\n\nWelcome to the Oman Network Operations Center training simulator. Please review the dashboard, monitor incoming alarms, and test command configurations using the new Device CLI tab.\n\nBest regards,\nNOC Operations Director",
                 read: false
             }
         ];
+
+        // CLI Simulator State per Device
+        let currentCliDevice = "MCT-CORE-RT01";
+        let deviceStates = {
+            "MCT-CORE-RT01": { mode: "user", currentInt: null, currentVlan: null, vlans: { 1: "default", 10: "Management", 20: "TX_Department" }, interfaces: { "GigabitEthernet0/1": { ip: "192.168.1.1", mask: "255.255.255.0", status: "up", speed: "1000", duplex: "full" }, "GigabitEthernet0/2": { ip: "unassigned", mask: "", status: "down", speed: "auto", duplex: "auto" } } },
+            "SHR-DWDM-MUX02": { mode: "user", currentInt: null, currentVlan: null, vlans: { 1: "default", 30: "Sohar_Transport" }, interfaces: { "GigabitEthernet0/1": { ip: "10.20.10.2", mask: "255.255.255.0", status: "up", speed: "1000", duplex: "full" } } },
+            "SLL-MW-RTE04": { mode: "user", currentInt: null, currentVlan: null, vlans: { 1: "default", 40: "Salalah_MW" }, interfaces: { "GigabitEthernet0/1": { ip: "10.30.20.2", mask: "255.255.255.0", status: "up", speed: "100", duplex: "full" } } }
+        };
 
         function showPage(pageId, btnElement) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -858,6 +882,7 @@
 
             const titleMap = {
                 dashboard: "Trainee Dashboard",
+                cli: "Interactive Device CLI & Configuration Terminal",
                 alarms: "Alarm Management Center",
                 tickets: "Incident & Trouble Ticket Management",
                 workorders: "Field Engineering Work Orders",
@@ -905,6 +930,170 @@
             document.getElementById('emailBadge').textContent = emails.filter(e => !e.read).length;
         }
 
+        // --- CLI TERMINAL ENGINE LOGIC ---
+        function switchCliDevice() {
+            currentCliDevice = document.getElementById('cliDeviceSelect').value;
+            updateCliPrompt();
+            appendTerminalOutput(`\n[System] Switched active terminal connection to ${currentCliDevice}\n`);
+        }
+
+        function updateCliPrompt() {
+            const state = deviceStates[currentCliDevice];
+            let promptText = currentCliDevice;
+            if (state.mode === 'user') promptText += '>';
+            else if (state.mode === 'privileged') promptText += '#';
+            else if (state.mode === 'config') promptText += '(config)#';
+            else if (state.mode === 'config-if') promptText += `(config-if)#`;
+            else if (state.mode === 'config-vlan') promptText += '(config-vlan)#';
+
+            document.getElementById('terminalPrompt').textContent = promptText;
+        }
+
+        function appendTerminalOutput(text) {
+            const out = document.getElementById('terminalOutput');
+            out.textContent += '\n' + text;
+            out.scrollTop = out.scrollHeight;
+        }
+
+        function clearTerminal() {
+            document.getElementById('terminalOutput').textContent = `Oman NOC Network Equipment CLI (v2.6)\nConnected to ${currentCliDevice}`;
+        }
+
+        function executeCliCommand() {
+            const input = document.getElementById('terminalInput');
+            const cmd = input.value.trim();
+            if (!cmd) return;
+
+            const prompt = document.getElementById('terminalPrompt').textContent;
+            appendTerminalOutput(`${prompt} ${cmd}`);
+            input.value = '';
+
+            processCommand(cmd);
+            updateCliPrompt();
+        }
+
+        function processCommand(cmd) {
+            const state = deviceStates[currentCliDevice];
+            const lower = cmd.toLowerCase();
+
+            if (lower === 'help') {
+                appendTerminalOutput(`Available Commands:\n  enable                          - Enter privileged EXEC mode\n  configure terminal              - Enter global configuration mode\n  vlan <id>                       - Configure a VLAN\n  name <vlan_name>                - Name current VLAN\n  interface <name>                - Configure interface (e.g. GigabitEthernet0/1)\n  ip address <ip> <mask>          - Assign IP address to interface\n  speed <10/100/1000>             - Set interface link speed\n  duplex <full/half>              - Set interface duplex mode\n  no shutdown                     - Enable/bring up interface\n  show vlan brief                 - Display VLAN table\n  show ip interface brief         - Display IP status of interfaces\n  show interfaces <name>          - Display detailed interface statistics\n  write memory                    - Save running configuration\n  exit                            - Exit current mode / step back\n  clear                           - Clear screen`);
+                return;
+            }
+
+            if (lower === 'clear') {
+                clearTerminal();
+                return;
+            }
+
+            // Mode transitions & Parsing
+            if (state.mode === 'user') {
+                if (lower === 'enable') {
+                    state.mode = 'privileged';
+                    appendTerminalOutput('');
+                } else {
+                    appendTerminalOutput(`%% Invalid command or syntax error at '^' marker.`);
+                }
+            } 
+            else if (state.mode === 'privileged') {
+                if (lower === 'configure terminal' || lower === 'conf t') {
+                    state.mode = 'config';
+                    appendTerminalOutput('Enter configuration commands, one per line. End with CNTL/Z.');
+                } else if (lower.startsWith('show vlan brief')) {
+                    appendTerminalOutput(`VLAN Name                             Status    Ports\---- -------------------------------- --------- --------------------`);
+                    for (let [id, name] of Object.entries(state.vlans)) {
+                        appendTerminalOutput(`${id.padEnd(4)} ${name.padEnd(32)} active    Gi0/1`);
+                    }
+                } else if (lower.startsWith('show ip interface brief')) {
+                    appendTerminalOutput(`Interface          IP-Address      OK? Method Status                Protocol\nGigabitEthernet0/1 ${state.interfaces["GigabitEthernet0/1"]?.ip.padEnd(15)} YES manual ${state.interfaces["GigabitEthernet0/1"]?.status.padEnd(20)} up`);
+                } else if (lower.startsWith('show interfaces')) {
+                    const parts = cmd.split(' ');
+                    const intName = parts[2] || "GigabitEthernet0/1";
+                    const intData = state.interfaces[intName] || { status: "up", speed: "1000", duplex: "full" };
+                    appendTerminalOutput(`${intName} is ${intData.status}, line protocol is up\n  Hardware is Gigabit Ethernet, address is 001a.2f3e.4b50\n  Internet address is ${intData.ip}\n  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec\n  reliability 255/255, txload 1/255, rxload 1/255\n  Encapsulation ARPA, loopback not set\n  Full-duplex, ${intData.speed}Mb/s, link type is auto, media type is RJ45`);
+                } else if (lower === 'write memory' || lower === 'wr') {
+                    appendTerminalOutput(`Building configuration...\n[OK] Configuration saved successfully to non-volatile startup-config.`);
+                    traineeState.xp += 15;
+                    logActivity(`Saved configuration on ${currentCliDevice}. (+15 XP)`);
+                    updateUI();
+                } else if (lower === 'exit') {
+                    state.mode = 'user';
+                } else {
+                    appendTerminalOutput(`%% Unknown command in privileged mode. Type 'help' for guidance.`);
+                }
+            }
+            else if (state.mode === 'config') {
+                if (lower.startsWith('vlan ')) {
+                    const vlanId = cmd.split(' ')[1];
+                    state.currentVlan = vlanId;
+                    if (!state.vlans[vlanId]) state.vlans[vlanId] = "unnamed";
+                    state.mode = 'config-vlan';
+                    appendTerminalOutput(`% Configuring VLAN ${vlanId}`);
+                } else if (lower.startsWith('interface ') || lower.startsWith('int ')) {
+                    const intName = cmd.split(' ')[1];
+                    state.currentInt = intName;
+                    if (!state.interfaces[intName]) {
+                        state.interfaces[intName] = { ip: "unassigned", mask: "", status: "down", speed: "1000", duplex: "full" };
+                    }
+                    state.mode = 'config-if';
+                    appendTerminalOutput(`% Configuring interface ${intName}`);
+                } else if (lower === 'exit') {
+                    state.mode = 'privileged';
+                } else {
+                    appendTerminalOutput(`% Configuration command accepted.`);
+                }
+            }
+            else if (state.mode === 'config-vlan') {
+                if (lower.startsWith('name ')) {
+                    const vName = cmd.split(' ')[1];
+                    state.vlans[state.currentVlan] = vName;
+                    appendTerminalOutput(`% VLAN ${state.currentVlan} named ${vName}`);
+                } else if (lower === 'exit') {
+                    state.mode = 'config';
+                    state.currentVlan = null;
+                } else {
+                    appendTerminalOutput(`% Command executed in VLAN config mode.`);
+                }
+            }
+            else if (state.mode === 'config-if') {
+                if (lower.startsWith('ip address ')) {
+                    const parts = cmd.split(' ');
+                    const ip = parts[2];
+                    const mask = parts[3];
+                    if (state.currentInt && state.interfaces[state.currentInt]) {
+                        state.interfaces[state.currentInt].ip = ip;
+                        state.interfaces[state.currentInt].mask = mask;
+                    }
+                    appendTerminalOutput(`% IP address ${ip} ${mask} assigned to ${state.currentInt}`);
+                    traineeState.xp += 10;
+                    updateUI();
+                } else if (lower.startsWith('speed ')) {
+                    const spd = cmd.split(' ')[1];
+                    if (state.currentInt && state.interfaces[state.currentInt]) {
+                        state.interfaces[state.currentInt].speed = spd;
+                    }
+                    appendTerminalOutput(`% Interface speed set to ${spd} Mbps`);
+                } else if (lower.startsWith('duplex ')) {
+                    const dpx = cmd.split(' ')[1];
+                    if (state.currentInt && state.interfaces[state.currentInt]) {
+                        state.interfaces[state.currentInt].duplex = dpx;
+                    }
+                    appendTerminalOutput(`% Interface duplex set to ${dpx}`);
+                } else if (lower === 'no shutdown') {
+                    if (state.currentInt && state.interfaces[state.currentInt]) {
+                        state.interfaces[state.currentInt].status = 'up';
+                    }
+                    appendTerminalOutput(`% Link status changed to UP`);
+                } else if (lower === 'exit') {
+                    state.mode = 'config';
+                    state.currentInt = null;
+                } else {
+                    appendTerminalOutput(`% Interface command executed.`);
+                }
+            }
+        }
+
+        // Standard simulator functions
         function triggerRandomAlarm(severity) {
             const id = 'ALM-' + Math.floor(1000 + Math.random() * 9000);
             const devices = ['MCT-CORE-RT01', 'SHR-DWDM-MUX02', 'SLL-MW-RTE04', 'DQM-LTE-BS09'];
@@ -1044,7 +1233,7 @@
                 sender: "operations@oman-noc.om",
                 subject: "Urgent: Maintenance Window Notice for Sohar DWDM Ring",
                 date: "Today",
-                content: "Attention Trainees,\n\nA planned maintenance window is scheduled for the Sohar DWDM ring tonight from 02:00 to 04:00 GST. Ensure all backup circuits are verified.",
+                content: "Attention Trainees,\n\nA planned maintenance window is scheduled for the Sohar DWDM ring tonight from 02:00 to 04:00 GST. Ensure all backup circuits are verified using the CLI terminal.",
                 read: false
             });
             logActivity("Received new operational email notification.");
@@ -1065,7 +1254,7 @@
                 alert('Alarm acknowledged and ticket created successfully for Sohar Optical Fiber Cut.');
                 logActivity('Troubleshooting Lab Step 1 completed.');
             } else if (step === 2) {
-                alert('Field engineering team dispatched successfully to Sohar site location. Scenario resolved!');
+                alert('Field engineering team dispatched and link verified via CLI. Scenario resolved!');
                 traineeState.xp += 40;
                 logActivity('Troubleshooting Lab Scenario 1 fully completed. +40 XP.');
                 updateUI();
@@ -1105,7 +1294,7 @@
             results.innerHTML = `Searching database for keyword: "<b>${query}</b>"...<br><br>` +
                 `• Found matching Site: MCT-CORE-01 (Muscat)<br>` +
                 `• Found matching Device: SHR-DWDM-MUX02<br>` +
-                `• Found matching SOP: DWDM Optical Restoration Procedure`;
+                `• Found matching CLI Command: show vlan brief`;
         }
 
         // Draggable Widget Logic
@@ -1143,10 +1332,10 @@
 
         function avatarClicked() {
             const speeches = [
-                "You're doing amazing! Keep monitoring those alarms! ✨",
-                "Don't forget to check your shared mailbox dispatches! 🌸",
-                "Oman NOC operations are running smoothly under your watch!",
-                "Need help? Check out the troubleshooting lab or knowledge base!"
+                "Type 'enable' then 'configure terminal' in the CLI tab! ✨",
+                "Check 'show vlan brief' to inspect your departments! 🌸",
+                "Assign your IPs and speeds and test your configurations!",
+                "You're doing amazing as an Oman NOC trainee!"
             ];
             const speechBubble = document.getElementById('avatarSpeech');
             const randomMsg = speeches[Math.floor(Math.random() * speeches.length)];
