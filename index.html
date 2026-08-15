@@ -222,7 +222,7 @@
             gap: 20px;
         }
 
-        /* --- CINEMATIC LIQUID GLASS CLASS APPLIED GLOBALLY --- */
+        /* --- CINEMATIC LIQUID GLASS CLASS --- */
         .liquid-glass {
             background: rgba(255, 255, 255, 0.01);
             background-blend-mode: luminosity;
@@ -339,11 +339,42 @@
         }
         .btn-sm:hover { background: rgba(255, 255, 255, 0.2); }
 
-        /* Split Layouts */
-        .split-view {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+        /* CLI Specific Terminal Styling */
+        .terminal-box {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 16px;
+            font-family: 'Courier New', Courier, monospace;
+            color: #22c55e;
+            height: 340px;
+            overflow-y: auto;
+            font-size: 13px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .terminal-output {
+            flex: 1;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            margin-bottom: 10px;
+        }
+        .terminal-input-line {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 10px;
+        }
+        .terminal-input-line input {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            outline: none;
+            width: 100%;
         }
 
         @keyframes fade-rise {
@@ -369,12 +400,12 @@
         
         <div class="nav-category">Operations</div>
         <button class="nav-btn" onclick="showPage('dashboard', this)"><span>🏠 Dashboard</span></button>
-        <button class="nav-btn" onclick="showPage('alarms', this)"><span>🚨 Alarms</span> <span class="badge" id="alarmBadge">0</span></button>
-        <button class="nav-btn" onclick="showPage('tickets', this)"><span>🎫 Incidents</span> <span class="badge" id="ticketBadge">0</span></button>
+        <button class="nav-btn" onclick="showPage('alarms', this)"><span>🚨 Alarms</span> <span class="badge" id="alarmBadge">2</span></button>
+        <button class="nav-btn" onclick="showPage('tickets', this)"><span>🎫 Incidents</span> <span class="badge" id="ticketBadge">1</span></button>
         <button class="nav-btn" onclick="showPage('workorders', this)"><span>🔧 Work Orders</span></button>
         <button class="nav-btn" onclick="showPage('emails', this)"><span>📧 Shared Mailbox</span> <span class="badge" id="emailBadge">1</span></button>
         <button class="nav-btn" onclick="showPage('chat', this)"><span>💬 Team Chat</span> <span class="badge" id="chatBadge">0</span></button>
-        <button class="nav-btn" onclick="showPage('notifications', this)"><span>🔔 Notifications</span> <span class="badge" id="notifBadge">0</span></button>
+        <button class="nav-btn" onclick="showPage('notifications', this)"><span>🔔 Notifications</span> <span class="badge" id="notifBadge">3</span></button>
 
         <div class="nav-category">Network & Topology</div>
         <button class="nav-btn active" onclick="showPage('topology', this)"><span>🌐 Cinematic Topology</span></button>
@@ -398,13 +429,13 @@
     <!-- Main Content Area -->
     <div class="main">
         <div class="header-top">
-            <h1 id="pageTitle">Oman Telecom Network Topology</h1>
+            <h1 id="pageTitle">Oman Network Architecture</h1>
             <input type="text" id="globalSearchInput" class="search-box" placeholder="🔍 Search alarms, tickets, sites, IPs...">
         </div>
         <div class="header-subtitle">
             <span id="pageSubtitleDesc">Velorah® Cinematic Architecture for Oman Telecommunications Core.</span>
             <div class="trainee-profile-bar">
-                Level <span id="traineeLevel">1</span> | XP: <span id="traineeXP">0</span> | Score: <span id="traineeScore">100</span>
+                Level <span id="traineeLevel">1</span> | XP: <span id="traineeXP">150</span> | Score: <span id="traineeScore">100</span>
             </div>
         </div>
 
@@ -448,11 +479,11 @@
                 <div class="cards-grid">
                     <div class="liquid-glass card">
                         <h3>Active Alarms</h3>
-                        <div class="value" id="dashAlarmCount">0</div>
+                        <div class="value" id="dashAlarmCount">2</div>
                     </div>
                     <div class="liquid-glass card">
                         <h3>Active Incidents</h3>
-                        <div class="value" id="dashTicketCount">0</div>
+                        <div class="value" id="dashTicketCount">1</div>
                     </div>
                     <div class="liquid-glass card">
                         <h3>Unread Emails</h3>
@@ -460,11 +491,11 @@
                     </div>
                     <div class="liquid-glass card">
                         <h3>Completed Modules</h3>
-                        <div class="value" id="dashModuleCount">0 / 1</div>
+                        <div class="value" id="dashModuleCount">0 / 4</div>
                     </div>
                     <div class="liquid-glass card">
                         <h3>Simulator Progress</h3>
-                        <div class="value" id="dashProgress">0%</div>
+                        <div class="value" id="dashProgress">25%</div>
                     </div>
                 </div>
 
@@ -473,7 +504,74 @@
                     <p>Simulate realistic network fault events, trigger manual NOC emails, or test configuration commands via the live Device CLI.</p>
                     <div class="action-buttons">
                         <button class="action-btn" onclick="showPage('cli', document.querySelector('[onclick*=\'cli\']'))">💻 Open Device CLI</button>
+                        <button class="action-btn" onclick="showPage('alarms', document.querySelector('[onclick*=\'alarms\']'))">🚨 View Alarms</button>
+                        <button class="action-btn" onclick="showPage('modules', document.querySelector('[onclick*=\'modules\']'))">📚 Open Learning Modules</button>
                     </div>
+                </div>
+            </section>
+
+            <!-- ALARMS PAGE -->
+            <section id="alarms" class="page">
+                <div class="liquid-glass control-card">
+                    <h2>Active Network Alarms</h2>
+                    <p>Real-time telemetry faults reported across regional distribution nodes in Oman.</p>
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                        <div style="background: rgba(239, 68, 68, 0.1); border-left: 4px solid var(--critical); padding: 12px; border-radius: 8px;">
+                            <strong>CRITICAL:</strong> MCT-CORE-RT01 BGP Peer Flapping detected on interface TenGigE0/0/0/1.
+                        </div>
+                        <div style="background: rgba(249, 115, 22, 0.1); border-left: 4px solid var(--major); padding: 12px; border-radius: 8px;">
+                            <strong>MAJOR:</strong> SLL-MW-RTE04 Optical Transceiver High Temperature Warning (68°C).
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TICKETS PAGE -->
+            <section id="tickets" class="page">
+                <div class="liquid-glass control-card">
+                    <h2>Incident Management Queue</h2>
+                    <p>Active support tickets assigned to the current shift operator.</p>
+                    <div style="background: rgba(255,255,255,0.02); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+                        <strong>INC-88342:</strong> Sohar DWDM Ring Protection Switch Fault Investigation.<br>
+                        <span style="font-size: 12px; color: var(--muted-foreground);">Status: In Progress | Priority: P2 High</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- WORK ORDERS PAGE -->
+            <section id="workorders" class="page">
+                <div class="liquid-glass control-card">
+                    <h2>Field Maintenance Work Orders</h2>
+                    <p>Scheduled and pending physical deployments across Muscat and regional exchanges.</p>
+                </div>
+            </section>
+
+            <!-- EMAILS PAGE -->
+            <section id="emails" class="page">
+                <div class="liquid-glass control-card">
+                    <h2>Shared NOC Mailbox</h2>
+                    <p>Incoming notifications, maintenance windows, and escalations from engineering teams.</p>
+                    <div style="background: rgba(255,255,255,0.02); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); margin-top: 10px;">
+                        <strong>From:</strong> backbone-eng@velorah.om<br>
+                        <strong>Subject:</strong> Planned Maintenance Window - Seeb Subsea Cable Uplink<br>
+                        <p style="font-size: 12px; color: var(--muted-foreground); margin-top: 5px;">Please be advised that maintenance will commence at 02:00 GST on Tuesday...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TEAM CHAT PAGE -->
+            <section id="chat" class="page">
+                <div class="liquid-glass control-card">
+                    <h2>NOC Shift Operations Chat</h2>
+                    <p>Coordinate live shift handovers, troubleshoot incidents, and chat with team members.</p>
+                </div>
+            </section>
+
+            <!-- NOTIFICATIONS PAGE -->
+            <section id="notifications" class="page">
+                <div class="liquid-glass control-card">
+                    <h2>System Notifications</h2>
+                    <p>Recent automated system alerts and operational broadcasts.</p>
                 </div>
             </section>
 
@@ -482,6 +580,96 @@
                 <div class="liquid-glass control-card">
                     <h2>Interactive Device CLI & Configuration Terminal</h2>
                     <p>Configure network equipment, check VLANs, verify speeds and duplex parameters, assign IP addresses, and run operational diagnostic commands.</p>
+                    
+                    <div class="terminal-box">
+                        <div class="terminal-output" id="terminalOutput">Velorah® Oman Network OS [Version 10.4.2]
+Type 'help' to view available commands.
+Router# _</div>
+                        <div class="terminal-input-line">
+                            <span>Router#</span>
+                            <input type="text" id="cliCommandInput" placeholder="Enter command (e.g., show ip interface brief)..." onkeypress="handleTerminalInput(event)">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SITES PAGE -->
+            <section id="sites" class="page">
+                <div class="liquid-glass control-card">
+                    <h2>Oman Site Explorer</h2>
+                    <p>Geographic overview of core telecommunication exchanges in Muscat, Sohar, Salalah, and Nizwa.</p>
+                </div>
+            </section>
+
+            <!-- DEVICES PAGE -->
+            <section id="devices" class="page">
+                <div class="liquid-glass control-card">
+                    <h2>Device Inventory</h2>
+                    <p>List of all provisioned routers, switches, DWDM multiplexers, and firewall appliances.</p>
+                </div>
+            </section>
+
+            <!-- GLOBAL SEARCH PAGE -->
+            <section id="search" class="page">
+                <div class="liquid-glass control-card">
+                    <h2>Global Enterprise Search</h2>
+                    <p>Instantly find equipment, circuit IDs, escalation logs, or documentation.</p>
+                </div>
+            </section>
+
+            <!-- LEARNING MODULES PAGE -->
+            <section id="modules" class="page">
+                <div class="liquid-glass control-card">
+                    <h2>NOC Training Modules</h2>
+                    <p>Interactive lessons covering BGP routing, MPLS core engineering, and alarm triage workflows.</p>
+                </div>
+            </section>
+
+            <!-- TROUBLESHOOT LAB PAGE -->
+            <section id="troubleshoot" class="page">
+                <div class="liquid-glass control-card">
+                    <h2>Troubleshooting Lab</h2>
+                    <p>Practice diagnosing simulated fiber cuts, high latency, and packet loss scenarios.</p>
+                </div>
+            </section>
+
+            <!-- KNOWLEDGE BASE PAGE -->
+            <section id="kb" class="page">
+                <div class="liquid-glass control-card">
+                    <h2>Knowledge Base & Runbooks</h2>
+                    <p>Standard operating procedures (SOPs) for emergency response and network escalation.</p>
+                </div>
+            </section>
+
+            <!-- SHIFT HANDOVER PAGE -->
+            <section id="handover" class="page">
+                <div class="liquid-glass control-card">
+                    <h2>Shift Handover Notes</h2>
+                    <p>Log ongoing incidents, pending tasks, and shift summary reports for incoming operators.</p>
+                </div>
+            </section>
+
+            <!-- PERSONAL NOTES PAGE -->
+            <section id="notes" class="page">
+                <div class="liquid-glass control-card">
+                    <h2>Personal Operator Notes</h2>
+                    <p>Scratchpad for keeping track of commands, custom reminders, and personal notes.</p>
+                </div>
+            </section>
+
+            <!-- TRAINING REPORTS PAGE -->
+            <section id="reports" class="page">
+                <div class="liquid-glass control-card">
+                    <h2>Training Performance Reports</h2>
+                    <p>Track your progression scores, lab completion times, and core competency metrics.</p>
+                </div>
+            </section>
+
+            <!-- ACTIVITY LOG PAGE -->
+            <section id="activity" class="page">
+                <div class="liquid-glass control-card">
+                    <h2>Activity & Audit Log</h2>
+                    <p>Complete record of all configuration changes and operational actions executed in the simulator.</p>
                 </div>
             </section>
         </div>
@@ -495,6 +683,31 @@
             const target = document.getElementById(pageId);
             if(target) target.classList.add('active');
             if(btnElement) btnElement.classList.add('active');
+        }
+
+        function handleTerminalInput(e) {
+            if (e.key === 'Enter') {
+                const input = document.getElementById('cliCommandInput');
+                const output = document.getElementById('terminalOutput');
+                const cmd = input.value.trim();
+                
+                if (cmd !== '') {
+                    let response = '';
+                    if (cmd.toLowerCase() === 'help') {
+                        response = 'Available commands:\n  show ip interface brief\n  show version\n  show running-config\n  ping <ip>\n  clear alarms';
+                    } else if (cmd.toLowerCase() === 'show ip interface brief') {
+                        response = 'Interface          IP-Address      Status\nTenGigE0/0/0/1     10.200.1.1      up\nGigabitEthernet0/1 192.168.100.1   up\nLoopback0          172.16.0.1      up';
+                    } else if (cmd.toLowerCase() === 'show version') {
+                        response = 'Velorah® OS Enterprise v10.4.2 [Oman Core Backbone Build 2026]';
+                    } else {
+                        response = `Router# ${cmd}\n%% Invalid input detected at '^' marker. Type 'help' for valid commands.`;
+                    }
+                    
+                    output.innerText += `\nRouter# ${cmd}\n${response}\n`;
+                    input.value = '';
+                    output.scrollTop = output.scrollHeight;
+                }
+            }
         }
     </script>
 </body>
