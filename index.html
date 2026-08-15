@@ -1,245 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-white">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Velorah® Oman NOC Training Simulator & Cinematic Backbone</title>
-    <!-- Google Fonts: Instrument Serif & Inter -->
+    <title>Measured — Health & Wellness Wearable</title>
+    
+    <!-- Google Fonts: Inter & Instrument Serif -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Instrument Serif', 'serif'],
+                        helvetica: ['Helvetica Neue Roman', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        :root {
-            --font-display: 'Instrument Serif', serif;
-            --font-body: 'Inter', sans-serif;
-            
-            --background: 201 100% 13%;
-            --foreground: 0 0% 100%;
-            --muted-foreground: 240 4% 66%;
-            
-            --primary: #ffffff;
-            --primary-dark: #e0e0e0;
-            --primary-light: rgba(255, 255, 255, 0.05);
-            
-            --border-color: rgba(255, 255, 255, 0.18);
-            --input-bg: rgba(255, 255, 255, 0.03);
-            
-            --text-main: #ffffff;
-            --text-muted: #a1a1aa;
-            
-            --bg-main: hsl(201, 100%, 13%);
-            --white: #ffffff;
-            
-            --critical: #ef4444;
-            --major: #f97316;
-            --minor: #eab308;
-            --success: #22c55e;
+        @font-face {
+            font-family: 'Helvetica Neue Roman';
+            src: url('/public/fonts/HelveticaNeueRoman.woff2') format('woff2'),
+                 url('/public/fonts/HelveticaNeueRoman.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
         }
 
         * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: var(--font-body);
+            font-family: 'Inter', sans-serif;
         }
 
-        body {
-            display: flex;
-            height: 100vh;
-            background-color: hsl(201, 100%, 13%);
-            color: var(--foreground);
-            overflow: hidden;
-            position: relative;
+        .font-helvetica-neue {
+            font-family: 'Helvetica Neue Roman', 'Inter', sans-serif;
         }
 
-        /* Global Fullscreen Looping Video Background across entire web app */
-        #global-bg-video {
-            position: fixed;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: 0;
-            opacity: 0.35;
-            pointer-events: none;
-        }
-
-        /* Sidebar - Glassmorphic */
-        .sidebar {
-            width: 270px;
-            background: rgba(1, 22, 38, 0.75);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            flex-direction: column;
-            padding: 20px 15px;
-            gap: 4px;
-            color: var(--foreground);
-            flex-shrink: 0;
-            overflow-y: auto;
-            z-index: 100;
-        }
-
-        .sidebar-brand {
-            font-family: var(--font-display);
-            font-size: 26px;
-            letter-spacing: -0.02em;
-            color: var(--foreground);
-            margin-bottom: 2px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .sidebar-subtitle {
-            font-size: 11px;
-            color: var(--muted-foreground);
-            margin-bottom: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 8px;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-        }
-
-        .nav-category {
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--muted-foreground);
-            margin: 12px 0 4px 6px;
-            font-weight: bold;
-        }
-
-        .nav-btn {
-            background: transparent;
-            border: none;
-            color: var(--muted-foreground);
-            padding: 9px 12px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            font-size: 13px;
-            text-align: left;
-            transition: all 0.2s ease;
-            width: 100%;
-        }
-
-        .nav-btn:hover, .nav-btn.active {
-            background: rgba(255, 255, 255, 0.08);
-            color: var(--foreground);
-        }
-
-        .badge {
-            background: rgba(255, 255, 255, 0.15);
-            color: var(--foreground);
-            padding: 2px 7px;
-            border-radius: 10px;
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        /* Main Container */
-        .main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            background: transparent;
-            padding: 25px 30px;
-            position: relative;
-            z-index: 10;
-        }
-
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 6px;
-        }
-
-        h1, h2, h3 {
-            font-family: var(--font-display);
-            font-weight: 400;
-            letter-spacing: -0.02em;
-        }
-
-        .header-top h1 {
-            color: var(--foreground);
-            font-size: 32px;
-        }
-
-        .search-box {
-            padding: 10px 16px;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            border-radius: 9999px;
-            width: 320px;
-            outline: none;
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(8px);
-            font-size: 13px;
-            color: var(--foreground);
-            transition: border-color 0.2s;
-        }
-        .search-box::placeholder {
-            color: var(--muted-foreground);
-        }
-        .search-box:focus {
-            border-color: rgba(255, 255, 255, 0.4);
-        }
-
-        .header-subtitle {
-            font-size: 13px;
-            color: var(--muted-foreground);
-            margin-bottom: 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .trainee-profile-bar {
-            background: rgba(255, 255, 255, 0.04);
-            backdrop-filter: blur(8px);
-            padding: 6px 16px;
-            border-radius: 9999px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--foreground);
-        }
-
-        /* Pages */
-        .page {
-            display: none;
-            animation: fade-rise 0.5s ease-out both;
-        }
-
-        .page.active {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        /* --- CINEMATIC LIQUID GLASS CLASS --- */
         .liquid-glass {
             background: rgba(255, 255, 255, 0.01);
             background-blend-mode: luminosity;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
             border: none;
-            border-radius: 16px;
-            padding: 24px;
             box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
             position: relative;
             overflow: hidden;
-            transition: transform 0.2s ease, background 0.2s ease;
         }
-        .liquid-glass:hover {
-            transform: scale(1.01);
-            background: rgba(255, 255, 255, 0.04);
-        }
+        
         .liquid-glass::before {
             content: '';
             position: absolute;
@@ -256,459 +71,233 @@
             pointer-events: none;
         }
 
-        /* Grid Cards */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        .card {
-            padding: 20px;
-        }
-
-        .card h3 {
-            font-size: 12px;
-            color: var(--muted-foreground);
-            margin-bottom: 8px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            font-family: var(--font-body);
-        }
-
-        .card .value {
-            font-size: 32px;
-            font-weight: 400;
-            color: var(--foreground);
-            font-family: var(--font-display);
-        }
-
-        .control-card {
-            margin-bottom: 10px;
-        }
-
-        .control-card h2 {
-            font-size: 24px;
-            color: var(--foreground);
-            margin-bottom: 8px;
-            font-family: var(--font-display);
-        }
-
-        .control-card p {
-            font-size: 13px;
-            color: var(--muted-foreground);
-            margin-bottom: 20px;
-            line-height: 1.5;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .action-btn {
-            background: rgba(255, 255, 255, 0.06);
-            color: var(--foreground);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 10px 20px;
-            border-radius: 9999px;
-            font-weight: 500;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            backdrop-filter: blur(4px);
-        }
-
-        .action-btn:hover {
-            background: rgba(255, 255, 255, 0.12);
-            transform: scale(1.02);
-        }
-
-        .btn-sm {
-            padding: 6px 14px;
-            font-size: 12px;
-            border-radius: 9999px;
-            cursor: pointer;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            background: rgba(255, 255, 255, 0.08);
-            color: white;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-        .btn-sm:hover { background: rgba(255, 255, 255, 0.2); }
-
-        /* CLI Specific Terminal Styling */
-        .terminal-box {
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
-            padding: 16px;
-            font-family: 'Courier New', Courier, monospace;
-            color: #22c55e;
-            height: 340px;
-            overflow-y: auto;
-            font-size: 13px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        .terminal-output {
-            flex: 1;
-            overflow-y: auto;
-            white-space: pre-wrap;
-            margin-bottom: 10px;
-        }
-        .terminal-input-line {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 10px;
-        }
-        .terminal-input-line input {
-            background: transparent;
-            border: none;
-            color: #ffffff;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 13px;
-            outline: none;
-            width: 100%;
-        }
-
-        @keyframes fade-rise {
-            from { opacity: 0; transform: translateY(24px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-rise { animation: fade-rise 0.8s ease-out both; }
-        .animate-fade-rise-delay { animation: fade-rise 0.8s ease-out 0.2s both; }
-        .animate-fade-rise-delay-2 { animation: fade-rise 0.8s ease-out 0.4s both; }
-    </style>
-</head>
-<body>
-
-    <!-- Fullscreen Looping Background Video across the entire web app -->
-    <video id="global-bg-video" autoplay loop muted playsinline>
-        <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4" type="video/mp4">
-    </video>
-
-    <!-- Sidebar Navigation -->
-    <div class="sidebar">
-        <div class="sidebar-brand">Velorah<sup style="font-size: 10px;">®</sup></div>
-        <div class="sidebar-subtitle">Oman NOC Backbone</div>
-        
-        <div class="nav-category">Operations</div>
-        <button class="nav-btn" onclick="showPage('dashboard', this)"><span>🏠 Dashboard</span></button>
-        <button class="nav-btn" onclick="showPage('alarms', this)"><span>🚨 Alarms</span> <span class="badge" id="alarmBadge">2</span></button>
-        <button class="nav-btn" onclick="showPage('tickets', this)"><span>🎫 Incidents</span> <span class="badge" id="ticketBadge">1</span></button>
-        <button class="nav-btn" onclick="showPage('workorders', this)"><span>🔧 Work Orders</span></button>
-        <button class="nav-btn" onclick="showPage('emails', this)"><span>📧 Shared Mailbox</span> <span class="badge" id="emailBadge">1</span></button>
-        <button class="nav-btn" onclick="showPage('chat', this)"><span>💬 Team Chat</span> <span class="badge" id="chatBadge">0</span></button>
-        <button class="nav-btn" onclick="showPage('notifications', this)"><span>🔔 Notifications</span> <span class="badge" id="notifBadge">3</span></button>
-
-        <div class="nav-category">Network & Topology</div>
-        <button class="nav-btn active" onclick="showPage('topology', this)"><span>🌐 Cinematic Topology</span></button>
-        <button class="nav-btn" onclick="showPage('cli', this)"><span>💻 Device CLI & Config</span></button>
-        <button class="nav-btn" onclick="showPage('sites', this)"><span>🏢 Site Explorer</span></button>
-        <button class="nav-btn" onclick="showPage('devices', this)"><span>💻 Device Inventory</span></button>
-        <button class="nav-btn" onclick="showPage('search', this)"><span>🔍 Global Search</span></button>
-
-        <div class="nav-category">Training & Courses</div>
-        <button class="nav-btn" onclick="showPage('modules', this)"><span>📚 Learning Modules</span></button>
-        <button class="nav-btn" onclick="showPage('troubleshoot', this)"><span>🛠️ Troubleshooting Lab</span></button>
-        <button class="nav-btn" onclick="showPage('kb', this)"><span>📖 Knowledge Base</span></button>
-
-        <div class="nav-category">Audit & Admin</div>
-        <button class="nav-btn" onclick="showPage('handover', this)"><span>📝 Shift Handover</span></button>
-        <button class="nav-btn" onclick="showPage('notes', this)"><span>📋 Personal Notes</span></button>
-        <button class="nav-btn" onclick="showPage('reports', this)"><span>📊 Training Reports</span></button>
-        <button class="nav-btn" onclick="showPage('activity', this)"><span>📊 Activity & Audit Log</span></button>
-    </div>
-
-    <!-- Main Content Area -->
-    <div class="main">
-        <div class="header-top">
-            <h1 id="pageTitle">Oman Network Architecture</h1>
-            <input type="text" id="globalSearchInput" class="search-box" placeholder="🔍 Search alarms, tickets, sites, IPs...">
-        </div>
-        <div class="header-subtitle">
-            <span id="pageSubtitleDesc">Velorah® Cinematic Architecture for Oman Telecommunications Core.</span>
-            <div class="trainee-profile-bar">
-                Level <span id="traineeLevel">1</span> | XP: <span id="traineeXP">150</span> | Score: <span id="traineeScore">100</span>
-            </div>
-        </div>
-
-        <div class="content">
-            <!-- CINEMATIC TOPOLOGY PAGE (DEFAULT ACTIVE) -->
-            <section id="topology" class="page active" style="justify-content: space-between; height: calc(100vh - 160px);">
-                <div style="text-align: center; max-width: 64rem; margin: auto; padding: 1rem 1rem;">
-                    <h1 class="animate-fade-rise" style="font-family: var(--font-display); font-size: clamp(3rem, 6vw, 7rem); line-height: 0.95; letter-spacing: -2.46px; font-weight: 400; margin-bottom: 1.5rem; color: #ffffff;">
-                        Where <em class="not-italic" style="color: var(--muted-foreground);">dreams rise</em> through <em class="not-italic" style="color: var(--muted-foreground);">the silence.</em>
-                    </h1>
-                    <p class="animate-fade-rise-delay" style="color: var(--muted-foreground); font-size: 1.125rem; max-width: 42rem; margin: 0 auto 2.5rem; line-height: 1.6;">
-                        We're designing tools for deep thinkers, bold creators, and quiet rebels across Muscat Core, Sohar DWDM rings, and Salalah links.
-                    </p>
-                    <div class="animate-fade-rise-delay-2" style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                        <button class="liquid-glass" onclick="showPage('cli', document.querySelector('[onclick*=\'cli\']'))" style="border-radius: 9999px; padding: 1rem 2.5rem; font-size: 1rem; color: #fff; cursor: pointer; font-weight: 500; border: none;">Access Device CLI</button>
-                        <button class="liquid-glass" onclick="showPage('dashboard', document.querySelector('[onclick*=\'dashboard\']'))" style="border-radius: 9999px; padding: 1rem 2.5rem; font-size: 1rem; color: #fff; cursor: pointer; font-weight: 500; border: none;">NOC Dashboard</button>
-                    </div>
-                </div>
-
-                <div style="max-width: 80rem; margin: 0 auto; width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; padding-bottom: 1rem;">
-                    <div class="liquid-glass" style="padding: 1.25rem 1.5rem;">
-                        <div style="font-size: 0.75rem; color: var(--muted-foreground); text-transform: uppercase; margin-bottom: 0.25rem; letter-spacing: 0.05em;">Node 01 • Muscat Core</div>
-                        <div style="font-size: 1.25rem; font-weight: bold; font-family: var(--font-display);">MCT-CORE-RT01</div>
-                        <div style="font-size: 0.8rem; color: #86efac; margin-top: 0.5rem; font-weight: 500;">● Nominal (1Gbps Full)</div>
-                    </div>
-                    <div class="liquid-glass" style="padding: 1.25rem 1.5rem;">
-                        <div style="font-size: 0.75rem; color: var(--muted-foreground); text-transform: uppercase; margin-bottom: 0.25rem; letter-spacing: 0.05em;">Node 02 • Sohar Transport</div>
-                        <div style="font-size: 1.25rem; font-weight: bold; font-family: var(--font-display);">SHR-DWDM-MUX02</div>
-                        <div style="font-size: 0.8rem; color: #86efac; margin-top: 0.5rem; font-weight: 500;">● Nominal (DWDM Ring)</div>
-                    </div>
-                    <div class="liquid-glass" style="padding: 1.25rem 1.5rem;">
-                        <div style="font-size: 0.75rem; color: var(--muted-foreground); text-transform: uppercase; margin-bottom: 0.25rem; letter-spacing: 0.05em;">Node 03 • Salalah Link</div>
-                        <div style="font-size: 1.25rem; font-weight: bold; font-family: var(--font-display);">SLL-MW-RTE04</div>
-                        <div style="font-size: 0.8rem; color: #86efac; margin-top: 0.5rem; font-weight: 500;">● Nominal (Microwave)</div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- DASHBOARD PAGE -->
-            <section id="dashboard" class="page">
-                <div class="cards-grid">
-                    <div class="liquid-glass card">
-                        <h3>Active Alarms</h3>
-                        <div class="value" id="dashAlarmCount">2</div>
-                    </div>
-                    <div class="liquid-glass card">
-                        <h3>Active Incidents</h3>
-                        <div class="value" id="dashTicketCount">1</div>
-                    </div>
-                    <div class="liquid-glass card">
-                        <h3>Unread Emails</h3>
-                        <div class="value" id="dashEmailCount">1</div>
-                    </div>
-                    <div class="liquid-glass card">
-                        <h3>Completed Modules</h3>
-                        <div class="value" id="dashModuleCount">0 / 4</div>
-                    </div>
-                    <div class="liquid-glass card">
-                        <h3>Simulator Progress</h3>
-                        <div class="value" id="dashProgress">25%</div>
-                    </div>
-                </div>
-
-                <div class="liquid-glass control-card">
-                    <h2>Oman NOC Control Center Quick Actions</h2>
-                    <p>Simulate realistic network fault events, trigger manual NOC emails, or test configuration commands via the live Device CLI.</p>
-                    <div class="action-buttons">
-                        <button class="action-btn" onclick="showPage('cli', document.querySelector('[onclick*=\'cli\']'))">💻 Open Device CLI</button>
-                        <button class="action-btn" onclick="showPage('alarms', document.querySelector('[onclick*=\'alarms\']'))">🚨 View Alarms</button>
-                        <button class="action-btn" onclick="showPage('modules', document.querySelector('[onclick*=\'modules\']'))">📚 Open Learning Modules</button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ALARMS PAGE -->
-            <section id="alarms" class="page">
-                <div class="liquid-glass control-card">
-                    <h2>Active Network Alarms</h2>
-                    <p>Real-time telemetry faults reported across regional distribution nodes in Oman.</p>
-                    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
-                        <div style="background: rgba(239, 68, 68, 0.1); border-left: 4px solid var(--critical); padding: 12px; border-radius: 8px;">
-                            <strong>CRITICAL:</strong> MCT-CORE-RT01 BGP Peer Flapping detected on interface TenGigE0/0/0/1.
-                        </div>
-                        <div style="background: rgba(249, 115, 22, 0.1); border-left: 4px solid var(--major); padding: 12px; border-radius: 8px;">
-                            <strong>MAJOR:</strong> SLL-MW-RTE04 Optical Transceiver High Temperature Warning (68°C).
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- TICKETS PAGE -->
-            <section id="tickets" class="page">
-                <div class="liquid-glass control-card">
-                    <h2>Incident Management Queue</h2>
-                    <p>Active support tickets assigned to the current shift operator.</p>
-                    <div style="background: rgba(255,255,255,0.02); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
-                        <strong>INC-88342:</strong> Sohar DWDM Ring Protection Switch Fault Investigation.<br>
-                        <span style="font-size: 12px; color: var(--muted-foreground);">Status: In Progress | Priority: P2 High</span>
-                    </div>
-                </div>
-            </section>
-
-            <!-- WORK ORDERS PAGE -->
-            <section id="workorders" class="page">
-                <div class="liquid-glass control-card">
-                    <h2>Field Maintenance Work Orders</h2>
-                    <p>Scheduled and pending physical deployments across Muscat and regional exchanges.</p>
-                </div>
-            </section>
-
-            <!-- EMAILS PAGE -->
-            <section id="emails" class="page">
-                <div class="liquid-glass control-card">
-                    <h2>Shared NOC Mailbox</h2>
-                    <p>Incoming notifications, maintenance windows, and escalations from engineering teams.</p>
-                    <div style="background: rgba(255,255,255,0.02); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); margin-top: 10px;">
-                        <strong>From:</strong> backbone-eng@velorah.om<br>
-                        <strong>Subject:</strong> Planned Maintenance Window - Seeb Subsea Cable Uplink<br>
-                        <p style="font-size: 12px; color: var(--muted-foreground); margin-top: 5px;">Please be advised that maintenance will commence at 02:00 GST on Tuesday...</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- TEAM CHAT PAGE -->
-            <section id="chat" class="page">
-                <div class="liquid-glass control-card">
-                    <h2>NOC Shift Operations Chat</h2>
-                    <p>Coordinate live shift handovers, troubleshoot incidents, and chat with team members.</p>
-                </div>
-            </section>
-
-            <!-- NOTIFICATIONS PAGE -->
-            <section id="notifications" class="page">
-                <div class="liquid-glass control-card">
-                    <h2>System Notifications</h2>
-                    <p>Recent automated system alerts and operational broadcasts.</p>
-                </div>
-            </section>
-
-            <!-- DEVICE CLI PAGE -->
-            <section id="cli" class="page">
-                <div class="liquid-glass control-card">
-                    <h2>Interactive Device CLI & Configuration Terminal</h2>
-                    <p>Configure network equipment, check VLANs, verify speeds and duplex parameters, assign IP addresses, and run operational diagnostic commands.</p>
-                    
-                    <div class="terminal-box">
-                        <div class="terminal-output" id="terminalOutput">Velorah® Oman Network OS [Version 10.4.2]
-Type 'help' to view available commands.
-Router# _</div>
-                        <div class="terminal-input-line">
-                            <span>Router#</span>
-                            <input type="text" id="cliCommandInput" placeholder="Enter command (e.g., show ip interface brief)..." onkeypress="handleTerminalInput(event)">
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SITES PAGE -->
-            <section id="sites" class="page">
-                <div class="liquid-glass control-card">
-                    <h2>Oman Site Explorer</h2>
-                    <p>Geographic overview of core telecommunication exchanges in Muscat, Sohar, Salalah, and Nizwa.</p>
-                </div>
-            </section>
-
-            <!-- DEVICES PAGE -->
-            <section id="devices" class="page">
-                <div class="liquid-glass control-card">
-                    <h2>Device Inventory</h2>
-                    <p>List of all provisioned routers, switches, DWDM multiplexers, and firewall appliances.</p>
-                </div>
-            </section>
-
-            <!-- GLOBAL SEARCH PAGE -->
-            <section id="search" class="page">
-                <div class="liquid-glass control-card">
-                    <h2>Global Enterprise Search</h2>
-                    <p>Instantly find equipment, circuit IDs, escalation logs, or documentation.</p>
-                </div>
-            </section>
-
-            <!-- LEARNING MODULES PAGE -->
-            <section id="modules" class="page">
-                <div class="liquid-glass control-card">
-                    <h2>NOC Training Modules</h2>
-                    <p>Interactive lessons covering BGP routing, MPLS core engineering, and alarm triage workflows.</p>
-                </div>
-            </section>
-
-            <!-- TROUBLESHOOT LAB PAGE -->
-            <section id="troubleshoot" class="page">
-                <div class="liquid-glass control-card">
-                    <h2>Troubleshooting Lab</h2>
-                    <p>Practice diagnosing simulated fiber cuts, high latency, and packet loss scenarios.</p>
-                </div>
-            </section>
-
-            <!-- KNOWLEDGE BASE PAGE -->
-            <section id="kb" class="page">
-                <div class="liquid-glass control-card">
-                    <h2>Knowledge Base & Runbooks</h2>
-                    <p>Standard operating procedures (SOPs) for emergency response and network escalation.</p>
-                </div>
-            </section>
-
-            <!-- SHIFT HANDOVER PAGE -->
-            <section id="handover" class="page">
-                <div class="liquid-glass control-card">
-                    <h2>Shift Handover Notes</h2>
-                    <p>Log ongoing incidents, pending tasks, and shift summary reports for incoming operators.</p>
-                </div>
-            </section>
-
-            <!-- PERSONAL NOTES PAGE -->
-            <section id="notes" class="page">
-                <div class="liquid-glass control-card">
-                    <h2>Personal Operator Notes</h2>
-                    <p>Scratchpad for keeping track of commands, custom reminders, and personal notes.</p>
-                </div>
-            </section>
-
-            <!-- TRAINING REPORTS PAGE -->
-            <section id="reports" class="page">
-                <div class="liquid-glass control-card">
-                    <h2>Training Performance Reports</h2>
-                    <p>Track your progression scores, lab completion times, and core competency metrics.</p>
-                </div>
-            </section>
-
-            <!-- ACTIVITY LOG PAGE -->
-            <section id="activity" class="page">
-                <div class="liquid-glass control-card">
-                    <h2>Activity & Audit Log</h2>
-                    <p>Complete record of all configuration changes and operational actions executed in the simulator.</p>
-                </div>
-            </section>
-        </div>
-    </div>
-
-    <script>
-        function showPage(pageId, btnElement) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            
-            const target = document.getElementById(pageId);
-            if(target) target.classList.add('active');
-            if(btnElement) btnElement.classList.add('active');
-        }
-
-        function handleTerminalInput(e) {
-            if (e.key === 'Enter') {
-                const input = document.getElementById('cliCommandInput');
-                const output = document.getElementById('terminalOutput');
-                const cmd = input.value.trim();
-                
-                if (cmd !== '') {
-                    let response = '';
-                    if (cmd.toLowerCase() === 'help') {
-                        response = 'Available commands:\n  show ip interface brief\n  show version\n  show running-config\n  ping <ip>\n  clear alarms';
-                    } else if (cmd.toLowerCase() === 'show ip interface brief') {
-                        response = 'Interface          IP-Address      Status\nTenGigE0/0/0/1     10.200.1.1      up\nGigabitEthernet0/1 192.168.100.1   up\nLoopback0          172.16.0.1      up';
-                    } else if (cmd.toLowerCase() === 'show version') {
-                        response = 'Velorah® OS Enterprise v10.4.2 [Oman Core Backbone Build 2026]';
-                    } else {
-                        response = `Router# ${cmd}\n%% Invalid input detected at '^' marker. Type 'help' for valid commands.`;
-                    }
-                    
-                    output.innerText += `\nRouter# ${cmd}\n${response}\n`;
-                    input.value = '';
-                    output.scrollTop = output.scrollHeight;
-                }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
+
+        .mobile-nav-item {
+            opacity: 0;
+            animation: slideUp 0.6s cubic-bezier(0.77, 0, 0.18, 1) forwards;
+        }
+
+        body.menu-open {
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="h-full overflow-hidden bg-white selection:bg-neutral-800 selection:text-white">
+
+    <!-- NAVIGATION (z-50, fixed) -->
+    <header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-5 md:px-12">
+        <!-- Logo -->
+        <a href="#" class="flex items-center gap-3 text-white focus:outline-none">
+            <svg class="w-7 h-7" viewBox="0 0 256 256" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 256 64 L 256 128 L 192.5 128 L 160 95 L 128 64 L 96 95 L 63.5 128 L 64 128 L 128 192 L 128 256 L 64.5 256 L 32 223 L 0 192 L 0 64 L 64 0 L 192 0 Z M 256 192 L 256 256 L 192.5 256 L 160 223 L 128 192 L 128 128 L 192 128 Z"/>
+            </svg>
+        </a>
+
+        <!-- Desktop Center Pill Nav -->
+        <nav class="hidden md:flex items-center gap-1 px-3 py-1.5 rounded-full liquid-glass">
+            <a href="#device" class="px-4 py-1.5 text-sm font-medium text-white/70 hover:text-white transition-colors rounded-full">Device</a>
+            <a href="#stories" class="px-4 py-1.5 text-sm font-medium text-white/70 hover:text-white transition-colors rounded-full">Real Stories</a>
+            <a href="#science" class="px-4 py-1.5 text-sm font-medium text-white/70 hover:text-white transition-colors rounded-full">Science</a>
+            <a href="#plans" class="px-4 py-1.5 text-sm font-medium text-white/70 hover:text-white transition-colors rounded-full">Plans</a>
+            <a href="#contact" class="px-4 py-1.5 text-sm font-medium text-white/70 hover:text-white transition-colors rounded-full">Reach Us</a>
+        </nav>
+
+        <!-- Desktop CTA -->
+        <div class="hidden md:flex items-center">
+            <button class="flex items-center gap-2 px-5 py-2 rounded-full liquid-glass text-white text-sm font-medium hover:bg-white/10 transition-all">
+                <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                Reserve Yours
+            </button>
+        </div>
+
+        <!-- Mobile Hamburger -->
+        <button id="menuToggle" class="md:hidden flex flex-col justify-center items-center w-10 h-10 rounded-full liquid-glass focus:outline-none" aria-label="Toggle menu">
+            <div class="w-5 h-[1.5px] bg-white mb-1 transition-all"></div>
+            <div class="w-3.5 h-[1.5px] bg-white transition-all"></div>
+        </button>
+    </header>
+
+    <!-- MOBILE FULLSCREEN MENU (z-55) -->
+    <div id="mobileMenu" class="fixed inset-0 z-55 bg-[#0a0a0a] flex flex-col justify-between px-8 py-12 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="flex items-center justify-between">
+            <svg class="w-7 h-7 text-white" viewBox="0 0 256 256" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 256 64 L 256 128 L 192.5 128 L 160 95 L 128 64 L 96 95 L 63.5 128 L 64 128 L 128 192 L 128 256 L 64.5 256 L 32 223 L 0 192 L 0 64 L 64 0 L 192 0 Z M 256 192 L 256 256 L 192.5 256 L 160 223 L 128 192 L 128 128 L 192 128 Z"/>
+            </svg>
+            <button id="menuClose" class="w-10 h-10 rounded-full liquid-glass flex items-center justify-center text-white focus:outline-none transform transition-transform duration-300 hover:rotate-90">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+
+        <nav class="flex flex-col gap-6 my-auto text-left">
+            <a href="#device" class="mobile-nav-item text-3xl sm:text-4xl font-medium text-white/90 hover:text-white transition-colors" style="animation-delay: 100ms;">Device</a>
+            <a href="#stories" class="mobile-nav-item text-3xl sm:text-4xl font-medium text-white/90 hover:text-white transition-colors" style="animation-delay: 160ms;">Real Stories</a>
+            <a href="#science" class="mobile-nav-item text-3xl sm:text-4xl font-medium text-white/90 hover:text-white transition-colors" style="animation-delay: 220ms;">Science</a>
+            <a href="#plans" class="mobile-nav-item text-3xl sm:text-4xl font-medium text-white/90 hover:text-white transition-colors" style="animation-delay: 280ms;">Plans</a>
+            <a href="#contact" class="mobile-nav-item text-3xl sm:text-4xl font-medium text-white/90 hover:text-white transition-colors" style="animation-delay: 340ms;">Reach Us</a>
+        </nav>
+
+        <div class="mobile-nav-item" style="animation-delay: 400ms;">
+            <button class="w-full flex items-center justify-center gap-2 py-4 rounded-full liquid-glass text-white font-medium">
+                <span class="w-2 h-2 rounded-full bg-green-400"></span>
+                Reserve Yours
+            </button>
+        </div>
+    </div>
+
+    <!-- HERO SECTION (100vh, overflow hidden) -->
+    <section id="hero" class="font-helvetica-neue relative w-full h-screen overflow-hidden bg-neutral-950 select-none">
+        
+        <!-- Layer 1 — Grid Background (z-0, opacity 0.1) -->
+        <div id="gridBackground" class="absolute inset-0 z-0 opacity-10 pointer-events-none transition-transform duration-75 ease-out">
+            <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <pattern id="gridPattern" width="48" height="48" patternUnits="userSpaceOnUse">
+                        <path d="M 48 0 L 0 0 0 48" fill="none" stroke="#64748b" stroke-width="0.6"/>
+                    </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#gridPattern)" />
+            </svg>
+        </div>
+
+        <!-- Layer 2 — Background Image (z-10) -->
+        <div class="absolute inset-0 z-10 bg-center bg-cover bg-no-repeat" style="background-image: url('https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260713_140344_79e1296a-86d7-43fd-9b5f-63ffe560f291.png&w=1280&q=85');"></div>
+
+        <!-- Layer 3 — Hero Text (z-20) -->
+        <div class="absolute inset-x-0 top-20 sm:top-28 md:top-32 z-20 flex justify-center pointer-events-none">
+            <h1 class="font-serif text-[4.5rem] xs:text-[5.5rem] sm:text-[10rem] md:text-[13rem] lg:text-[16rem] leading-[0.9] text-white tracking-tight text-center">
+                Measured
+            </h1>
+        </div>
+
+        <!-- Layer 4 — Overlay Image (z-25) -->
+        <img src="https://soft-zoom-63098134.figma.site/_assets/v11/3f10f1876e118f72a396e05a6c2d099569478272.png" alt="" class="absolute inset-0 w-full h-full object-cover z-25 pointer-events-none" />
+
+        <!-- Layer 5 — Spotlight Reveal (z-30) -->
+        <div id="spotlightContainer" class="absolute inset-0 z-30 pointer-events-none" style="clip-path: inset(40% 0 0 0);">
+            <video id="frontVideo" class="absolute inset-0 w-full h-full object-cover" autoplay loop muted playsinline>
+                <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260713_162101_0d7498c5-29bb-47bf-a99f-2773c0a880a9.mp4" type="video/mp4">
+            </video>
+        </div>
+
+        <!-- Hidden Canvas for Mask Generation -->
+        <canvas id="maskCanvas" class="hidden"></canvas>
+    </section>
+
+    <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const menuClose = document.getElementById('menuClose');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        function toggleMenu(open) {
+            if (open) {
+                document.body.classList.add('menu-open');
+                mobileMenu.classList.remove('opacity-0', 'pointer-events-none');
+            } else {
+                document.body.classList.remove('menu-open');
+                mobileMenu.classList.add('opacity-0', 'pointer-events-none');
+            }
+        }
+
+        menuToggle.addEventListener('click', () => toggleMenu(true));
+        menuClose.addEventListener('click', () => toggleMenu(false));
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => toggleMenu(false));
+        });
+
+        const heroSection = document.getElementById('hero');
+        const gridBg = document.getElementById('gridBackground');
+        const spotlightContainer = document.getElementById('spotlightContainer');
+        const canvas = document.getElementById('maskCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+
+        window.addEventListener('resize', () => {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        });
+
+        let targetX = width / 2;
+        let targetY = height / 2;
+        let currentX = width / 2;
+        let currentY = height / 2;
+        let mouseInside = false;
+
+        heroSection.addEventListener('mousemove', (e) => {
+            mouseInside = true;
+            targetX = e.clientX;
+            targetY = e.clientY;
+        });
+
+        heroSection.addEventListener('mouseleave', () => {
+            mouseInside = false;
+            targetX = width / 2;
+            targetY = height + 300;
+        });
+
+        const radius = 260;
+
+        function updateMask(x, y) {
+            ctx.clearRect(0, 0, width, height);
+
+            if (!mouseInside) {
+                spotlightContainer.style.webkitMaskImage = 'none';
+                spotlightContainer.style.maskImage = 'none';
+                return;
+            }
+
+            const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+            gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+            gradient.addColorStop(0.4, 'rgba(255, 255, 255, 1)');
+            gradient.addColorStop(0.75, 'rgba(255, 255, 255, 0.4)');
+            gradient.addColorStop(0.88, 'rgba(255, 255, 255, 0.12)');
+            gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.fill();
+
+            const dataURL = canvas.toDataURL();
+            spotlightContainer.style.webkitMaskImage = `url(${dataURL})`;
+            spotlightContainer.style.maskImage = `url(${dataURL})`;
+            spotlightContainer.style.webkitMaskRepeat = 'no-repeat';
+            spotlightContainer.style.maskRepeat = 'no-repeat';
+        }
+
+        function animate() {
+            currentX += (targetX - currentX) * 0.1;
+            currentY += (targetY - currentY) * 0.1;
+
+            updateMask(currentX, currentY);
+
+            if (mouseInside) {
+                const centerX = width / 2;
+                const centerY = height / 2;
+                const offsetX = ((currentX - centerX) / centerX) * 16;
+                const offsetY = ((currentY - centerY) / centerY) * 16;
+                gridBg.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        requestAnimationFrame(animate);
     </script>
 </body>
 </html>
