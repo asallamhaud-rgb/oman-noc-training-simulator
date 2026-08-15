@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oman NOC Training Simulator</title>
+    <title>Oman NOC Training Simulator & Cinematic Topology</title>
+    <!-- Google Fonts: Instrument Serif & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #ff4d88;
@@ -18,13 +22,20 @@
             --major: #fd7e14;
             --minor: #ffc107;
             --success: #28a745;
+            
+            /* Cinematic / Velorah Variables */
+            --font-display: 'Instrument Serif', serif;
+            --font-body: 'Inter', sans-serif;
+            --background: 201 100% 13%;
+            --foreground: 0 0% 100%;
+            --muted-foreground: 240 4% 66%;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: var(--font-body);
         }
 
         body {
@@ -58,6 +69,8 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            font-family: var(--font-display);
+            letter-spacing: -0.02em;
         }
 
         .sidebar-subtitle {
@@ -403,6 +416,46 @@
             resize: vertical;
         }
 
+        /* --- CINEMATIC LIQUID GLASS & TOPOLOGY STYLING --- */
+        .liquid-glass {
+            background: rgba(255, 255, 255, 0.01);
+            background-blend-mode: luminosity;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: none;
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+        .liquid-glass:hover {
+            transform: scale(1.03);
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .liquid-glass::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1.4px;
+            background: linear-gradient(180deg,
+                rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.15) 20%,
+                rgba(255,255,255,0) 40%, rgba(255,255,255,0) 60%,
+                rgba(255,255,255,0.15) 80%, rgba(255,255,255,0.45) 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        @keyframes fade-rise {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-rise { animation: fade-rise 0.8s ease-out both; }
+        .animate-fade-rise-delay { animation: fade-rise 0.8s ease-out 0.2s both; }
+        .animate-fade-rise-delay-2 { animation: fade-rise 0.8s ease-out 0.4s both; }
+
         /* MINECRAFT CUTESY GIRLY PIXEL-ART CHARACTER WIDGET */
         #live-avatar-container {
             position: fixed;
@@ -570,11 +623,11 @@
                 </div>
             </section>
 
-            <!-- DEVICE CLI & CONFIGURATION PAGE (NEWLY ADDED & FULLY INTEGRATED) -->
+            <!-- DEVICE CLI & CONFIGURATION PAGE -->
             <section id="cli" class="page">
                 <h1>Interactive Device CLI & Configuration Terminal</h1>
                 <div class="control-card">
-                    <p>Configure network devices, check VLANs, verify speeds and duplex settings, assign IP addresses, and run operational diagnostic commands.</p>
+                    <p>Configure network equipment, check VLANs, verify speeds and duplex parameters, assign IP addresses, and run operational diagnostic commands.</p>
                     
                     <div style="display: flex; gap: 15px; margin-bottom: 15px; align-items: center; flex-wrap: wrap;">
                         <label style="font-weight: bold; font-size: 13px; color: var(--primary-dark);">Select Target Device:</label>
@@ -699,7 +752,7 @@ Type 'help' for command guidance.</div>
                             Chat: IP Core & Routing Team
                         </div>
                         <div class="chat-messages" id="chatMessagesBox">
-                            <div class="chat-bubble chat-incoming">Hello NOC trainee, use the new CLI tool to verify switch VLANs and port speeds across Muscat and Sohar nodes.</div>
+                            <div class="chat-bubble chat-incoming">Hello NOC trainee, use the CLI tool to verify switch VLANs and port speeds across Muscat and Sohar nodes.</div>
                         </div>
                         <div class="chat-input-area">
                             <input type="text" id="chatInputBox" placeholder="Type message or question to team..." onkeypress="if(event.key==='Enter')sendChatMessage()">
@@ -719,10 +772,58 @@ Type 'help' for command guidance.</div>
                 </div>
             </section>
 
-            <!-- TOPOLOGY PAGE -->
-            <section id="topology" class="page">
-                <h1>Oman Telecom Network Topology</h1>
-                <div class="control-card"><p>Visual backbone connectivity map linking Muscat Core, Sohar DWDM rings, and Salalah microwave links.</p></div>
+            <!-- CINEMATIC TOPOLOGY PAGE (VELORAH THEME WITH LOOPING BACKGROUND VIDEO) -->
+            <section id="topology" class="page" style="position: relative; height: calc(100vh - 50px); overflow: hidden; background-color: hsl(201, 100%, 13%); color: #ffffff; border-radius: 16px;">
+                <!-- Fullscreen looping background video -->
+                <video autoplay loop muted playsinline style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; opacity: 0.55;">
+                    <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4" type="video/mp4">
+                </video>
+
+                <!-- Cinematic Content Container -->
+                <div style="position: relative; z-index: 10; display: flex; flex-direction: column; height: 100%; justify-content: space-between; padding: 2.5rem 3rem; overflow-y: auto;">
+                    
+                    <!-- Navigation / Top bar -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; max-width: 80rem; margin: 0 auto; width: 100%;">
+                        <div style="font-family: var(--font-display); font-size: 2.25rem; letter-spacing: -0.03em; color: #ffffff;">Velorah<sup style="font-size: 0.75rem;">®</sup> Oman</div>
+                        <div style="display: flex; gap: 1.5rem; align-items: center;">
+                            <button class="liquid-glass" onclick="showPage('dashboard', document.querySelector('[onclick*=\'dashboard\']'))" style="border-radius: 9999px; padding: 0.625rem 1.5rem; font-size: 0.875rem; color: #fff; cursor: pointer; font-weight: 500;">NOC Dashboard</button>
+                        </div>
+                    </div>
+
+                    <!-- Hero Section -->
+                    <div style="text-align: center; max-width: 64rem; margin: auto; padding: 2rem 1rem;">
+                        <h1 class="animate-fade-rise" style="font-family: var(--font-display); font-size: clamp(3.5rem, 7vw, 7.5rem); line-height: 0.95; letter-spacing: -2.46px; font-weight: 400; margin-bottom: 1.5rem; color: #ffffff;">
+                            Where <em class="not-italic" style="color: var(--muted-foreground);">dreams rise</em> through <em class="not-italic" style="color: var(--muted-foreground);">the silence.</em>
+                        </h1>
+                        <p class="animate-fade-rise-delay" style="color: var(--muted-foreground); font-size: 1.125rem; max-width: 42rem; margin: 0 auto 2.5rem; line-height: 1.6;">
+                            Oman Telecommunication Backbone Topology. We're designing tools for deep thinkers, bold creators, and quiet rebels across Muscat Core, Sohar DWDM rings, and Salalah links.
+                        </p>
+                        <div class="animate-fade-rise-delay-2" style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                            <button class="liquid-glass" onclick="showPage('cli', document.querySelector('[onclick*=\'cli\']'))" style="border-radius: 9999px; padding: 1rem 2.5rem; font-size: 1rem; color: #fff; cursor: pointer; font-weight: 500;">Access Device CLI & Topology</button>
+                            <button class="liquid-glass" onclick="showPage('alarms', document.querySelector('[onclick*=\'alarms\']'))" style="border-radius: 9999px; padding: 1rem 2.5rem; font-size: 1rem; color: #fff; cursor: pointer; font-weight: 500;">Monitor Active Alarms</button>
+                        </div>
+                    </div>
+
+                    <!-- Topology Node Status Cards Footer -->
+                    <div style="max-width: 80rem; margin: 0 auto; width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem;">
+                        <div class="liquid-glass" style="padding: 1.25rem 1.5rem; border-radius: 1rem;">
+                            <div style="font-size: 0.75rem; color: var(--muted-foreground); text-transform: uppercase; margin-bottom: 0.25rem; letter-spacing: 0.05em;">Node 01 • Muscat Core</div>
+                            <div style="font-size: 1.25rem; font-weight: bold; font-family: var(--font-display);">MCT-CORE-RT01</div>
+                            <div style="font-size: 0.8rem; color: #28a745; margin-top: 0.5rem; font-weight: 500;">● Nominal (1Gbps Full)</div>
+                        </div>
+                        <div class="liquid-glass" style="padding: 1.25rem 1.5rem; border-radius: 1rem;">
+                            <div style="font-size: 0.75rem; color: var(--muted-foreground); text-transform: uppercase; margin-bottom: 0.25rem; letter-spacing: 0.05em;">Node 02 • Sohar Transport</div>
+                            <div style="font-size: 1.25rem; font-weight: bold; font-family: var(--font-display);">SHR-DWDM-MUX02</div>
+                            <div style="font-size: 0.8rem; color: #28a745; margin-top: 0.5rem; font-weight: 500;">● Nominal (DWDM Ring)</div>
+                        </div>
+                        <div class="liquid-glass" style="padding: 1.25rem 1.5rem; border-radius: 1rem;">
+                            <div style="font-size: 0.75rem; color: var(--muted-foreground); text-transform: uppercase; margin-bottom: 0.25rem; letter-spacing: 0.05em;">Node 03 • Salalah Link</div>
+                            <div style="font-size: 1.25rem; font-weight: bold; font-family: var(--font-display);">SLL-MW-RTE04</div>
+                            <div style="font-size: 0.8rem; color: #28a745; margin-top: 0.5rem; font-weight: 500;">● Nominal (Microwave)</div>
+                        </div>
+                    </div>
+
+                </div>
             </section>
 
             <!-- SITES PAGE -->
@@ -817,7 +918,7 @@ Type 'help' for command guidance.</div>
 
     <!-- DRAGGABLE MINECRAFT CUTESY GIRLY PIXEL-ART CHARACTER WIDGET -->
     <div id="live-avatar-container" onclick="avatarClicked()">
-        <div class="avatar-speech" id="avatarSpeech">Hi! Use the new CLI screen to configure router ports! ✨</div>
+        <div class="avatar-speech" id="avatarSpeech">Check out the stunning cinematic topology tab! ✨</div>
         <svg class="live-character anim-idle" id="liveAvatarSvg" viewBox="0 0 100 140">
             <rect x="22" y="24" width="56" height="50" fill="#f5d6c6" stroke="#d4ab96" stroke-width="2"/>
             <rect x="20" y="20" width="60" height="16" fill="#7a3b2e"/>
@@ -858,7 +959,7 @@ Type 'help' for command guidance.</div>
                 sender: "supervisor@oman-noc.om",
                 subject: "Welcome to Oman NOC Training Program",
                 date: "Aug 14, 2026",
-                content: "Dear Trainee,\n\nWelcome to the Oman Network Operations Center training simulator. Please review the dashboard, monitor incoming alarms, and test command configurations using the new Device CLI tab.\n\nBest regards,\nNOC Operations Director",
+                content: "Dear Trainee,\n\nWelcome to the Oman Network Operations Center training simulator. Please review the dashboard, monitor incoming alarms, and test command configurations using the built-in Device CLI tab or inspect the cinematic Network Topology view.\n\nBest regards,\nNOC Operations Director",
                 read: false
             }
         ];
@@ -889,7 +990,7 @@ Type 'help' for command guidance.</div>
                 emails: "Shared NOC Mailbox",
                 chat: "Internal Team Chat & Escalation",
                 notifications: "Operational Notification Center",
-                topology: "Oman Telecom Network Topology",
+                topology: "Oman Telecom Network Topology (Velorah Cinematic View)",
                 sites: "Fictional Oman Telecommunication Sites",
                 devices: "Network Device Inventory",
                 search: "Global Database Search",
@@ -1332,9 +1433,9 @@ Type 'help' for command guidance.</div>
 
         function avatarClicked() {
             const speeches = [
-                "Type 'enable' then 'configure terminal' in the CLI tab! ✨",
-                "Check 'show vlan brief' to inspect your departments! 🌸",
-                "Assign your IPs and speeds and test your configurations!",
+                "Check out the cinematic topology tab with the looping video! ✨",
+                "Type 'enable' then 'configure terminal' in the CLI tab! 🌸",
+                "Check 'show vlan brief' to inspect your departments!",
                 "You're doing amazing as an Oman NOC trainee!"
             ];
             const speechBubble = document.getElementById('avatarSpeech');
