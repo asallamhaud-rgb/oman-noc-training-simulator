@@ -1,1512 +1,814 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Omantel Presentation & Velorah® Oman NOC Suite</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --font-display: 'Instrument Serif', serif;
-            --font-body: 'Inter', sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
-            
-            --bg-deep: hsl(201, 100%, 10%);
-            --bg-main: hsl(201, 100%, 13%);
-            --surface: rgba(1, 22, 38, 0.75);
-            --surface-hover: rgba(1, 22, 38, 0.9);
-            --glass: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.18);
-            
-            --foreground: #ffffff;
-            --muted-foreground: #cbd5e1;
-            --text-muted: #94a3b8;
-            
-            --primary: #3b82f6;
-            --success: #22c55e;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --critical: #dc2626;
-            --emergency: #991b1b;
-            
-            --badge-crit-bg: rgba(239, 68, 68, 0.25);
-            --badge-crit-border: rgba(239, 68, 68, 0.5);
-            --badge-crit-text: #fca5a5;
-        }
+import React, { useState, useEffect, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Activity, AlertTriangle, ShieldAlert, Radio, Server, Cpu, Wrench, Mail,
+  Search, CheckCircle2, Clock, MapPin, Terminal, BookOpen, User, Play,
+  RefreshCw, ChevronRight, X, Filter, Send, Layers, ArrowUpRight, Zap, Check, FileText
+} from 'lucide-react';
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: var(--font-body);
-        }
+// ============================================================================
+// TYPES & INTERFACES
+// ============================================================================
+export type Severity = 'Emergency' | 'Critical' | 'Major' | 'Minor' | 'Warning';
 
-        body {
-            display: flex;
-            height: 100vh;
-            background-color: var(--bg-deep);
-            color: var(--foreground);
-            overflow: hidden;
-            position: relative;
-        }
+export interface Alarm {
+  id: string;
+  severity: Severity;
+  device: string;
+  site: string;
+  service: string;
+  message: string;
+  timestamp: string;
+  status: 'Active' | 'Acknowledged' | 'Cleared';
+}
 
-        #global-bg-video {
-            position: fixed;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: 0;
-            opacity: 0.22;
-            pointer-events: none;
-        }
+export interface Ticket {
+  id: string;
+  title: string;
+  severity: Severity;
+  status: 'New' | 'Acknowledged' | 'In Progress' | 'Escalated' | 'Resolved' | 'Closed';
+  sourceAlarmId: string;
+  device: string;
+  site: string;
+  slaRemainingSec: number;
+  assignedEngineer?: string;
+  description: string;
+  department: string;
+}
 
-        /* Sidebar Navigation */
-        .sidebar {
-            width: 280px;
-            background: var(--surface);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-right: 1px solid var(--glass-border);
-            display: flex;
-            flex-direction: column;
-            padding: 20px 15px;
-            gap: 4px;
-            flex-shrink: 0;
-            overflow-y: auto;
-            z-index: 100;
-        }
+export interface NodeDevice {
+  id: string;
+  name: string;
+  type: 'Core Router' | 'Aggregation Switch' | 'DWDM Mux' | '5G gNodeB' | 'VSAT Hub';
+  site: string;
+  ip: string;
+  status: 'Operational' | 'Warning' | 'Major' | 'Critical';
+  x: number;
+  y: number;
+  activeAlarmsCount: number;
+}
 
-        .sidebar-brand {
-            font-family: var(--font-display);
-            font-size: 28px;
-            letter-spacing: -0.02em;
-            color: var(--foreground);
-            margin-bottom: 2px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+export interface FieldEngineer {
+  id: string;
+  name: string;
+  region: string;
+  skills: string[];
+  workloadPercent: number;
+  etaMinutes: number;
+  status: 'Available' | 'On Site' | 'Traveling' | 'Off Shift';
+  distanceKm: number;
+  slaComplianceRate: number;
+}
 
-        .sidebar-subtitle {
-            font-size: 11px;
-            color: var(--muted-foreground);
-            margin-bottom: 15px;
-            border-bottom: 1px solid var(--glass-border);
-            padding-bottom: 8px;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-        }
+export interface Email {
+  id: string;
+  sender: string;
+  department: string;
+  subject: string;
+  timestamp: string;
+  body: string;
+  ticketId?: string;
+  read: boolean;
+  priority: 'High' | 'Normal';
+}
 
-        .nav-category {
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--text-muted);
-            margin: 12px 0 4px 6px;
-            font-weight: bold;
-        }
+export interface ActivityLog {
+  id: string;
+  time: string;
+  message: string;
+  type: 'alarm' | 'ticket' | 'cli' | 'fm' | 'system';
+}
 
-        .nav-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            padding: 9px 12px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            font-size: 13px;
-            text-align: left;
-            transition: all 0.2s ease;
-            width: 100%;
-        }
+// ============================================================================
+// MOCK INITIAL DATA
+// ============================================================================
+const INITIAL_NODES: NodeDevice[] = [
+  { id: 'MUS-CR-01', name: 'Muscat Core Router 01', type: 'Core Router', site: 'Muscat HQ', ip: '10.100.1.1', status: 'Operational', x: 280, y: 110, activeAlarmsCount: 1 },
+  { id: 'SAL-CR-01', name: 'Salalah Core Node', type: 'Core Router', site: 'Salalah Port', ip: '10.100.1.5', status: 'Critical', x: 230, y: 390, activeAlarmsCount: 1 },
+  { id: 'SOH-CR-02', name: 'Sohar Gateway Edge', type: 'Aggregation Switch', site: 'Sohar Freezone', ip: '10.100.2.12', status: 'Major', x: 130, y: 170, activeAlarmsCount: 1 },
+  { id: 'NZW-AGG-SW03', name: 'Nizwa Regional Switch', type: 'Aggregation Switch', site: 'Nizwa City', ip: '10.100.3.30', status: 'Warning', x: 350, y: 220, activeAlarmsCount: 1 },
+  { id: 'SUR-VSAT-01', name: 'Sur Maritime Gateway', type: 'VSAT Hub', site: 'Sur Terminal', ip: '10.100.4.88', status: 'Operational', x: 450, y: 270, activeAlarmsCount: 0 },
+];
 
-        .nav-btn:hover, .nav-btn.active {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--foreground);
-            font-weight: 500;
-        }
+const INITIAL_ALARMS: Alarm[] = [
+  { id: 'ALM-9901', severity: 'Emergency', device: 'SAL-CR-01', site: 'Salalah Port', service: '5G Core Transmission', message: 'DWDM Optical LOS - Fiber Cut Detected Km 142 (Adam Corridor)', timestamp: '16:02:11', status: 'Active' },
+  { id: 'ALM-9902', severity: 'Critical', device: 'SOH-CR-02', site: 'Sohar Freezone', service: 'Enterprise DIA Trunk', message: 'ASIC Hardware Memory Parity Error on Port Hu0/3/0/1', timestamp: '16:04:45', status: 'Active' },
+  { id: 'ALM-9903', severity: 'Major', device: 'NZW-AGG-SW03', site: 'Nizwa City', service: 'LTE Backhaul Control Plane', message: 'Spanning Tree MAC Flapping Loop on Port Gi1/0/25', timestamp: '16:05:00', status: 'Active' },
+  { id: 'ALM-9904', severity: 'Minor', device: 'MUS-CR-01', site: 'Muscat HQ', service: 'Management Network', message: 'High CPU Temperature Threshold Exceeded (78°C)', timestamp: '16:05:30', status: 'Active' },
+];
 
-        .badge {
-            background: rgba(255, 255, 255, 0.18);
-            color: var(--foreground);
-            padding: 2px 7px;
-            border-radius: 10px;
-            font-size: 11px;
-            font-weight: bold;
-        }
+const INITIAL_TICKETS: Ticket[] = [
+  { id: 'INC-88301', title: 'Salalah Terrestrial Fiber Cut (Adam Corridor)', severity: 'Emergency', status: 'New', sourceAlarmId: 'ALM-9901', device: 'SAL-CR-01', site: 'Salalah Port', slaRemainingSec: 290, description: '120Gbps primary DWDM backbone severed. Traffic failing over to saturated microwave path causing frame drops.', department: 'Transmission & Fiber' },
+  { id: 'INC-88302', title: 'Sohar Core Line Card Silent Frame Corruption', severity: 'Critical', status: 'Acknowledged', sourceAlarmId: 'ALM-9902', device: 'SOH-CR-02', site: 'Sohar Freezone', slaRemainingSec: 840, description: 'Uncorrectable ECC memory error on 400GbE line card. CRC error rate exceeding 15% threshold.', department: 'IP Core Engineering' },
+  { id: 'INC-88303', title: 'Nizwa L2 Loop & 5G Base Station Outage', severity: 'Major', status: 'In Progress', sourceAlarmId: 'ALM-9903', device: 'NZW-AGG-SW03', site: 'Nizwa City', slaRemainingSec: 1400, description: 'Rogue patch cable creation causing STP broadcast storm across VLAN 120. 12 gNodeB cells offline.', department: 'Field Maintenance' },
+];
 
-        /* Main Workspace */
-        .main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            background: transparent;
-            padding: 24px 32px;
-            position: relative;
-            z-index: 10;
-        }
+const ENGINEERS: FieldEngineer[] = [
+  { id: 'ENG-008', name: 'Salim Al-Harthy', region: 'Nizwa / Adam', skills: ['DWDM Splicing', 'OTDR Trace', 'Microwave Alignment'], workloadPercent: 20, etaMinutes: 22, status: 'Available', distanceKm: 28, slaComplianceRate: 98 },
+  { id: 'ENG-012', name: 'Ahmed Al-Riyami', region: 'Sohar Industrial', skills: ['Cisco Hardware Swap', 'BGP Route Draining', 'Fiber Splicing'], workloadPercent: 45, etaMinutes: 15, status: 'Available', distanceKm: 14, slaComplianceRate: 94 },
+  { id: 'ENG-019', name: 'Tariq Al-Busaidi', region: 'Muscat HQ', skills: ['5G Core Routing', 'MPLS Traffic Eng', 'Switching'], workloadPercent: 85, etaMinutes: 50, status: 'On Site', distanceKm: 62, slaComplianceRate: 91 },
+];
 
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 6px;
-        }
+const INITIAL_EMAILS: Email[] = [
+  { id: 'EML-101', sender: 'noc.supervisor@omantel.om', department: 'NOC Operations', subject: 'URGENT: Salalah Fiber Disruption Escalation', timestamp: '16:03', body: 'Primary DWDM link to Dhofar is down. Ensure response SLA within 5 mins and initiate MPLS-TE path reroute.', ticketId: 'INC-88301', read: false, priority: 'High' },
+  { id: 'EML-102', sender: 'ip.core@omantel.om', department: 'IP Core Team', subject: 'Sohar Edge Router Degradation Alert', timestamp: '16:06', body: 'SOH-CR-02 reporting line card parity errors. Recommend BGP graceful shutdown before swapping hardware.', ticketId: 'INC-88302', read: true, priority: 'Normal' },
+];
 
-        h1, h2, h3 {
-            font-family: var(--font-display);
-            font-weight: 400;
-            letter-spacing: -0.02em;
-        }
+// ============================================================================
+// MAIN APPLICATION COMPONENT
+// ============================================================================
+export default function OmanNocSimulator() {
+  // Navigation & View State
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'alarms' | 'tickets' | 'topology' | 'fm' | 'config' | 'email'>('dashboard');
+  const [simulationMode, setSimulationMode] = useState<'Training' | 'Assessment'>('Training');
+  const [simSpeed, setSimSpeed] = useState<number>(1);
 
-        .header-top h1 {
-            color: var(--foreground);
-            font-size: 34px;
-        }
+  // Core Operational Data States
+  const [alarms, setAlarms] = useState<Alarm[]>(INITIAL_ALARMS);
+  const [tickets, setTickets] = useState<Ticket[]>(INITIAL_TICKETS);
+  const [nodes, setNodes] = useState<NodeDevice[]>(INITIAL_NODES);
+  const [emails, setEmails] = useState<Email[]>(INITIAL_EMAILS);
+  const [engineers, setEngineers] = useState<FieldEngineer[]>(ENGINEERS);
+  
+  // Selection & UI Drawer States
+  const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(INITIAL_TICKETS[0]);
+  const [selectedAlarm, setSelectedAlarm] = useState<Alarm | null>(null);
+  const [selectedNode, setSelectedNode] = useState<NodeDevice | null>(null);
+  const [isManualOpen, setIsManualOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
-        .header-subtitle {
-            font-size: 13px;
-            color: var(--muted-foreground);
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+  // Terminal CLI State
+  const [cliLogs, setCliLogs] = useState<string[]>([
+    'OMAN NOC SIMULATOR OS v4.2 [SULTANATE TELECOM BACKBONE]',
+    'Connected to Core Management Plane...',
+    'System status: 4 Active Correlated Alarms. 1 Emergency SLA running.'
+  ]);
+  const [cliInput, setCliInput] = useState('');
 
-        .sim-control-bar {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            background: rgba(1, 22, 38, 0.6);
-            backdrop-filter: blur(8px);
-            padding: 6px 16px;
-            border-radius: 9999px;
-            border: 1px solid var(--glass-border);
-            font-size: 12px;
-        }
+  // Activity Log
+  const [activities, setActivities] = useState<ActivityLog[]>([
+    { id: 'act-1', time: '16:02', message: 'Emergency DWDM Optical LOS Alarm triggered on SAL-CR-01', type: 'alarm' },
+    { id: 'act-2', time: '16:03', message: 'Incident Ticket INC-88301 created automatically', type: 'ticket' },
+  ]);
 
-        /* Pages */
-        .page {
-            display: none;
-            flex-direction: column;
-            gap: 20px;
-            animation: fade-rise 0.4s ease-out both;
-        }
+  // Scoring & Timers
+  const [kpiScore, setKpiScore] = useState(94);
+  const [challengeTimer, setChallengeTimer] = useState(290);
 
-        .page.active {
-            display: flex;
-        }
+  // SLA Ticker Effect
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTickets(prev =>
+        prev.map(t => ({
+          ...t,
+          slaRemainingSec: t.status === 'Resolved' || t.status === 'Closed' ? t.slaRemainingSec : Math.max(0, t.slaRemainingSec - simSpeed)
+        }))
+      );
+      setChallengeTimer(prev => Math.max(0, prev - simSpeed));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [simSpeed]);
 
-        @keyframes fade-rise {
-            from { opacity: 0; transform: translateY(16px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+  const formatSLA = (seconds: number) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  };
 
-        /* Liquid Glass Card System */
-        .liquid-glass {
-            background: rgba(1, 22, 38, 0.45);
-            background-blend-mode: luminosity;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15), 0 10px 30px rgba(0, 0, 0, 0.3);
-            position: relative;
-            overflow: hidden;
-            border: 1px solid var(--glass-border);
-        }
+  // Activity logger helper
+  const addActivity = (message: string, type: ActivityLog['type']) => {
+    const time = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+    setActivities(prev => [{ id: `act-${Date.now()}`, time, message, type }, ...prev]);
+  };
 
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-            gap: 16px;
-        }
+  // Interactive CLI Processor
+  const handleCliSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const cmd = cliInput.trim();
+    if (!cmd) return;
 
-        .stat-card {
-            padding: 18px;
-        }
-        .stat-card h3 {
-            font-size: 11px;
-            color: var(--muted-foreground);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 6px;
-            font-family: var(--font-body);
-            font-weight: 600;
-        }
-        .stat-card .value {
-            font-size: 30px;
-            font-family: var(--font-display);
-            color: var(--foreground);
-        }
+    const lower = cmd.toLowerCase();
+    const newLogs = [...cliLogs, `OMAN-NOC# ${cmd}`];
 
-        /* Tables & Data Grids */
-        .data-table-wrapper {
-            overflow-x: auto;
-        }
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: rgba(1, 22, 38, 0.5);
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid var(--glass-border);
-        }
-        .data-table th, .data-table td {
-            padding: 13px 16px;
-            text-align: left;
-            font-size: 13px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            color: var(--foreground);
-        }
-        .data-table th {
-            background: rgba(255, 255, 255, 0.06);
-            color: var(--muted-foreground);
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 11px;
-            letter-spacing: 0.05em;
-        }
-        .data-table tr:hover {
-            background: rgba(255, 255, 255, 0.04);
-        }
+    if (lower.includes('shutdown gi1/0/25') || lower.includes('bpduguard enable')) {
+      newLogs.push('✓ Interface Gi1/0/25 administrative shutdown executed.');
+      newLogs.push('✓ Spanning-tree loop cleared on NZW-AGG-SW03.');
+      newLogs.push('✓ 12x 5G gNodeB cell sites re-established SCTP association.');
+      
+      setAlarms(prev => prev.map(a => a.device === 'NZW-AGG-SW03' ? { ...a, status: 'Cleared' } : a));
+      setNodes(prev => prev.map(n => n.id === 'NZW-AGG-SW03' ? { ...n, status: 'Operational', activeAlarmsCount: 0 } : n));
+      setTickets(prev => prev.map(t => t.id === 'INC-88303' ? { ...t, status: 'Resolved' } : t));
+      
+      setKpiScore(prev => Math.min(100, prev + 5));
+      addActivity('CLI: Loop resolved on NZW-AGG-SW03 via port shutdown', 'cli');
+    } 
+    else if (lower.includes('autoroute announce') || lower.includes('tunnel mode mpls')) {
+      newLogs.push('✓ MPLS-TE Tunnel 102 path constraint applied: SUBSEA-STANDBY-PATH.');
+      newLogs.push('✓ Traffic rerouted around Adam fiber cut.');
+      newLogs.push('✓ Microwave congestion drops returned to 0%. High priority QoS queues cleared.');
+      
+      setKpiScore(prev => Math.min(100, prev + 4));
+      addActivity('CLI: MPLS TE Tunnel re-routed via Subsea path', 'cli');
+    } 
+    else if (lower.includes('show') || lower.includes('display')) {
+      newLogs.push('Device: SAL-CR-01 | Interface: Line1/0/0 | Status: DOWN (Optical LOS)');
+      newLogs.push('Device: SOH-CR-02 | Card: Slot 3 | Status: DEGRADED (Parity ECC Errors)');
+      newLogs.push('Device: NZW-AGG-SW03 | Port: Gi1/0/25 | Status: UP (Loop Detected)');
+    }
+    else {
+      newLogs.push(`Executed command: "${cmd}". No topology status change detected.`);
+    }
 
-        /* Buttons & Badges */
-        .btn {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--foreground);
-            border: 1px solid var(--glass-border);
-            padding: 10px 20px;
-            border-radius: 9999px;
-            font-weight: 500;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            backdrop-filter: blur(4px);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-1px);
-        }
-        .btn-primary {
-            background: var(--primary);
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-        .btn-primary:hover {
-            background: #2563eb;
-        }
-        .btn-sm {
-            padding: 5px 12px;
-            font-size: 11px;
-            border-radius: 6px;
-        }
+    setCliLogs(newLogs);
+    setCliInput('');
+  };
 
-        .badge-emergency { background: rgba(153, 27, 27, 0.4); border: 1px solid rgba(239, 68, 68, 0.6); color: #f87171; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; }
-        .badge-critical { background: var(--badge-crit-bg); border: 1px solid var(--badge-crit-border); color: var(--badge-crit-text); padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; }
-        .badge-major { background: rgba(249, 115, 22, 0.25); border: 1px solid rgba(249, 115, 22, 0.5); color: #fed7aa; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; }
-        .badge-minor { background: rgba(234, 179, 8, 0.25); border: 1px solid rgba(234, 179, 8, 0.5); color: #fef08a; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; }
-        .badge-success { background: rgba(34, 197, 94, 0.25); border: 1px solid rgba(34, 197, 94, 0.5); color: #bbf7d0; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; }
+  // Ticket Resolution
+  const handleResolveTicket = (ticketId: string) => {
+    setTickets(prev => prev.map(t => t.id === ticketId ? { ...t, status: 'Resolved' } : t));
+    const ticket = tickets.find(t => t.id === ticketId);
+    if (ticket) {
+      setAlarms(prev => prev.map(a => a.id === ticket.sourceAlarmId ? { ...a, status: 'Cleared' } : a));
+      setNodes(prev => prev.map(n => n.id === ticket.device ? { ...n, status: 'Operational', activeAlarmsCount: 0 } : n));
+      addActivity(`Ticket ${ticketId} marked as Resolved. Correlated alarms cleared.`, 'ticket');
+    }
+  };
 
-        /* Modal Overlays */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(8px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            padding: 20px;
-        }
-        .modal-overlay.active {
-            display: flex;
-        }
-        .modal-content {
-            background: hsl(201, 100%, 15%);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 20px;
-            width: 100%;
-            max-width: 750px;
-            max-height: 90vh;
-            overflow-y: auto;
-            padding: 30px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-            position: relative;
-        }
-        .close-modal {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: transparent;
-            border: none;
-            color: var(--muted-foreground);
-            font-size: 20px;
-            cursor: pointer;
-        }
+  // Field Maintenance Optimization Scoring Function
+  const calculateFMScore = (eng: FieldEngineer) => {
+    const slaScore = eng.slaComplianceRate * 0.30;
+    const skillScore = eng.skills.length * 10 * 0.25;
+    const availScore = (eng.status === 'Available' ? 100 : 20) * 0.15;
+    const travelScore = Math.max(0, 100 - eng.etaMinutes * 1.5) * 0.10;
+    const workloadScore = (100 - eng.workloadPercent) * 0.20;
+    return (slaScore + skillScore + availScore + travelScore + workloadScore).toFixed(1);
+  };
 
-        .split-grid {
-            display: grid;
-            grid-template-columns: 1.2fr 1fr;
-            gap: 20px;
-        }
-        @media(max-width: 1100px) {
-            .split-grid { grid-template-columns: 1fr; }
-        }
+  return (
+    <div className="min-h-screen bg-black text-white font-body selection:bg-white/20 relative pb-16 antialiased">
+      {/* Background Visual Effects */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div className="absolute top-[-10%] left-[20%] w-[600px] h-[600px] bg-blue-950/20 rounded-full blur-[140px]" />
+        <div className="absolute bottom-[-10%] right-[15%] w-[700px] h-[700px] bg-red-950/20 rounded-full blur-[160px]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:4rem_4rem]" />
+      </div>
 
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            font-size: 12px;
-            color: var(--muted-foreground);
-            margin-bottom: 5px;
-            font-weight: 500;
-        }
-        .form-control {
-            width: 100%;
-            padding: 10px 14px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            color: white;
-            font-size: 13px;
-            outline: none;
-        }
-        .form-control:focus {
-            border-color: var(--primary);
-        }
-
-        .metric-comparison-table th, .metric-comparison-table td {
-            text-align: center;
-        }
-        .metric-comparison-table th:first-child, .metric-comparison-table td:first-child {
-            text-align: left;
-        }
-    </style>
-</head>
-<body>
-
-    <video id="global-bg-video" autoplay loop muted playsinline>
-        <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4" type="video/mp4">
-    </video>
-
-    <!-- Sidebar Navigation -->
-    <div class="sidebar">
-        <div class="sidebar-brand">Omantel & Velorah</div>
-        <div class="sidebar-subtitle">NOC, Service Desk & Presentation</div>
-        
-        <div class="nav-category">Omantel Presentation</div>
-        <button class="nav-btn active" onclick="switchPage('omantel-ppt', this)"><span>🎬 Omantel Video Showcase</span></button>
-
-        <div class="nav-category">Main Operation</div>
-        <button class="nav-btn" onclick="switchPage('dashboard', this)"><span>📊 NOC Overview Dashboard</span></button>
-        <button class="nav-btn" onclick="switchPage('alarms', this)"><span>🚨 Live Network Alarms</span> <span class="badge" id="alarmBadge">3</span></button>
-        <button class="nav-btn" onclick="switchPage('topology', this)"><span>🗺️ Oman Topology & Sites</span></button>
-
-        <div class="nav-category">Dedicated Service Desk</div>
-        <button class="nav-btn" onclick="switchPage('service-desk-main', this)"><span>🎫 Service Desk Central</span> <span class="badge" id="sdOpenBadge">4</span></button>
-        <button class="nav-btn" onclick="switchPage('service-desk-queue', this)"><span>📋 Service Desk Queue</span> <span class="badge" id="sdUnassignedBadge">2</span></button>
-        <button class="nav-btn" onclick="switchPage('service-desk-sla', this)"><span>⏱️ Service Desk SLA & KPIs</span></button>
-
-        <div class="nav-category">Field Maintenance & FM</div>
-        <button class="nav-btn" onclick="switchPage('fm-dashboard', this)"><span>⚡ FM Optimization Hub</span></button>
-        <button class="nav-btn" onclick="switchPage('engineer-roster', this)"><span>👷 Field Engineers</span> <span class="badge" id="engCountBadge">10</span></button>
-        <button class="nav-btn" onclick="switchPage('work-orders', this)"><span>🔧 Work Orders</span> <span class="badge" id="woBadge">5</span></button>
-        <button class="nav-btn" onclick="switchPage('mytasks', this)"><span>📋 My Tasks</span></button>
-
-        <div class="nav-category">Simulation & Analysis</div>
-        <button class="nav-btn" onclick="switchPage('what-if', this)"><span>🧪 What-If Scenario Lab</span></button>
-        <button class="nav-btn" onclick="switchPage('performance-metrics', this)"><span>📈 Performance & Comparison</span></button>
-        <button class="nav-btn" onclick="switchPage('audit-trail', this)"><span>📜 Audit Trail & Logs</span></button>
-        <button class="nav-btn" onclick="switchPage('settings', this)"><span>⚙️ Optimizer Weights & Rules</span></button>
-    </div>
-
-    <!-- Main Workspace Area -->
-    <div class="main">
-        <div class="header-top">
-            <h1 id="pageTitle">Omantel Project & Velorah® NOC Suite</h1>
-            <div class="sim-control-bar">
-                <span>⏱️ Sim Time: <strong id="simClock">14:05</strong></span>
-                <span style="color: var(--muted-foreground);">|</span>
-                <button class="btn btn-sm" onclick="toggleSimulation()" id="simToggleBtn">▶ Start Sim</button>
-                <button class="btn btn-sm" onclick="stepSimulation()">⏭ Step</button>
-                <button class="btn btn-sm" onclick="resetSimulation()">🔄 Reset</button>
-            </div>
-        </div>
-        <div class="header-subtitle">
-            <span id="pageSubtitleDesc">Integrated Omantel Presentation Showcase, National NOC Operations, and Dedicated Service Desk Engine.</span>
-            <span style="color: #60a5fa; font-weight: 500;">Status: System Online & Optimizer Active</span>
+      {/* FLOATING GLASS NAVIGATION HEADER */}
+      <nav className="fixed top-4 left-4 right-4 z-50 liquid-glass-strong rounded-full px-6 py-3 flex items-center justify-between border border-white/10 shadow-2xl">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center font-heading italic font-bold text-xl text-white border border-white/20">
+            N
+          </div>
+          <div>
+            <span className="font-heading italic text-xl tracking-wider text-white">OMAN NOC</span>
+            <span className="hidden sm:inline-block text-[10px] ml-2 text-white/50 uppercase tracking-widest font-mono">Sim System v4.2</span>
+          </div>
+          <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-semibold tracking-wider uppercase">
+            LIVE OPERATIONAL
+          </span>
         </div>
 
-        <div class="content">
-
-            <!-- 0. OMANTEL VIDEO PRESENTATION SHOWCASE -->
-            <section id="omantel-ppt" class="page active">
-                <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 20px; padding: 40px;">
-                    <div style="max-width: 700px;">
-                        <span style="background: rgba(59,130,246,0.3); color: #93c5fd; padding: 4px 12px; border-radius: 9999px; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.1em;">Omantel Enterprise Showcase</span>
-                        <h2 style="font-size: 42px; margin-top: 12px; line-height: 1.1;">Next-Generation Telecom Operations & AI Dispatch</h2>
-                        <p style="font-size: 15px; color: var(--muted-foreground); margin-top: 12px; line-height: 1.6;">
-                            Welcome to the interactive presentation interface built for Omantel. This web-based module demonstrates autonomous network fault ingestion, multi-factor field maintenance routing across Oman's governorates, and real-time Service Desk telemetry.
-                        </p>
-                    </div>
-
-                    <div class="cards-grid" style="margin-top: 10px;">
-                        <div class="liquid-glass stat-card" style="cursor: pointer;" onclick="switchPage('dashboard')">
-                            <h3>Explore NOC</h3>
-                            <div class="value" style="font-size: 20px; color: #60a5fa;">Dashboard &rarr;</div>
-                        </div>
-                        <div class="liquid-glass stat-card" style="cursor: pointer;" onclick="switchPage('service-desk-main')">
-                            <h3>Service Desk</h3>
-                            <div class="value" style="font-size: 20px; color: #34d399;">Dedicated Space &rarr;</div>
-                        </div>
-                        <div class="liquid-glass stat-card" style="cursor: pointer;" onclick="switchPage('what-if')">
-                            <h3>Scenario Lab</h3>
-                            <div class="value" style="font-size: 20px; color: #f59e0b;">Simulation &rarr;</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 1. NOC OVERVIEW DASHBOARD -->
-            <section id="dashboard" class="page">
-                <div class="cards-grid">
-                    <div class="liquid-glass stat-card">
-                        <h3>Network Health</h3>
-                        <div class="value" style="color: var(--success);">99.82%</div>
-                    </div>
-                    <div class="liquid-glass stat-card">
-                        <h3>Active Alarms</h3>
-                        <div class="value" id="dashActiveAlarms" style="color: var(--danger);">3</div>
-                    </div>
-                    <div class="liquid-glass stat-card">
-                        <h3>Open FM Tickets</h3>
-                        <div class="value" id="dashOpenTickets">4</div>
-                    </div>
-                    <div class="liquid-glass stat-card">
-                        <h3>SLA At Risk</h3>
-                        <div class="value" id="dashSlaRisk" style="color: var(--warning);">1</div>
-                    </div>
-                    <div class="liquid-glass stat-card">
-                        <h3>Available Engineers</h3>
-                        <div class="value" id="dashAvailEng" style="color: var(--success);">7</div>
-                    </div>
-                </div>
-
-                <div class="split-grid">
-                    <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
-                        <h2 style="font-size: 20px;">Recent Critical Network Events</h2>
-                        <div class="data-table-wrapper">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Time</th>
-                                        <th>Element</th>
-                                        <th>Severity</th>
-                                        <th>Description</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>14:05</td>
-                                        <td>MUS-ALH-021</td>
-                                        <td><span class="badge-critical">Critical</span></td>
-                                        <td>Microwave Link Degradation - Al Khuwair Hub</td>
-                                    </tr>
-                                    <tr>
-                                        <td>14:08</td>
-                                        <td>SHR-SOH-012</td>
-                                        <td><span class="badge-emergency">Emergency</span></td>
-                                        <td>Fiber Cut Trunk Line - Sohar Port</td>
-                                    </tr>
-                                    <tr>
-                                        <td>14:10</td>
-                                        <td>SLL-MW-04</td>
-                                        <td><span class="badge-major">Major</span></td>
-                                        <td>VSAT Sync Loss - Salalah Tower</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
-                        <h2 style="font-size: 20px;">Regional NOC Nodes (Oman)</h2>
-                        <div class="data-table-wrapper">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Region</th>
-                                        <th>Hub Site</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td>Muscat Governorate</td><td>Al Khuwair HQ</td><td><span style="color:var(--success);">Optimal</span></td></tr>
-                                    <tr><td>North Al Batinah</td><td>Sohar Industrial</td><td><span style="color:var(--warning);">Degraded</span></td></tr>
-                                    <tr><td>Dhofar Governorate</td><td>Salalah Central</td><td><span style="color:var(--success);">Optimal</span></td></tr>
-                                    <tr><td>Ad Dakhiliyah</td><td>Nizwa Depot</td><td><span style="color:var(--success);">Optimal</span></td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 2. LIVE NETWORK ALARMS -->
-            <section id="alarms" class="page">
-                <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
-                    <h2 style="font-size: 22px;">Live Network Alarms & SMA Feed</h2>
-                    <p style="font-size: 13px; color: var(--muted-foreground);">Real-time telemetry and fault alarms automatically converting into Service Desk tickets for FM optimization.</p>
-                    <div class="data-table-wrapper">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Alarm ID</th>
-                                    <th>Timestamp</th>
-                                    <th>Severity</th>
-                                    <th>Source Node</th>
-                                    <th>Description</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>ALM-9021</td>
-                                    <td>14:08</td>
-                                    <td><span class="badge-emergency">Emergency</span></td>
-                                    <td>SHR-SOH-012</td>
-                                    <td>Optical carrier signal loss on Sohar-Muscat trunk</td>
-                                    <td><button class="btn btn-sm btn-primary" onclick="switchPage('service-desk-main')">View in Service Desk</button></td>
-                                </tr>
-                                <tr>
-                                    <td>ALM-9020</td>
-                                    <td>14:05</td>
-                                    <td><span class="badge-critical">Critical</span></td>
-                                    <td>MUS-ALH-021</td>
-                                    <td>High BER on 18GHz Microwave Hop</td>
-                                    <td><button class="btn btn-sm btn-primary" onclick="switchPage('service-desk-main')">View in Service Desk</button></td>
-                                </tr>
-                                <tr>
-                                    <td>ALM-9019</td>
-                                    <td>14:10</td>
-                                    <td><span class="badge-major">Major</span></td>
-                                    <td>SLL-MW-04</td>
-                                    <td>VSAT Modem clock synchronization drift</td>
-                                    <td><button class="btn btn-sm btn-primary" onclick="switchPage('service-desk-main')">View in Service Desk</button></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 3. OMAN TOPOLOGY & SITES -->
-            <section id="topology" class="page">
-                <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
-                    <h2 style="font-size: 22px;">Oman National Infrastructure Topology</h2>
-                    <p style="font-size: 13px; color: var(--muted-foreground);">Geographic distribution of transmission sites, core hubs, and mobile switching centers across Oman.</p>
-                    <div class="data-table-wrapper">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Site Code</th>
-                                    <th>Site Name</th>
-                                    <th>Region</th>
-                                    <th>Coordinates</th>
-                                    <th>Equipped Technology</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr><td><b>MUS-ALH-021</b></td><td>Al Khuwair Core Hub</td><td>Muscat</td><td>23.5900° N, 58.3800° E</td><td>Microwave, IP Core, DWDM</td></tr>
-                                <tr><td><b>SHR-SOH-012</b></td><td>Sohar Industrial Substation</td><td>North Al Batinah</td><td>24.3600° N, 56.7500° E</td><td>Fiber Optics, Power Rectifiers</td></tr>
-                                <tr><td><b>SLL-MW-04</b></td><td>Salalah Transmission Tower</td><td>Dhofar</td><td>17.0200° N, 54.1000° E</td><td>VSAT, Microwave Backhaul</td></tr>
-                                <tr><td><b>NIZ-BTS-88</b></td><td>Nizwa Cellular Site</td><td>Ad Dakhiliyah</td><td>22.9400° N, 57.5400° E</td><td>Radio Access, Power Systems</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ========================================== -->
-            <!-- DEDICATED SERVICE DESK SPACES (NEW SECTION)  -->
-            <!-- ========================================== -->
-
-            <!-- 4A. SERVICE DESK CENTRAL (DEDICATED SPACE) -->
-            <section id="service-desk-main" class="page">
-                <div class="cards-grid">
-                    <div class="liquid-glass stat-card">
-                        <h3>Total Service Tickets</h3>
-                        <div class="value" id="sdTotalTickets">4</div>
-                    </div>
-                    <div class="liquid-glass stat-card">
-                        <h3>Unassigned Incidents</h3>
-                        <div class="value" id="sdStatUnassigned" style="color: var(--warning);">2</div>
-                    </div>
-                    <div class="liquid-glass stat-card">
-                        <h3>SLA Compliance</h3>
-                        <div class="value" style="color: var(--success);">98.4%</div>
-                    </div>
-                    <div class="liquid-glass stat-card">
-                        <h3>Escalated High-Risk</h3>
-                        <div class="value" id="sdStatRisk" style="color: var(--danger);">1</div>
-                    </div>
-                </div>
-
-                <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <h2 style="font-size: 22px;">Dedicated Service Desk - Incident Control Center</h2>
-                            <p style="font-size: 13px; color: var(--muted-foreground); margin-top: 4px;">Exclusive space for managing customer and network trouble tickets, severity triage, and escalation tracking.</p>
-                        </div>
-                        <button class="btn btn-primary" onclick="openNewTicketModal()">+ Log New Service Ticket</button>
-                    </div>
-                    <div class="data-table-wrapper">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Ticket ID</th>
-                                    <th>Title / Description</th>
-                                    <th>Severity</th>
-                                    <th>Site Location</th>
-                                    <th>Required Skill</th>
-                                    <th>SLA Deadline</th>
-                                    <th>Assigned Dispatch</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="serviceDeskMainTable">
-                                <!-- Populated dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 4B. SERVICE DESK QUEUE & DISPATCH INSPECTOR -->
-            <section id="service-desk-queue" class="page">
-                <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <h2 style="font-size: 22px;">Service Desk Triage & Routing Queue</h2>
-                            <p style="font-size: 13px; color: var(--muted-foreground); margin-top: 4px;">Inspect active incident pipelines and review automated routing rules for field dispatch integration.</p>
-                        </div>
-                        <button class="btn btn-primary btn-sm" onclick="runGlobalOptimization()">⚡ Run Auto-Dispatch</button>
-                    </div>
-
-                    <div class="data-table-wrapper">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Ticket ID</th>
-                                    <th>Severity</th>
-                                    <th>Site</th>
-                                    <th>Assigned Engineer</th>
-                                    <th>Optimizer Score</th>
-                                    <th>SLA Risk</th>
-                                    <th>Inspect</th>
-                                </tr>
-                            </thead>
-                            <tbody id="serviceDeskQueueTable">
-                                <!-- Populated dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 4C. SERVICE DESK SLA & KPIS -->
-            <section id="service-desk-sla" class="page">
-                <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
-                    <h2 style="font-size: 22px;">Service Desk SLA & Operational KPIs</h2>
-                    <p style="font-size: 13px; color: var(--muted-foreground);">Real-time performance metrics tracking service desk response times, first-contact resolution, and escalation frequency.</p>
-                    
-                    <div class="data-table-wrapper">
-                        <table class="data-table metric-comparison-table">
-                            <thead>
-                                <tr>
-                                    <th>Service Desk KPI Indicator</th>
-                                    <th>Current SLA Target</th>
-                                    <th>Achieved Performance</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>First Response Time (FRT)</td>
-                                    <td>&lt; 5.0 mins</td>
-                                    <td style="color: var(--success); font-weight: bold;">1.8 mins</td>
-                                    <td><span class="badge-success">Compliant</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Mean Time to Triage (MTTT)</td>
-                                    <td>&lt; 10.0 mins</td>
-                                    <td style="color: var(--success); font-weight: bold;">4.2 mins</td>
-                                    <td><span class="badge-success">Compliant</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Incident Escalation Rate</td>
-                                    <td>&lt; 5.0%</td>
-                                    <td style="color: var(--success); font-weight: bold;">2.1%</td>
-                                    <td><span class="badge-success">Optimal</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Customer / NOC Satisfaction Score</td>
-                                    <td>&gt; 90.0 / 100</td>
-                                    <td style="color: var(--success); font-weight: bold;">96.5 / 100</td>
-                                    <td><span class="badge-success">Exceeded</span></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ========================================== -->
-            <!-- FIELD MAINTENANCE & OPTIMIZATION MODULES   -->
-            <!-- ========================================== -->
-
-            <!-- 5. FM OPTIMIZATION DASHBOARD -->
-            <section id="fm-dashboard" class="page">
-                <div class="cards-grid">
-                    <div class="liquid-glass stat-card">
-                        <h3>Open Tickets</h3>
-                        <div class="value" id="statOpenTickets">4</div>
-                    </div>
-                    <div class="liquid-glass stat-card">
-                        <h3>Unassigned</h3>
-                        <div class="value" id="statUnassigned" style="color: var(--warning);">2</div>
-                    </div>
-                    <div class="liquid-glass stat-card">
-                        <h3>SLA At Risk</h3>
-                        <div class="value" id="statSlaRisk" style="color: var(--danger);">1</div>
-                    </div>
-                    <div class="liquid-glass stat-card">
-                        <h3>Emergency / Critical</h3>
-                        <div class="value" id="statEmergencyCrit" style="color: var(--critical);">2</div>
-                    </div>
-                    <div class="liquid-glass stat-card">
-                        <h3>Available Engineers</h3>
-                        <div class="value" id="statAvailableEng" style="color: var(--success);">7</div>
-                    </div>
-                    <div class="liquid-glass stat-card">
-                        <h3>Avg Assignment Score</h3>
-                        <div class="value" id="statAvgScore">88.4</div>
-                    </div>
-                </div>
-
-                <div class="split-grid">
-                    <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <h2 style="font-size: 20px;">Active FM Dispatch Queue</h2>
-                            <button class="btn btn-primary btn-sm" onclick="runGlobalOptimization()">⚡ Run Global Optimizer</button>
-                        </div>
-                        <div class="data-table-wrapper">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Ticket ID</th>
-                                        <th>Severity</th>
-                                        <th>Site</th>
-                                        <th>Skill</th>
-                                        <th>Assigned Engineer</th>
-                                        <th>Score</th>
-                                        <th>SLA Risk</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="dashboardTicketTable">
-                                    <!-- Populated dynamically -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
-                        <h2 style="font-size: 20px;">Field Engineer Availability & Load</h2>
-                        <div class="data-table-wrapper">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Engineer</th>
-                                        <th>Status</th>
-                                        <th>Primary Skill</th>
-                                        <th>Workload</th>
-                                        <th>Location</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="dashboardEngineerTable">
-                                    <!-- Populated dynamically -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 6. FIELD ENGINEERS ROSTER -->
-            <section id="engineer-roster" class="page">
-                <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
-                    <h2 style="font-size: 22px;">Field Maintenance Engineering Roster</h2>
-                    <p style="font-size: 13px; color: var(--muted-foreground);">Real-time tracking of active engineers, shift timings, GPS coordinates, skill certifications, and workload capacities.</p>
-                    <div class="data-table-wrapper">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Engineer Name</th>
-                                    <th>Status</th>
-                                    <th>Primary Skill</th>
-                                    <th>Current Location</th>
-                                    <th>Active Load</th>
-                                    <th>Shift Hours</th>
-                                </tr>
-                            </thead>
-                            <tbody id="engineerTableBody">
-                                <!-- Populated dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 7. WORK ORDERS -->
-            <section id="work-orders" class="page">
-                <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
-                    <h2 style="font-size: 22px;">Active Field Work Orders</h2>
-                    <p style="font-size: 13px; color: var(--muted-foreground);">Task execution checklist, spares requisition, and sign-off verification for dispatched personnel.</p>
-                    <div class="data-table-wrapper">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>WO ID</th>
-                                    <th>Ticket</th>
-                                    <th>Assigned Engineer</th>
-                                    <th>Task Stage</th>
-                                    <th>Spares Requisitioned</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="workOrderTableBody">
-                                <!-- Populated dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 8. MY TASKS -->
-            <section id="mytasks" class="page">
-                <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
-                    <h2 style="font-size: 22px;">My Assigned Field Tasks</h2>
-                    <p style="font-size: 13px; color: var(--muted-foreground);">Engineer portal view for updating task status, reporting resolution notes, and closing work orders.</p>
-                    <div class="data-table-wrapper">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Task ID</th>
-                                    <th>Site</th>
-                                    <th>Issue</th>
-                                    <th>Status</th>
-                                    <th>Update Progress</th>
-                                </tr>
-                            </thead>
-                            <tbody id="myTasksTableBody">
-                                <!-- Populated dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 9. WHAT-IF SCENARIO LAB -->
-            <section id="what-if" class="page">
-                <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 20px;">
-                    <h2 style="font-size: 22px;">🧪 What-If Dispatch Scenario Lab</h2>
-                    <p style="font-size: 13px; color: var(--muted-foreground);">Simulate network stress scenarios to test how the optimizer reallocates resources and protects SLA compliance across Oman.</p>
-                    
-                    <div class="cards-grid">
-                        <div class="liquid-glass" style="cursor: pointer;" onclick="runScenario('storm')">
-                            <h3 style="color: #60a5fa;">Dhofar Tropical Storm</h3>
-                            <p style="font-size: 12px; color: var(--muted-foreground); margin-top: 8px;">Simulates widespread power grid failure and multi-tower outages in Salalah and Mirbat.</p>
-                        </div>
-                        <div class="liquid-glass" style="cursor: pointer;" onclick="runScenario('fiber')">
-                            <h3 style="color: #f59e0b;">Sohar Industrial Fiber Cut</h3>
-                            <p style="font-size: 12px; color: var(--muted-foreground); margin-top: 8px;">Simulates heavy construction backhoe severing main backbone trunk to Sohar Port.</p>
-                        </div>
-                        <div class="liquid-glass" style="cursor: pointer;" onclick="runScenario('surge')">
-                            <h3 style="color: #ef4444;">Muscat Peak Traffic Surge</h3>
-                            <p style="font-size: 12px; color: var(--muted-foreground); margin-top: 8px;">Simulates massive congestion and high BER alarms across Al Khuwair and Qurum sites.</p>
-                        </div>
-                    </div>
-
-                    <div id="scenarioResultBox" style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; display: none; font-size: 13px; border-left: 4px solid var(--primary);">
-                        <strong>Scenario Execution Log:</strong> <span id="scenarioLogText">Select a scenario above to evaluate optimizer performance.</span>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 10. PERFORMANCE & COMPARISON -->
-            <section id="performance-metrics" class="page">
-                <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
-                    <h2 style="font-size: 22px;">Performance & Optimization Comparison</h2>
-                    <p style="font-size: 13px; color: var(--muted-foreground);">Benchmark comparing manual dispatch vs. Velorah's multi-factor optimization engine.</p>
-                    
-                    <div class="data-table-wrapper">
-                        <table class="data-table metric-comparison-table">
-                            <thead>
-                                <tr>
-                                    <th>Performance Metric</th>
-                                    <th>Traditional Manual Dispatch</th>
-                                    <th>Velorah® AI Optimizer</th>
-                                    <th>Improvement</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Mean Time to Dispatch (MTTD)</td>
-                                    <td>28.4 mins</td>
-                                    <td style="color: var(--success); font-weight: bold;">3.2 mins</td>
-                                    <td><span class="badge-success">-88.7%</span></td>
-                                </tr>
-                                <tr>
-                                    <td>SLA Compliance Rate</td>
-                                    <td>84.2%</td>
-                                    <td style="color: var(--success); font-weight: bold;">99.4%</td>
-                                    <td><span class="badge-success">+15.2%</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Average Travel Distance / Ticket</td>
-                                    <td>42.6 km</td>
-                                    <td style="color: var(--success); font-weight: bold;">14.8 km</td>
-                                    <td><span class="badge-success">-65.2%</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Engineer Workload Balance Score</td>
-                                    <td>61.0 / 100</td>
-                                    <td style="color: var(--success); font-weight: bold;">94.5 / 100</td>
-                                    <td><span class="badge-success">+54.9%</span></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 11. AUDIT TRAIL & LOGS -->
-            <section id="audit-trail" class="page">
-                <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
-                    <h2 style="font-size: 22px;">System Audit Trail & Event Logs</h2>
-                    <p style="font-size: 13px; color: var(--muted-foreground);">Immutable event recording for compliance, dispatch overrides, and automated ticket state changes.</p>
-                    <div class="data-table-wrapper">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Timestamp</th>
-                                    <th>Actor / System</th>
-                                    <th>Event Type</th>
-                                    <th>Details</th>
-                                </tr>
-                            </thead>
-                            <tbody id="auditLogTable">
-                                <tr><td>14:05:12</td><td>System Telemetry</td><td>Alarm Ingestion</td><td>Critical BER alarm received from MUS-ALH-021</td></tr>
-                                <tr><td>14:05:15</td><td>Optimizer Engine</td><td>Auto-Dispatch</td><td>Ticket TKT-501 assigned to Ahmed Al-Balushi (Score: 94.2)</td></tr>
-                                <tr><td>14:08:40</td><td>System Telemetry</td><td>Alarm Ingestion</td><td>Emergency fiber cut alarm received from SHR-SOH-012</td></tr>
-                                <tr><td>14:08:42</td><td>Optimizer Engine</td><td>Auto-Dispatch</td><td>Ticket TKT-502 assigned to Salim Al-Habsi (Score: 98.1)</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 12. SETTINGS & WEIGHTS -->
-            <section id="settings" class="page">
-                <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 20px; max-width: 700px;">
-                    <h2 style="font-size: 22px;">Optimizer Weight Configuration</h2>
-                    <p style="font-size: 13px; color: var(--muted-foreground);">Tune the multi-factor scoring formula parameters governing automatic engineer assignment.</p>
-                    
-                    <div class="form-group">
-                        <label>Skill Match Weight (0 - 100): <strong id="valSkill">40</strong></label>
-                        <input type="range" min="0" max="100" value="40" class="form-control" oninput="document.getElementById('valSkill').innerText = this.value">
-                    </div>
-                    <div class="form-group">
-                        <label>Proximity / GPS Distance Weight (0 - 100): <strong id="valProx">30</strong></label>
-                        <input type="range" min="0" max="100" value="30" class="form-control" oninput="document.getElementById('valProx').innerText = this.value">
-                    </div>
-                    <div class="form-group">
-                        <label>SLA Urgency Weight (0 - 100): <strong id="valSla">20</strong></label>
-                        <input type="range" min="0" max="100" value="20" class="form-control" oninput="document.getElementById('valSla').innerText = this.value">
-                    </div>
-                    <div class="form-group">
-                        <label>Workload Balance Weight (0 - 100): <strong id="valLoad">10</strong></label>
-                        <input type="range" min="0" max="100" value="10" class="form-control" oninput="document.getElementById('valLoad').innerText = this.value">
-                    </div>
-
-                    <button class="btn btn-primary" onclick="alert('Optimizer weights successfully updated and re-indexed across all active queues.')">Save & Apply Weights</button>
-                </div>
-            </section>
-
+        {/* Desktop Tabs */}
+        <div className="hidden lg:flex items-center gap-1 bg-white/5 p-1 rounded-full border border-white/5">
+          {(['dashboard', 'alarms', 'tickets', 'topology', 'fm', 'config', 'email'] as const).map(tab => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-4 py-1.5 rounded-full text-xs uppercase tracking-wider transition-all font-medium ${
+                activeTab === tab ? 'bg-white text-black font-semibold shadow-lg' : 'text-white/70 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              {tab === 'fm' ? 'FM Optimizer' : tab === 'config' ? 'CLI / Config' : tab}
+            </button>
+          ))}
         </div>
-    </div>
 
-    <!-- Modal for Ticket Creation & Inspection -->
-    <div class="modal-overlay" id="ticketModal">
-        <div class="modal-content">
-            <button class="close-modal" onclick="closeTicketModal()">×</button>
-            <h2 id="modalTitle" style="font-size: 24px; margin-bottom: 15px;">Create New Service Desk Ticket</h2>
-            
-            <div id="modalBodyForm">
-                <div class="form-group">
-                    <label>Site Location</label>
-                    <select class="form-control" id="newTicketSite">
-                        <option value="MUS-ALH-021">MUS-ALH-021 (Al Khuwair Core Hub)</option>
-                        <option value="SHR-SOH-012">SHR-SOH-012 (Sohar Industrial Substation)</option>
-                        <option value="SLL-MW-04">SLL-MW-04 (Salalah Transmission Tower)</option>
-                        <option value="NIZ-BTS-88">NIZ-BTS-88 (Nizwa Cellular Site)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Severity Level</label>
-                    <select class="form-control" id="newTicketSeverity">
-                        <option value="Emergency">Emergency</option>
-                        <option value="Critical" selected>Critical</option>
-                        <option value="Major">Major</option>
-                        <option value="Minor">Minor</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Required Technical Skill</label>
-                    <select class="form-control" id="newTicketSkill">
-                        <option value="Fiber Optics">Fiber Optics & Splicing</option>
-                        <option value="Microwave">Microwave RF & Antennas</option>
-                        <option value="Power Rectifiers">Power Systems & Rectifiers</option>
-                        <option value="IP Core">IP Core & Routing</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Issue Description</label>
-                    <input type="text" class="form-control" id="newTicketDesc" value="Unscheduled equipment fault reported by telemetry.">
-                </div>
-                <button class="btn btn-primary" onclick="submitNewTicket()">Submit & Run Optimizer</button>
+        {/* Trainee Mode Controls & Manual Trigger */}
+        <div className="flex items-center gap-4">
+          <div className="text-right hidden sm:block border-r border-white/10 pr-4">
+            <div className="text-[9px] uppercase tracking-widest text-white/40">KPI Training Score</div>
+            <div className="font-heading text-lg italic text-emerald-400 font-bold">{kpiScore} / 100</div>
+          </div>
+
+          <button
+            onClick={() => setIsManualOpen(true)}
+            className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-xs border border-white/20 transition-all font-medium"
+          >
+            <BookOpen className="w-3.5 h-3.5 text-white/80" />
+            <span className="hidden sm:inline">Manual</span>
+          </button>
+        </div>
+      </nav>
+
+      {/* MAIN CONTENT AREA */}
+      <main className="relative z-10 pt-28 px-4 max-w-7xl mx-auto space-y-8">
+
+        {/* VIEW 1: COMMAND CENTER DASHBOARD */}
+        {activeTab === 'dashboard' && (
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+              <div className="space-y-2">
+                <h1 className="font-heading italic text-5xl md:text-7xl lg:text-[5.5rem] tracking-tight leading-none text-transparent bg-clip-text bg-gradient-to-b from-white via-white/90 to-white/40">
+                  Monitor. Investigate. Resolve.
+                </h1>
+                <p className="text-white/60 max-w-2xl text-sm md:text-base font-light leading-relaxed">
+                  Real-time telecommunications NOC training environment modeling correlated fault propagation across Omani core fiber, microwave, and 5G backhaul infrastructure.
+                </p>
+              </div>
+
+              {/* Simulation Mode Toggle */}
+              <div className="liquid-glass p-1.5 rounded-2xl border border-white/10 flex items-center gap-2 self-start md:self-auto">
+                <button
+                  onClick={() => setSimulationMode('Training')}
+                  className={`px-3 py-1.5 rounded-xl text-xs uppercase tracking-wider transition-all ${
+                    simulationMode === 'Training' ? 'bg-white/20 text-white font-semibold' : 'text-white/50 hover:text-white'
+                  }`}
+                >
+                  Training Mode
+                </button>
+                <button
+                  onClick={() => setSimulationMode('Assessment')}
+                  className={`px-3 py-1.5 rounded-xl text-xs uppercase tracking-wider transition-all ${
+                    simulationMode === 'Assessment' ? 'bg-red-500/20 text-red-400 font-semibold border border-red-500/30' : 'text-white/50 hover:text-white'
+                  }`}
+                >
+                  Assessment Mode
+                </button>
+              </div>
             </div>
 
-            <div id="modalBodyInspector" style="display:none;">
-                <!-- Populated dynamically when inspecting a ticket -->
+            {/* Metric Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="liquid-glass p-5 rounded-3xl border border-white/10 space-y-1 hover:border-white/20 transition-all">
+                <div className="flex items-center justify-between text-white/50 text-xs uppercase tracking-wider">
+                  <span>Active Alarms</span>
+                  <AlertTriangle className="w-4 h-4 text-amber-400" />
+                </div>
+                <div className="font-heading italic text-4xl font-bold">{alarms.filter(a => a.status === 'Active').length}</div>
+                <div className="text-[11px] text-red-400 font-medium">1 Emergency / 1 Critical</div>
+              </div>
+
+              <div className="liquid-glass p-5 rounded-3xl border border-white/10 space-y-1 hover:border-white/20 transition-all">
+                <div className="flex items-center justify-between text-white/50 text-xs uppercase tracking-wider">
+                  <span>Open Tickets</span>
+                  <Activity className="w-4 h-4 text-blue-400" />
+                </div>
+                <div className="font-heading italic text-4xl font-bold">{tickets.filter(t => t.status !== 'Closed' && t.status !== 'Resolved').length}</div>
+                <div className="text-[11px] text-emerald-400 font-medium">1 In Progress</div>
+              </div>
+
+              <div className="liquid-glass p-5 rounded-3xl border border-white/10 space-y-1 hover:border-white/20 transition-all">
+                <div className="flex items-center justify-between text-white/50 text-xs uppercase tracking-wider">
+                  <span>SLA At Risk</span>
+                  <Clock className="w-4 h-4 text-red-400" />
+                </div>
+                <div className="font-heading italic text-4xl font-bold text-red-400">
+                  {tickets.filter(t => t.slaRemainingSec < 300 && t.status !== 'Resolved').length}
+                </div>
+                <div className="text-[11px] text-white/40">Under 5m SLA target</div>
+              </div>
+
+              <div className="liquid-glass p-5 rounded-3xl border border-white/10 space-y-1 hover:border-white/20 transition-all">
+                <div className="flex items-center justify-between text-white/50 text-xs uppercase tracking-wider">
+                  <span>Engineers Ready</span>
+                  <Wrench className="w-4 h-4 text-emerald-400" />
+                </div>
+                <div className="font-heading italic text-4xl font-bold">{engineers.filter(e => e.status === 'Available').length}</div>
+                <div className="text-[11px] text-white/40">Nizwa & Sohar Sectors</div>
+              </div>
             </div>
-        </div>
-    </div>
 
-    <script>
-        // Simulation State Data
-        let simulationRunning = false;
-        let simClockMinutes = 845; // 14:05 in minutes
+            {/* 5-MINUTE CRITICAL CHALLENGE HERO BANNER */}
+            <div className="liquid-glass-strong p-6 md:p-8 rounded-3xl border border-red-500/30 relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-2xl">
+              <div className="space-y-2 z-10">
+                <div className="flex items-center gap-2 text-red-400 text-xs font-semibold uppercase tracking-widest">
+                  <ShieldAlert className="w-4 h-4 animate-pulse" />
+                  <span>5-Minute Response Challenge — Critical Incident</span>
+                </div>
+                <h3 className="font-heading italic text-3xl md:text-4xl font-bold">INC-88301: Salalah Fiber Cut (Adam Corridor)</h3>
+                <p className="text-white/70 text-sm max-w-xl font-light">
+                  Primary 120Gbps terrestrial backbone cut near Km 142. Microwave backup saturated. Reroute via MPLS subsea path before SLA breach.
+                </p>
+              </div>
 
-        let engineers = [
-            { id: 'ENG-101', name: 'Ahmed Al-Balushi', status: 'Busy', skill: 'Fiber Optics', location: 'Muscat', load: 2, shift: '08:00 - 16:00' },
-            { id: 'ENG-102', name: 'Salim Al-Habsi', status: 'Busy', skill: 'Microwave', location: 'Sohar', load: 1, shift: '08:00 - 16:00' },
-            { id: 'ENG-103', name: 'Mohammed Al-Araimi', status: 'Available', skill: 'Power Rectifiers', location: 'Salalah', load: 0, shift: '08:00 - 16:00' },
-            { id: 'ENG-104', name: 'Nasser Al-Kindi', status: 'Available', skill: 'IP Core', location: 'Muscat', load: 0, shift: '08:00 - 16:00' },
-            { id: 'ENG-105', name: 'Tariq Al-Zadjali', status: 'Available', skill: 'Fiber Optics', location: 'Nizwa', load: 0, shift: '12:00 - 20:00' },
-            { id: 'ENG-106', name: 'Khalid Al-Maashani', status: 'Available', skill: 'Microwave', location: 'Salalah', load: 0, shift: '08:00 - 16:00' },
-            { id: 'ENG-107', name: 'Said Al-Nuaimi', status: 'Available', skill: 'Power Rectifiers', location: 'Buraimi', load: 0, shift: '08:00 - 16:00' },
-            { id: 'ENG-108', name: 'Fahad Al-Shidhani', status: 'Available', skill: 'IP Core', location: 'Ibri', load: 0, shift: '08:00 - 16:00' },
-            { id: 'ENG-109', name: 'Yousuf Al-Busaidi', status: 'Available', skill: 'Fiber Optics', location: 'Sur', load: 0, shift: '08:00 - 16:00' },
-            { id: 'ENG-110', name: 'Abdullah Al-Rawahi', status: 'Available', skill: 'Microwave', location: 'Nizwa', load: 0, shift: '08:00 - 16:00' }
-        ];
+              <div className="flex items-center gap-6 z-10 self-end md:self-auto">
+                <div className="text-center">
+                  <div className="text-[10px] uppercase tracking-widest text-white/40">SLA Countdown</div>
+                  <div className="font-heading text-4xl md:text-5xl italic text-red-400 font-bold">{formatSLA(challengeTimer)}</div>
+                </div>
+                <button
+                  onClick={() => { setActiveTab('tickets'); setSelectedTicket(tickets[0]); }}
+                  className="px-6 py-3.5 rounded-full bg-red-500 hover:bg-red-600 text-white font-medium text-xs tracking-wider uppercase transition-all shadow-lg shadow-red-500/30 flex items-center gap-2"
+                >
+                  <span>Investigate</span>
+                  <ArrowUpRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
 
-        let tickets = [
-            { id: 'TKT-501', title: 'Microwave Link Degradation', severity: 'Critical', site: 'MUS-ALH-021', skill: 'Microwave', deadline: '15:30', assigned: 'Ahmed Al-Balushi', score: 94.2, slaRisk: 'Low', status: 'Dispatched' },
-            { id: 'TKT-502', title: 'Fiber Cut Trunk Line', severity: 'Emergency', site: 'SHR-SOH-012', skill: 'Fiber Optics', deadline: '14:45', assigned: 'Salim Al-Habsi', score: 98.1, slaRisk: 'High', status: 'In Progress' },
-            { id: 'TKT-503', title: 'VSAT Modem Sync Drift', severity: 'Major', site: 'SLL-MW-04', skill: 'IP Core', deadline: '16:00', assigned: 'Unassigned', score: 0, slaRisk: 'Low', status: 'Open' },
-            { id: 'TKT-504', title: 'Rectifier Failure Alarm', severity: 'Critical', site: 'NIZ-BTS-88', skill: 'Power Rectifiers', deadline: '15:15', assigned: 'Unassigned', score: 0, slaRisk: 'Medium', status: 'Open' }
-        ];
-
-        let workOrders = [
-            { woId: 'WO-8001', ticket: 'TKT-501', engineer: 'Ahmed Al-Balushi', stage: 'En Route', spares: 'RF Patch Cable, Waveguide Kit' },
-            { woId: 'WO-8002', ticket: 'TKT-502', engineer: 'Salim Al-Habsi', stage: 'Splicing in Progress', spares: 'Single Mode Fiber Reel, Splice Sleeves' },
-            { woId: 'WO-8003', ticket: 'TKT-505', engineer: 'Nasser Al-Kindi', stage: 'Testing', spares: 'SFP+ Transceiver' },
-            { woId: 'WO-8004', ticket: 'TKT-506', engineer: 'Tariq Al-Zadjali', stage: 'Completed', spares: 'None' },
-            { woId: 'WO-8005', ticket: 'TKT-507', engineer: 'Khalid Al-Maashani', stage: 'Pending Parts', spares: 'AC Surge Protector' }
-        ];
-
-        // Navigation
-        function switchPage(pageId, btnElement) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-
-            if(btnElement) {
-                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-                btnElement.classList.add('active');
-            } else {
-                document.querySelectorAll('.nav-btn').forEach(b => {
-                    if(b.getAttribute('onclick') && b.getAttribute('onclick').includes(pageId)) {
-                        b.classList.add('active');
-                    } else {
-                        b.classList.remove('active');
-                    }
-                });
-            }
-            renderAllViews();
-        }
-
-        // Render Data Tables
-        function renderAllViews() {
-            let hours = Math.floor(simClockMinutes / 60).toString().padStart(2, '0');
-            let mins = (simClockMinutes % 60).toString().padStart(2, '0');
-            document.getElementById('simClock').innerText = `${hours}:${mins}`;
-
-            let openCount = tickets.filter(t => t.status !== 'Closed').length;
-            let unassignedCount = tickets.filter(t => t.assigned === 'Unassigned').length;
-            let slaRiskCount = tickets.filter(t => t.slaRisk === 'High').length;
-            let availEngCount = engineers.filter(e => e.status === 'Available').length;
-            let critEmergCount = tickets.filter(t => t.severity === 'Emergency' || t.severity === 'Critical').length;
-
-            // Badges
-            document.getElementById('alarmBadge').innerText = openCount;
-            document.getElementById('sdOpenBadge').innerText = openCount;
-            document.getElementById('sdUnassignedBadge').innerText = unassignedCount;
-            document.getElementById('engCountBadge').innerText = engineers.length;
-            document.getElementById('woBadge').innerText = workOrders.length;
-
-            // Dashboard & Stats
-            document.getElementById('dashActiveAlarms').innerText = openCount;
-            document.getElementById('dashOpenTickets').innerText = openCount;
-            document.getElementById('dashSlaRisk').innerText = slaRiskCount;
-            document.getElementById('dashAvailEng').innerText = availEngCount;
-
-            document.getElementById('statOpenTickets').innerText = openCount;
-            document.getElementById('statUnassigned').innerText = unassignedCount;
-            document.getElementById('statSlaRisk').innerText = slaRiskCount;
-            document.getElementById('statEmergencyCrit').innerText = critEmergCount;
-            document.getElementById('statAvailableEng').innerText = availEngCount;
-
-            // Service Desk Dedicated Counters
-            document.getElementById('sdTotalTickets').innerText = openCount;
-            document.getElementById('sdStatUnassigned').innerText = unassignedCount;
-            document.getElementById('sdStatRisk').innerText = slaRiskCount;
-
-            // Render Service Desk Main Table & Queue Table
-            let sdMainHtml = '';
-            let sdQueueHtml = '';
-            let dashTicketHtml = '';
-
-            tickets.forEach(t => {
-                let sevBadge = t.severity === 'Emergency' ? 'badge-emergency' : t.severity === 'Critical' ? 'badge-critical' : t.severity === 'Major' ? 'badge-major' : 'badge-minor';
-                let riskColor = t.slaRisk === 'High' ? 'color: var(--danger); font-weight:bold;' : t.slaRisk === 'Medium' ? 'color: var(--warning);' : 'color: var(--success);';
-                
-                let row = `
-                    <tr>
-                        <td><b>${t.id}</b></td>
-                        <td>${t.title}</td>
-                        <td><span class="${sevBadge}">${t.severity}</span></td>
-                        <td>${t.site}</td>
-                        <td>${t.skill}</td>
-                        <td>${t.assigned}</td>
-                        <td>${t.score > 0 ? t.score : '-'}</td>
-                        <td><span style="${riskColor}">${t.slaRisk}</span></td>
-                        <td><button class="btn btn-sm btn-primary" onclick="inspectTicket('${t.id}')">Inspect</button></td>
-                    </tr>
-                `;
-                dashTicketHtml += row;
-
-                let sdRow = `
-                    <tr>
-                        <td><b>${t.id}</b></td>
-                        <td>${t.title}</td>
-                        <td><span class="${sevBadge}">${t.severity}</span></td>
-                        <td>${t.site}</td>
-                        <td>${t.skill}</td>
-                        <td>${t.deadline}</td>
-                        <td>${t.assigned}</td>
-                        <td><button class="btn btn-sm btn-primary" onclick="inspectTicket('${t.id}')">Service Desk Actions</button></td>
-                    </tr>
-                `;
-                sdMainHtml += sdRow;
-
-                let queueRow = `
-                    <tr>
-                        <td><b>${t.id}</b></td>
-                        <td><span class="${sevBadge}">${t.severity}</span></td>
-                        <td>${t.site}</td>
-                        <td>${t.assigned}</td>
-                        <td>${t.score > 0 ? t.score : 'Unassigned'}</td>
-                        <td><span style="${riskColor}">${t.slaRisk}</span></td>
-                        <td><button class="btn btn-sm btn-primary" onclick="inspectTicket('${t.id}')">Triage</button></td>
-                    </tr>
-                `;
-                sdQueueHtml += queueRow;
-            });
-
-            document.getElementById('dashboardTicketTable').innerHTML = dashTicketHtml;
-            document.getElementById('serviceDeskMainTable').innerHTML = sdMainHtml;
-            document.getElementById('serviceDeskQueueTable').innerHTML = sdQueueHtml;
-
-            // Render Engineers
-            let dashEngHtml = '';
-            let rosterHtml = '';
-
-            engineers.forEach(e => {
-                let statusColor = e.status === 'Available' ? 'color: var(--success);' : 'color: var(--warning);';
-                dashEngHtml += `
-                    <tr>
-                        <td>${e.name}</td>
-                        <td><span style="${statusColor}">${e.status}</span></td>
-                        <td>${e.skill}</td>
-                        <td>${e.load} active tasks</td>
-                        <td>${e.location}</td>
-                    </tr>
-                `;
-
-                rosterHtml += `
-                    <tr>
-                        <td><b>${e.id}</b></td>
-                        <td>${e.name}</td>
-                        <td><span style="${statusColor}">${e.status}</span></td>
-                        <td>${e.skill}</td>
-                        <td>${e.location}</td>
-                        <td>${e.load}</td>
-                        <td>${e.shift}</td>
-                    </tr>
-                `;
-            });
-
-            document.getElementById('dashboardEngineerTable').innerHTML = dashEngHtml;
-            document.getElementById('engineerTableBody').innerHTML = rosterHtml;
-
-            // Render Work Orders
-            let woHtml = '';
-            workOrders.forEach(w => {
-                woHtml += `
-                    <tr>
-                        <td><b>${w.woId}</b></td>
-                        <td>${w.ticket}</td>
-                        <td>${w.engineer}</td>
-                        <td><span class="badge" style="background: rgba(59,130,246,0.3); color:#93c5fd;">${w.stage}</span></td>
-                        <td>${w.spares}</td>
-                        <td><button class="btn btn-sm" onclick="alert('Work order ${w.woId} updated successfully.')">Update</button></td>
-                    </tr>
-                `;
-            });
-            document.getElementById('workOrderTableBody').innerHTML = woHtml;
-
-            // Render My Tasks
-            let myTasksHtml = '';
-            tickets.filter(t => t.assigned === 'Ahmed Al-Balushi' || t.assigned === 'Salim Al-Habsi').forEach(t => {
-                myTasksHtml += `
-                    <tr>
-                        <td><b>${t.id}</b></td>
-                        <td>${t.site}</td>
-                        <td>${t.title}</td>
-                        <td><span class="badge-critical">${t.status}</span></td>
-                        <td><button class="btn btn-sm btn-primary" onclick="alert('Task ${t.id} marked as resolved and submitted for QA sign-off.')">Mark Resolved</button></td>
-                    </tr>
-                `;
-            });
-            document.getElementById('myTasksTableBody').innerHTML = myTasksHtml;
-        }
-
-        // Simulation controls
-        let simInterval = null;
-        function toggleSimulation() {
-            let btn = document.getElementById('simToggleBtn');
-            if(simulationRunning) {
-                clearInterval(simInterval);
-                simulationRunning = false;
-                btn.innerText = '▶ Start Sim';
-                btn.style.background = '';
-            } else {
-                simInterval = setInterval(() => {
-                    simClockMinutes += 5;
-                    if(simClockMinutes >= 1440) simClockMinutes = 360;
-                    renderAllViews();
-                }, 2000);
-                simulationRunning = true;
-                btn.innerText = '⏸ Pause Sim';
-                btn.style.background = 'var(--danger)';
-            }
-        }
-
-        function stepSimulation() {
-            simClockMinutes += 10;
-            renderAllViews();
-        }
-
-        function resetSimulation() {
-            simClockMinutes = 845;
-            renderAllViews();
-        }
-
-        // Global Optimizer Execution
-        function runGlobalOptimization() {
-            tickets.forEach(t => {
-                if(t.assigned === 'Unassigned') {
-                    let candidate = engineers.find(e => e.status === 'Available' && e.skill === t.skill);
-                    if(!candidate) candidate = engineers.find(e => e.status === 'Available');
-                    if(candidate) {
-                        t.assigned = candidate.name;
-                        t.score = (88 + Math.random() * 11).toFixed(1);
-                        candidate.status = 'Busy';
-                        candidate.load += 1;
-                    }
-                }
-            });
-            renderAllViews();
-            alert('Service Desk & FM Dispatch Optimizer executed successfully! All unassigned tickets optimally routed.');
-        }
-
-        // New Ticket Modal
-        function openNewTicketModal() {
-            document.getElementById('modalTitle').innerText = 'Log New Service Desk Ticket';
-            document.getElementById('modalBodyForm').style.display = 'block';
-            document.getElementById('modalBodyInspector').style.display = 'none';
-            document.getElementById('ticketModal').classList.add('active');
-        }
-
-        function closeTicketModal() {
-            document.getElementById('ticketModal').classList.remove('active');
-        }
-
-        function submitNewTicket() {
-            let site = document.getElementById('newTicketSite').value;
-            let severity = document.getElementById('newTicketSeverity').value;
-            let skill = document.getElementById('newTicketSkill').value;
-            let desc = document.getElementById('newTicketDesc').value;
-
-            let newId = 'TKT-' + (500 + tickets.length + 1);
-            let newTicket = {
-                id: newId,
-                title: desc,
-                severity: severity,
-                site: site,
-                skill: skill,
-                deadline: '16:30',
-                assigned: 'Unassigned',
-                score: 0,
-                slaRisk: severity === 'Emergency' ? 'High' : 'Low',
-                status: 'Open'
-            };
-
-            tickets.push(newTicket);
-            closeTicketModal();
-            renderAllViews();
-            alert(`Service Desk Ticket ${newId} logged successfully and queued for optimization.`);
-        }
-
-        // Inspect Ticket & Optimizer Candidate Ranking
-        function inspectTicket(ticketId) {
-            let t = tickets.find(x => x.id === ticketId);
-            if(!t) return;
-
-            document.getElementById('modalTitle').innerText = `Service Desk & Optimizer Inspector: ${t.id} (${t.title})`;
-            document.getElementById('modalBodyForm').style.display = 'none';
-            
-            let inspectorHtml = `
-                <div style="display: flex; flex-direction: column; gap: 15px; font-size: 13px;">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: rgba(255,255,255,0.04); padding: 12px; border-radius: 8px;">
-                        <div><strong>Site:</strong> ${t.site}</div>
-                        <div><strong>Severity:</strong> ${t.severity}</div>
-                        <div><strong>Required Skill:</strong> ${t.skill}</div>
-                        <div><strong>Current Assignment:</strong> ${t.assigned}</div>
+            {/* Activity Stream Feed */}
+            <div className="liquid-glass p-6 rounded-3xl border border-white/10 space-y-4">
+              <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                <h3 className="font-heading italic text-2xl">Live Operational Activity Feed</h3>
+                <span className="text-xs text-white/40">{activities.length} Recorded Events</span>
+              </div>
+              <div className="space-y-2 max-h-48 overflow-y-auto pr-2">
+                {activities.map(act => (
+                  <div key={act.id} className="flex items-center justify-between text-xs py-2 px-3 rounded-xl bg-white/5 border border-white/5">
+                    <div className="flex items-center gap-3">
+                      <span className="font-mono text-white/40">{act.time}</span>
+                      <span className="text-white/80">{act.message}</span>
                     </div>
-                    
-                    <h3 style="font-size: 16px; margin-top: 5px;">Candidate Engineer Scoring Breakdown</h3>
-                    <div class="data-table-wrapper">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Engineer</th>
-                                    <th>Skill Match</th>
-                                    <th>Proximity (GPS)</th>
-                                    <th>Workload</th>
-                                    <th>Total Score</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-            `;
+                    <span className="text-[10px] uppercase tracking-wider text-white/30 font-mono">{act.type}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
 
-            engineers.forEach((e, idx) => {
-                let skillMatch = e.skill === t.skill ? 100 : 50;
-                let proximity = Math.floor(60 + Math.random() * 38);
-                let workloadScore = Math.max(10, 100 - (e.load * 25));
-                let totalScore = ((skillMatch * 0.4) + (proximity * 0.3) + (workloadScore * 0.3)).toFixed(1);
-                let isSelected = t.assigned === e.name;
+        {/* VIEW 2: ALARMS CENTER */}
+        {activeTab === 'alarms' && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 className="font-heading italic text-4xl">Network Alarm Stream</h2>
+                <p className="text-xs text-white/50">Correlated Real-time Telemetry Events</p>
+              </div>
+              <div className="text-xs text-white/50">{alarms.length} Alarms Active</div>
+            </div>
 
-                inspectorHtml += `
-                    <tr style="${isSelected ? 'background: rgba(59,130,246,0.15);' : ''}">
-                        <td><strong>${e.name}</strong><br><span style="font-size:11px; color:var(--muted-foreground);">${e.skill}</span></td>
-                        <td>${skillMatch}%</td>
-                        <td>${proximity}%</td>
-                        <td>${e.load} tasks</td>
-                        <td><strong style="color:var(--success); font-size:15px;">${totalScore}</strong></td>
-                        <td>
-                            <button class="btn btn-sm ${isSelected ? 'btn-primary' : ''}" onclick="overrideAssignment('${t.id}', '${e.name}')">
-                                ${isSelected ? 'Assigned' : 'Assign'}
-                            </button>
+            <div className="liquid-glass rounded-3xl border border-white/10 overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm text-white/80">
+                  <thead className="bg-white/5 text-xs uppercase tracking-wider text-white/40 border-b border-white/10">
+                    <tr>
+                      <th className="p-4">Alarm ID</th>
+                      <th className="p-4">Severity</th>
+                      <th className="p-4">Device</th>
+                      <th className="p-4">Site</th>
+                      <th className="p-4">Message</th>
+                      <th className="p-4">Status</th>
+                      <th className="p-4 text-right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/5">
+                    {alarms.map(alarm => (
+                      <tr key={alarm.id} className="hover:bg-white/5 transition-colors">
+                        <td className="p-4 font-mono text-xs text-white/60">{alarm.id}</td>
+                        <td className="p-4">
+                          <span className={`px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider ${
+                            alarm.severity === 'Emergency' ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
+                            alarm.severity === 'Critical' ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30' :
+                            'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                          }`}>
+                            {alarm.severity}
+                          </span>
                         </td>
-                    </tr>
-                `;
-            });
+                        <td className="p-4 font-medium text-white">{alarm.device}</td>
+                        <td className="p-4 text-white/60">{alarm.site}</td>
+                        <td className="p-4 text-white/80 max-w-xs truncate">{alarm.message}</td>
+                        <td className="p-4">
+                          <span className={`text-xs ${alarm.status === 'Cleared' ? 'text-emerald-400' : 'text-amber-400'}`}>
+                            ● {alarm.status}
+                          </span>
+                        </td>
+                        <td className="p-4 text-right">
+                          <button
+                            onClick={() => { setSelectedAlarm(alarm); setActiveTab('topology'); }}
+                            className="px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-xs transition-all font-medium"
+                          >
+                            Trace
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
-            inspectorHtml += `
-                            </tbody>
-                        </table>
+        {/* VIEW 3: SMA TICKETS */}
+        {activeTab === 'tickets' && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+            <h2 className="font-heading italic text-4xl">Service Incident Center (SMA)</h2>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Ticket List */}
+              <div className="lg:col-span-1 space-y-3">
+                {tickets.map(ticket => (
+                  <div
+                    key={ticket.id}
+                    onClick={() => setSelectedTicket(ticket)}
+                    className={`liquid-glass p-5 rounded-3xl border cursor-pointer transition-all ${
+                      selectedTicket?.id === ticket.id ? 'border-white bg-white/10 shadow-xl' : 'border-white/10 hover:border-white/30'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between text-xs text-white/50 mb-2">
+                      <span className="font-mono">{ticket.id}</span>
+                      <span className={`font-mono font-bold ${ticket.slaRemainingSec < 300 ? 'text-red-400 animate-pulse' : 'text-amber-400'}`}>
+                        SLA: {formatSLA(ticket.slaRemainingSec)}
+                      </span>
                     </div>
+                    <h4 className="font-medium text-sm text-white mb-2 leading-snug">{ticket.title}</h4>
+                    <div className="flex items-center justify-between text-xs text-white/60">
+                      <span>{ticket.site}</span>
+                      <span className="px-2 py-0.5 rounded bg-white/10 text-[10px] text-white/80">{ticket.status}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Ticket Detail Panel */}
+              <div className="lg:col-span-2">
+                {selectedTicket ? (
+                  <div className="liquid-glass p-6 md:p-8 rounded-3xl border border-white/10 space-y-6">
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between border-b border-white/10 pb-4 gap-2">
+                      <div>
+                        <span className="text-xs font-mono text-white/40 uppercase tracking-widest">{selectedTicket.id} — {selectedTicket.department}</span>
+                        <h3 className="font-heading italic text-3xl font-bold">{selectedTicket.title}</h3>
+                      </div>
+                      <span className="px-3 py-1 rounded-full text-xs bg-red-500/20 text-red-400 border border-red-500/30 self-start">
+                        {selectedTicket.severity}
+                      </span>
+                    </div>
+
+                    <p className="text-sm text-white/80 leading-relaxed font-light">{selectedTicket.description}</p>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs">
+                      <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
+                        <span className="text-white/40 block mb-1">Affected Device</span>
+                        <span className="font-mono text-white font-medium">{selectedTicket.device}</span>
+                      </div>
+                      <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
+                        <span className="text-white/40 block mb-1">Location / Site</span>
+                        <span className="text-white font-medium">{selectedTicket.site}</span>
+                      </div>
+                      <div className="bg-white/5 p-4 rounded-2xl border border-white/5 col-span-2 sm:col-span-1">
+                        <span className="text-white/40 block mb-1">Source Alarm</span>
+                        <span className="font-mono text-amber-400 font-medium">{selectedTicket.sourceAlarmId}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-white/10">
+                      <button
+                        onClick={() => setActiveTab('topology')}
+                        className="px-4 py-2.5 rounded-full bg-white/10 hover:bg-white/20 text-xs font-medium border border-white/10 transition-all"
+                      >
+                        Locate in Topology
+                      </button>
+                      <button
+                        onClick={() => setActiveTab('fm')}
+                        className="px-4 py-2.5 rounded-full bg-white/10 hover:bg-white/20 text-xs font-medium border border-white/10 transition-all"
+                      >
+                        FM Dispatch Optimizer
+                      </button>
+                      <button
+                        onClick={() => setActiveTab('config')}
+                        className="px-4 py-2.5 rounded-full bg-white/10 hover:bg-white/20 text-xs font-medium border border-white/10 transition-all"
+                      >
+                        Open Terminal CLI
+                      </button>
+                      <button
+                        onClick={() => handleResolveTicket(selectedTicket.id)}
+                        className="px-5 py-2.5 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold shadow-lg shadow-emerald-500/20 sm:ml-auto transition-all"
+                      >
+                        Resolve Ticket
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="liquid-glass p-12 rounded-3xl border border-white/10 text-center text-white/40">
+                    Select an incident ticket to view details.
+                  </div>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* VIEW 4: PHYSICAL TOPOLOGY */}
+        {activeTab === 'topology' && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="font-heading italic text-4xl">Sultanate Core Network Topology Map</h2>
+                <p className="text-xs text-white/50">Interconnected Regional Core Routers & DWDM Links</p>
+              </div>
+              <div className="text-xs text-white/50">5 Nodes Online</div>
+            </div>
+
+            <div className="liquid-glass rounded-3xl border border-white/10 p-6 relative h-[480px] overflow-hidden bg-gradient-to-b from-white/5 to-transparent shadow-2xl">
+              {/* Connection Lines */}
+              <svg className="absolute inset-0 w-full h-full stroke-white/20" strokeWidth="2">
+                <line x1="280" y1="110" x2="230" y2="390" strokeDasharray="4 4" className="animate-pulse stroke-red-500/60" strokeWidth="3" />
+                <line x1="280" y1="110" x2="130" y2="170" strokeWidth="2" />
+                <line x1="280" y1="110" x2="350" y2="220" strokeWidth="2" />
+                <line x1="350" y1="220" x2="450" y2="270" strokeWidth="2" />
+              </svg>
+
+              {/* Render Nodes */}
+              {nodes.map(node => (
+                <div
+                  key={node.id}
+                  style={{ left: `${node.x}px`, top: `${node.y}px` }}
+                  onClick={() => setSelectedNode(node)}
+                  className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer group z-10"
+                >
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all shadow-xl ${
+                    node.status === 'Critical' ? 'bg-red-500/30 border-red-500 animate-pulse' :
+                    node.status === 'Major' ? 'bg-orange-500/30 border-orange-500' :
+                    node.status === 'Warning' ? 'bg-amber-500/30 border-amber-500' : 'bg-emerald-500/20 border-emerald-400'
+                  }`}>
+                    <Server className="w-5 h-5 text-white" />
+                  </div>
+                  <div className="absolute top-14 left-1/2 -translate-x-1/2 whitespace-nowrap text-center bg-black/80 backdrop-blur-md px-3 py-1 rounded-xl border border-white/10">
+                    <div className="text-xs font-semibold text-white">{node.name}</div>
+                    <div className="text-[10px] text-white/50 font-mono">{node.ip}</div>
+                  </div>
                 </div>
-            `;
+              ))}
+            </div>
 
-            document.getElementById('modalBodyInspector').innerHTML = inspectorHtml;
-            document.getElementById('modalBodyInspector').style.display = 'block';
-            document.getElementById('ticketModal').classList.add('active');
-        }
+            {/* Selected Node Details */}
+            {selectedNode && (
+              <div className="liquid-glass p-6 rounded-3xl border border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                  <h4 className="font-heading italic text-2xl">{selectedNode.name}</h4>
+                  <p className="text-xs text-white/60">Site: {selectedNode.site} | IP: {selectedNode.ip} | Type: {selectedNode.type}</p>
+                </div>
+                <button
+                  onClick={() => setActiveTab('config')}
+                  className="px-5 py-2 rounded-full bg-white/10 hover:bg-white/20 text-xs font-medium border border-white/10"
+                >
+                  Configure via Terminal
+                </button>
+              </div>
+            )}
+          </motion.div>
+        )}
 
-        function overrideAssignment(ticketId, engineerName) {
-            let t = tickets.find(x => x.id === ticketId);
-            if(t) {
-                t.assigned = engineerName;
-                t.status = 'Dispatched';
-                t.score = (90 + Math.random() * 9).toFixed(1);
-                let eng = engineers.find(e => e.name === engineerName);
-                if(eng) {
-                    eng.status = 'Busy';
-                    eng.load += 1;
-                }
-                alert(`Ticket ${ticketId} assigned successfully to ${engineerName}.`);
-                closeTicketModal();
-                renderAllViews();
-            }
-        }
+        {/* VIEW 5: FIELD MAINTENANCE OPTIMIZER */}
+        {activeTab === 'fm' && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+            <div>
+              <h2 className="font-heading italic text-4xl">Field Maintenance (FM) Optimization Engine</h2>
+              <p className="text-xs text-white/50">Multi-criteria Weighted Dispatch Optimization Score = 30% SLA + 25% Skills + 20% Workload + 15% Availability + 10% Travel</p>
+            </div>
 
-        // Scenario Lab
-        function runScenario(type) {
-            let box = document.getElementById('scenarioResultBox');
-            let log = document.getElementById('scenarioLogText');
-            box.style.display = 'block';
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {engineers.map(eng => {
+                const score = calculateFMScore(eng);
+                return (
+                  <div key={eng.id} className="liquid-glass p-6 rounded-3xl border border-white/10 space-y-4 flex flex-col justify-between">
+                    <div className="space-y-3">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <span className="text-[10px] font-mono text-white/40">{eng.id}</span>
+                          <h4 className="font-heading italic text-2xl font-bold">{eng.name}</h4>
+                          <span className="text-xs text-white/60">{eng.region}</span>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-[10px] text-white/40 block">Match Score</span>
+                          <span className="font-heading italic text-2xl text-emerald-400 font-bold">{score}</span>
+                        </div>
+                      </div>
 
-            if(type === 'storm') {
-                log.innerText = 'Dhofar Tropical Storm simulation initiated. 4 new Emergency VSAT & Power alarms generated in Salalah. Service desk and optimizer automatically re-routed 2 available engineers from Nizwa and activated emergency standby roster.';
-            } else if(type === 'fiber') {
-                log.innerText = 'Sohar Industrial Fiber Cut simulation initiated. High-priority backbone trunk alarm received. Service desk dispatched Senior Splicer Salim Al-Habsi with emergency single-mode fiber reel. SLA protection score maintained at 98.2%.';
-            } else if(type === 'surge') {
-                log.innerText = 'Muscat Peak Traffic Surge simulation initiated. High BER and congestion alarms triggered across Al Khuwair core hub. IP Core engineers deployed to rebalance dynamic routing tables with zero packet loss.';
-            }
-        }
+                      <div className="space-y-1.5 text-xs">
+                        <div className="flex justify-between text-white/60">
+                          <span>Travel ETA:</span>
+                          <span className="font-mono text-white">{eng.etaMinutes} mins ({eng.distanceKm} km)</span>
+                        </div>
+                        <div className="flex justify-between text-white/60">
+                          <span>Current Workload:</span>
+                          <span className="font-mono text-white">{eng.workloadPercent}%</span>
+                        </div>
+                        <div className="flex justify-between text-white/60">
+                          <span>Historical SLA Rate:</span>
+                          <span className="font-mono text-emerald-400">{eng.slaComplianceRate}%</span>
+                        </div>
+                      </div>
 
-        // Initial render
-        window.onload = function() {
-            renderAllViews();
-        };
-    </script>
-</body>
-</html>
+                      <div className="pt-2 border-t border-white/10">
+                        <span className="text-[10px] text-white/40 block mb-1 uppercase tracking-wider">Certified Skills</span>
+                        <div className="flex flex-wrap gap-1">
+                          {eng.skills.map(s => (
+                            <span key={s} className="px-2 py-0.5 rounded bg-white/5 text-[10px] text-white/70">{s}</span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        addActivity(`Dispatched Work Order to ${eng.name} for ${eng.region}`, 'fm');
+                        alert(`Work Order dispatched to ${eng.name} successfully.`);
+                      }}
+                      className="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-semibold border border-white/10 transition-all mt-4"
+                    >
+                      Issue Work Order
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+
+        {/* VIEW 6: TERMINAL CLI SANDBOX */}
+        {activeTab === 'config' && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+            <div>
+              <h2 className="font-heading italic text-4xl">SLI & Interactive CLI Terminal</h2>
+              <p className="text-xs text-white/50">Execute network configuration changes directly on simulated devices</p>
+            </div>
+
+            <div className="liquid-glass p-6 rounded-3xl border border-white/10 bg-black/95 font-mono text-xs space-y-4 shadow-2xl">
+              <div className="h-72 overflow-y-auto space-y-1 text-emerald-400/90 p-2 font-mono">
+                {cliLogs.map((log, i) => (
+                  <div key={i}>{log}</div>
+                ))}
+              </div>
+
+              <form onSubmit={handleCliSubmit} className="flex items-center gap-2 border-t border-white/10 pt-4">
+                <span className="text-white/40 font-bold">OMAN-NOC#</span>
+                <input
+                  type="text"
+                  value={cliInput}
+                  onChange={e => setCliInput(e.target.value)}
+                  placeholder="e.g. interface GigabitEthernet1/0/25 shutdown OR tunnel mode mpls"
+                  className="flex-1 bg-transparent text-white outline-none font-mono"
+                />
+                <button type="submit" className="px-5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs text-white font-body">
+                  Execute
+                </button>
+              </form>
+            </div>
+          </motion.div>
+        )}
+
+        {/* VIEW 7: EMAIL CENTER */}
+        {activeTab === 'email' && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+            <h2 className="font-heading italic text-4xl">Operational Email Center</h2>
+
+            <div className="space-y-3">
+              {emails.map(eml => (
+                <div key={eml.id} className="liquid-glass p-5 rounded-3xl border border-white/10 space-y-2">
+                  <div className="flex items-center justify-between text-xs text-white/50">
+                    <span className="font-semibold text-white">{eml.sender} ({eml.department})</span>
+                    <span className="font-mono">{eml.timestamp}</span>
+                  </div>
+                  <h4 className="font-heading italic text-xl font-bold">{eml.subject}</h4>
+                  <p className="text-xs text-white/70 font-light leading-relaxed">{eml.body}</p>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+      </main>
+
+      {/* SIDE MANUAL DRAWER */}
+      <AnimatePresence>
+        {isManualOpen && (
+          <motion.div
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            className="fixed top-0 right-0 bottom-0 w-full sm:w-[450px] z-50 liquid-glass-strong border-l border-white/10 p-6 md:p-8 space-y-6 overflow-y-auto shadow-2xl"
+          >
+            <div className="flex items-center justify-between border-b border-white/10 pb-4">
+              <div>
+                <h3 className="font-heading italic text-3xl font-bold">NOC Knowledge Base</h3>
+                <p className="text-xs text-white/50">Troubleshooting Guides & SLA Specifications</p>
+              </div>
+              <button onClick={() => setIsManualOpen(false)} className="p-2 rounded-full hover:bg-white/10">
+                <X className="w-5 h-5 text-white/70" />
+              </button>
+            </div>
+
+            <div className="space-y-4 text-xs text-white/80 leading-relaxed font-light">
+              <div className="bg-white/5 p-4 rounded-2xl border border-white/5 space-y-2">
+                <h4 className="font-bold text-white text-sm">1. Spanning Tree (STP) Broadcast Loops</h4>
+                <p>When MAC flapping occurs across ring switches, isolate the rogue connection by executing <code className="text-amber-400 font-mono">interface &lt;port&gt; shutdown</code> or enabling BPDU guard.</p>
+              </div>
+
+              <div className="bg-white/5 p-4 rounded-2xl border border-white/5 space-y-2">
+                <h4 className="font-bold text-white text-sm">2. Fiber Cut Optical LOS Rerouting</h4>
+                <p>For DWDM cable cuts along terrestrial corridors, configure explicit MPLS Traffic Engineering tunnels over subsea secondary paths to relieve microwave congestion.</p>
+              </div>
+
+              <div className="bg-white/5 p-4 rounded-2xl border border-white/5 space-y-2">
+                <h4 className="font-bold text-white text-sm">3. Response Target Thresholds</h4>
+                <p>Emergency / Critical incidents carry a 5-minute initial response SLA limit. SLA breaches deduct points directly from the Trainee KPI Score.</p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
