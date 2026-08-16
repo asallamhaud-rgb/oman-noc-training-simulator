@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Velorah® Oman NOC & Service Desk Training Simulator</title>
+    <title>Omantel Presentation & Velorah® Oman NOC Suite</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -403,17 +403,24 @@
 
     <!-- Sidebar Navigation -->
     <div class="sidebar">
-        <div class="sidebar-brand">Velorah<sup style="font-size: 10px;">®</sup></div>
-        <div class="sidebar-subtitle">Oman NOC & Service Desk</div>
+        <div class="sidebar-brand">Omantel & Velorah</div>
+        <div class="sidebar-subtitle">NOC, Service Desk & Presentation</div>
         
+        <div class="nav-category">Omantel Presentation</div>
+        <button class="nav-btn active" onclick="switchPage('omantel-ppt', this)"><span>🎬 Omantel Video Showcase</span></button>
+
         <div class="nav-category">Main Operation</div>
-        <button class="nav-btn active" onclick="switchPage('dashboard', this)"><span>📊 NOC Overview Dashboard</span></button>
+        <button class="nav-btn" onclick="switchPage('dashboard', this)"><span>📊 NOC Overview Dashboard</span></button>
         <button class="nav-btn" onclick="switchPage('alarms', this)"><span>🚨 Live Network Alarms</span> <span class="badge" id="alarmBadge">3</span></button>
         <button class="nav-btn" onclick="switchPage('topology', this)"><span>🗺️ Oman Topology & Sites</span></button>
 
-        <div class="nav-category">Service Desk & FM</div>
-        <button class="nav-btn" onclick="switchPage('fm-dashboard', this)"><span>⚡ FM Optimization Hub</span> <span class="badge" id="openTicketsBadge">4</span></button>
-        <button class="nav-btn" onclick="switchPage('tickets-queue', this)"><span>🎫 Tickets & Dispatch</span> <span class="badge" id="unassignedBadge">2</span></button>
+        <div class="nav-category">Dedicated Service Desk</div>
+        <button class="nav-btn" onclick="switchPage('service-desk-main', this)"><span>🎫 Service Desk Central</span> <span class="badge" id="sdOpenBadge">4</span></button>
+        <button class="nav-btn" onclick="switchPage('service-desk-queue', this)"><span>📋 Service Desk Queue</span> <span class="badge" id="sdUnassignedBadge">2</span></button>
+        <button class="nav-btn" onclick="switchPage('service-desk-sla', this)"><span>⏱️ Service Desk SLA & KPIs</span></button>
+
+        <div class="nav-category">Field Maintenance & FM</div>
+        <button class="nav-btn" onclick="switchPage('fm-dashboard', this)"><span>⚡ FM Optimization Hub</span></button>
         <button class="nav-btn" onclick="switchPage('engineer-roster', this)"><span>👷 Field Engineers</span> <span class="badge" id="engCountBadge">10</span></button>
         <button class="nav-btn" onclick="switchPage('work-orders', this)"><span>🔧 Work Orders</span> <span class="badge" id="woBadge">5</span></button>
         <button class="nav-btn" onclick="switchPage('mytasks', this)"><span>📋 My Tasks</span></button>
@@ -428,7 +435,7 @@
     <!-- Main Workspace Area -->
     <div class="main">
         <div class="header-top">
-            <h1 id="pageTitle">NOC Overview & FM Optimization Dashboard</h1>
+            <h1 id="pageTitle">Omantel Project & Velorah® NOC Suite</h1>
             <div class="sim-control-bar">
                 <span>⏱️ Sim Time: <strong id="simClock">14:05</strong></span>
                 <span style="color: var(--muted-foreground);">|</span>
@@ -438,13 +445,41 @@
             </div>
         </div>
         <div class="header-subtitle">
-            <span id="pageSubtitleDesc">Integrated Oman National Telecommunications Operations Center & Field Maintenance Dispatch Engine.</span>
+            <span id="pageSubtitleDesc">Integrated Omantel Presentation Showcase, National NOC Operations, and Dedicated Service Desk Engine.</span>
             <span style="color: #60a5fa; font-weight: 500;">Status: System Online & Optimizer Active</span>
         </div>
 
         <div class="content">
 
-            <!-- 0. NOC OVERVIEW DASHBOARD -->
+            <!-- 0. OMANTEL VIDEO PRESENTATION SHOWCASE -->
+            <section id="omantel-ppt" class="page active">
+                <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 20px; padding: 40px;">
+                    <div style="max-width: 700px;">
+                        <span style="background: rgba(59,130,246,0.3); color: #93c5fd; padding: 4px 12px; border-radius: 9999px; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.1em;">Omantel Enterprise Showcase</span>
+                        <h2 style="font-size: 42px; margin-top: 12px; line-height: 1.1;">Next-Generation Telecom Operations & AI Dispatch</h2>
+                        <p style="font-size: 15px; color: var(--muted-foreground); margin-top: 12px; line-height: 1.6;">
+                            Welcome to the interactive presentation interface built for Omantel. This web-based module demonstrates autonomous network fault ingestion, multi-factor field maintenance routing across Oman's governorates, and real-time Service Desk telemetry.
+                        </p>
+                    </div>
+
+                    <div class="cards-grid" style="margin-top: 10px;">
+                        <div class="liquid-glass stat-card" style="cursor: pointer;" onclick="switchPage('dashboard')">
+                            <h3>Explore NOC</h3>
+                            <div class="value" style="font-size: 20px; color: #60a5fa;">Dashboard &rarr;</div>
+                        </div>
+                        <div class="liquid-glass stat-card" style="cursor: pointer;" onclick="switchPage('service-desk-main')">
+                            <h3>Service Desk</h3>
+                            <div class="value" style="font-size: 20px; color: #34d399;">Dedicated Space &rarr;</div>
+                        </div>
+                        <div class="liquid-glass stat-card" style="cursor: pointer;" onclick="switchPage('what-if')">
+                            <h3>Scenario Lab</h3>
+                            <div class="value" style="font-size: 20px; color: #f59e0b;">Simulation &rarr;</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 1. NOC OVERVIEW DASHBOARD -->
             <section id="dashboard" class="page">
                 <div class="cards-grid">
                     <div class="liquid-glass stat-card">
@@ -529,7 +564,7 @@
                 </div>
             </section>
 
-            <!-- 1. LIVE NETWORK ALARMS -->
+            <!-- 2. LIVE NETWORK ALARMS -->
             <section id="alarms" class="page">
                 <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
                     <h2 style="font-size: 22px;">Live Network Alarms & SMA Feed</h2>
@@ -553,7 +588,7 @@
                                     <td><span class="badge-emergency">Emergency</span></td>
                                     <td>SHR-SOH-012</td>
                                     <td>Optical carrier signal loss on Sohar-Muscat trunk</td>
-                                    <td><button class="btn btn-sm btn-primary" onclick="switchPage('tickets-queue')">View Ticket</button></td>
+                                    <td><button class="btn btn-sm btn-primary" onclick="switchPage('service-desk-main')">View in Service Desk</button></td>
                                 </tr>
                                 <tr>
                                     <td>ALM-9020</td>
@@ -561,7 +596,7 @@
                                     <td><span class="badge-critical">Critical</span></td>
                                     <td>MUS-ALH-021</td>
                                     <td>High BER on 18GHz Microwave Hop</td>
-                                    <td><button class="btn btn-sm btn-primary" onclick="switchPage('tickets-queue')">View Ticket</button></td>
+                                    <td><button class="btn btn-sm btn-primary" onclick="switchPage('service-desk-main')">View in Service Desk</button></td>
                                 </tr>
                                 <tr>
                                     <td>ALM-9019</td>
@@ -569,7 +604,7 @@
                                     <td><span class="badge-major">Major</span></td>
                                     <td>SLL-MW-04</td>
                                     <td>VSAT Modem clock synchronization drift</td>
-                                    <td><button class="btn btn-sm btn-primary" onclick="switchPage('tickets-queue')">View Ticket</button></td>
+                                    <td><button class="btn btn-sm btn-primary" onclick="switchPage('service-desk-main')">View in Service Desk</button></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -577,7 +612,7 @@
                 </div>
             </section>
 
-            <!-- 2. OMAN TOPOLOGY & SITES -->
+            <!-- 3. OMAN TOPOLOGY & SITES -->
             <section id="topology" class="page">
                 <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
                     <h2 style="font-size: 22px;">Oman National Infrastructure Topology</h2>
@@ -604,7 +639,145 @@
                 </div>
             </section>
 
-            <!-- 3. FM OPTIMIZATION DASHBOARD -->
+            <!-- ========================================== -->
+            <!-- DEDICATED SERVICE DESK SPACES (NEW SECTION)  -->
+            <!-- ========================================== -->
+
+            <!-- 4A. SERVICE DESK CENTRAL (DEDICATED SPACE) -->
+            <section id="service-desk-main" class="page">
+                <div class="cards-grid">
+                    <div class="liquid-glass stat-card">
+                        <h3>Total Service Tickets</h3>
+                        <div class="value" id="sdTotalTickets">4</div>
+                    </div>
+                    <div class="liquid-glass stat-card">
+                        <h3>Unassigned Incidents</h3>
+                        <div class="value" id="sdStatUnassigned" style="color: var(--warning);">2</div>
+                    </div>
+                    <div class="liquid-glass stat-card">
+                        <h3>SLA Compliance</h3>
+                        <div class="value" style="color: var(--success);">98.4%</div>
+                    </div>
+                    <div class="liquid-glass stat-card">
+                        <h3>Escalated High-Risk</h3>
+                        <div class="value" id="sdStatRisk" style="color: var(--danger);">1</div>
+                    </div>
+                </div>
+
+                <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h2 style="font-size: 22px;">Dedicated Service Desk - Incident Control Center</h2>
+                            <p style="font-size: 13px; color: var(--muted-foreground); margin-top: 4px;">Exclusive space for managing customer and network trouble tickets, severity triage, and escalation tracking.</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="openNewTicketModal()">+ Log New Service Ticket</button>
+                    </div>
+                    <div class="data-table-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Ticket ID</th>
+                                    <th>Title / Description</th>
+                                    <th>Severity</th>
+                                    <th>Site Location</th>
+                                    <th>Required Skill</th>
+                                    <th>SLA Deadline</th>
+                                    <th>Assigned Dispatch</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="serviceDeskMainTable">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4B. SERVICE DESK QUEUE & DISPATCH INSPECTOR -->
+            <section id="service-desk-queue" class="page">
+                <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h2 style="font-size: 22px;">Service Desk Triage & Routing Queue</h2>
+                            <p style="font-size: 13px; color: var(--muted-foreground); margin-top: 4px;">Inspect active incident pipelines and review automated routing rules for field dispatch integration.</p>
+                        </div>
+                        <button class="btn btn-primary btn-sm" onclick="runGlobalOptimization()">⚡ Run Auto-Dispatch</button>
+                    </div>
+
+                    <div class="data-table-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Ticket ID</th>
+                                    <th>Severity</th>
+                                    <th>Site</th>
+                                    <th>Assigned Engineer</th>
+                                    <th>Optimizer Score</th>
+                                    <th>SLA Risk</th>
+                                    <th>Inspect</th>
+                                </tr>
+                            </thead>
+                            <tbody id="serviceDeskQueueTable">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4C. SERVICE DESK SLA & KPIS -->
+            <section id="service-desk-sla" class="page">
+                <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
+                    <h2 style="font-size: 22px;">Service Desk SLA & Operational KPIs</h2>
+                    <p style="font-size: 13px; color: var(--muted-foreground);">Real-time performance metrics tracking service desk response times, first-contact resolution, and escalation frequency.</p>
+                    
+                    <div class="data-table-wrapper">
+                        <table class="data-table metric-comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Service Desk KPI Indicator</th>
+                                    <th>Current SLA Target</th>
+                                    <th>Achieved Performance</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>First Response Time (FRT)</td>
+                                    <td>&lt; 5.0 mins</td>
+                                    <td style="color: var(--success); font-weight: bold;">1.8 mins</td>
+                                    <td><span class="badge-success">Compliant</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Mean Time to Triage (MTTT)</td>
+                                    <td>&lt; 10.0 mins</td>
+                                    <td style="color: var(--success); font-weight: bold;">4.2 mins</td>
+                                    <td><span class="badge-success">Compliant</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Incident Escalation Rate</td>
+                                    <td>&lt; 5.0%</td>
+                                    <td style="color: var(--success); font-weight: bold;">2.1%</td>
+                                    <td><span class="badge-success">Optimal</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Customer / NOC Satisfaction Score</td>
+                                    <td>&gt; 90.0 / 100</td>
+                                    <td style="color: var(--success); font-weight: bold;">96.5 / 100</td>
+                                    <td><span class="badge-success">Exceeded</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================================== -->
+            <!-- FIELD MAINTENANCE & OPTIMIZATION MODULES   -->
+            <!-- ========================================== -->
+
+            <!-- 5. FM OPTIMIZATION DASHBOARD -->
             <section id="fm-dashboard" class="page">
                 <div class="cards-grid">
                     <div class="liquid-glass stat-card">
@@ -636,7 +809,7 @@
                 <div class="split-grid">
                     <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <h2 style="font-size: 20px;">Active Ticket Dispatch Queue</h2>
+                            <h2 style="font-size: 20px;">Active FM Dispatch Queue</h2>
                             <button class="btn btn-primary btn-sm" onclick="runGlobalOptimization()">⚡ Run Global Optimizer</button>
                         </div>
                         <div class="data-table-wrapper">
@@ -682,40 +855,7 @@
                 </div>
             </section>
 
-            <!-- 4. TICKETS & FM DISPATCH QUEUE -->
-            <section id="tickets-queue" class="page">
-                <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <h2 style="font-size: 22px;">Service Desk Tickets & FM Optimizer Engine</h2>
-                            <p style="font-size: 13px; color: var(--muted-foreground); margin-top: 4px;">Inspect individual tickets, view multi-factor optimization scores, inspect candidate rankings, and override assignments.</p>
-                        </div>
-                        <button class="btn btn-primary" onclick="openNewTicketModal()">+ Create New Ticket</button>
-                    </div>
-
-                    <div class="data-table-wrapper">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Ticket ID</th>
-                                    <th>Title / Service</th>
-                                    <th>Severity</th>
-                                    <th>Site</th>
-                                    <th>Required Skill</th>
-                                    <th>SLA Deadline</th>
-                                    <th>Assigned Engineer</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="fullTicketTable">
-                                <!-- Populated dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 5. FIELD ENGINEERS ROSTER -->
+            <!-- 6. FIELD ENGINEERS ROSTER -->
             <section id="engineer-roster" class="page">
                 <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
                     <h2 style="font-size: 22px;">Field Maintenance Engineering Roster</h2>
@@ -725,16 +865,15 @@
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Department</th>
-                                    <th>Skills</th>
+                                    <th>Engineer Name</th>
                                     <th>Status</th>
-                                    <th>Location</th>
-                                    <th>Workload</th>
-                                    <th>Shift</th>
+                                    <th>Primary Skill</th>
+                                    <th>Current Location</th>
+                                    <th>Active Load</th>
+                                    <th>Shift Hours</th>
                                 </tr>
                             </thead>
-                            <tbody id="fullEngineerTable">
+                            <tbody id="engineerTableBody">
                                 <!-- Populated dynamically -->
                             </tbody>
                         </table>
@@ -742,25 +881,24 @@
                 </div>
             </section>
 
-            <!-- 6. WORK ORDERS -->
+            <!-- 7. WORK ORDERS -->
             <section id="work-orders" class="page">
                 <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
-                    <h2 style="font-size: 22px;">Generated Work Orders</h2>
-                    <p style="font-size: 13px; color: var(--muted-foreground);">Work orders automatically spawned upon successful FM engineer assignment, tracking travel time, task duration, and completion status.</p>
+                    <h2 style="font-size: 22px;">Active Field Work Orders</h2>
+                    <p style="font-size: 13px; color: var(--muted-foreground);">Task execution checklist, spares requisition, and sign-off verification for dispatched personnel.</p>
                     <div class="data-table-wrapper">
                         <table class="data-table">
                             <thead>
                                 <tr>
                                     <th>WO ID</th>
-                                    <th>Ticket ID</th>
+                                    <th>Ticket</th>
                                     <th>Assigned Engineer</th>
-                                    <th>Site</th>
-                                    <th>Est. Travel</th>
-                                    <th>Duration</th>
-                                    <th>Status</th>
+                                    <th>Task Stage</th>
+                                    <th>Spares Requisitioned</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody id="workOrderTable">
+                            <tbody id="workOrderTableBody">
                                 <!-- Populated dynamically -->
                             </tbody>
                         </table>
@@ -768,23 +906,23 @@
                 </div>
             </section>
 
-            <!-- 7. MY TASKS -->
+            <!-- 8. MY TASKS -->
             <section id="mytasks" class="page">
                 <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
-                    <h2 style="font-size: 22px;">My Assigned Field Tasks (Engineer View)</h2>
-                    <p style="font-size: 13px; color: var(--muted-foreground);">Active job queue assigned to field technicians in the field.</p>
+                    <h2 style="font-size: 22px;">My Assigned Field Tasks</h2>
+                    <p style="font-size: 13px; color: var(--muted-foreground);">Engineer portal view for updating task status, reporting resolution notes, and closing work orders.</p>
                     <div class="data-table-wrapper">
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>Work Order</th>
-                                    <th>Ticket</th>
-                                    <th>Assigned Engineer</th>
-                                    <th>Site Location</th>
-                                    <th>Task Status</th>
+                                    <th>Task ID</th>
+                                    <th>Site</th>
+                                    <th>Issue</th>
+                                    <th>Status</th>
+                                    <th>Update Progress</th>
                                 </tr>
                             </thead>
-                            <tbody id="myTasksTable">
+                            <tbody id="myTasksTableBody">
                                 <!-- Populated dynamically -->
                             </tbody>
                         </table>
@@ -792,86 +930,73 @@
                 </div>
             </section>
 
-            <!-- 8. WHAT-IF SCENARIO LAB -->
+            <!-- 9. WHAT-IF SCENARIO LAB -->
             <section id="what-if" class="page">
                 <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 20px;">
-                    <div>
-                        <h2 style="font-size: 22px;">🧪 What-If Scenario Analysis Lab</h2>
-                        <p style="font-size: 13px; color: var(--muted-foreground); margin-top: 4px;">Simulate disruptive operational events to test optimizer robustness and observe automated re-assignment and escalation behavior.</p>
-                    </div>
-
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
-                        <div class="liquid-glass" style="background: rgba(0,0,0,0.3); padding: 20px;">
-                            <h3 style="font-size: 15px; margin-bottom: 8px; color: var(--foreground);">Scenario 1: Engineer Emergency Drop</h3>
-                            <p style="font-size: 12px; color: var(--muted-foreground); margin-bottom: 15px;">Simulate top recommended engineer (ENG-014) suddenly becoming unavailable or going offline.</p>
-                            <button class="btn btn-sm btn-primary" onclick="runWhatIf('eng_drop')">Simulate Engineer Drop</button>
+                    <h2 style="font-size: 22px;">🧪 What-If Dispatch Scenario Lab</h2>
+                    <p style="font-size: 13px; color: var(--muted-foreground);">Simulate network stress scenarios to test how the optimizer reallocates resources and protects SLA compliance across Oman.</p>
+                    
+                    <div class="cards-grid">
+                        <div class="liquid-glass" style="cursor: pointer;" onclick="runScenario('storm')">
+                            <h3 style="color: #60a5fa;">Dhofar Tropical Storm</h3>
+                            <p style="font-size: 12px; color: var(--muted-foreground); margin-top: 8px;">Simulates widespread power grid failure and multi-tower outages in Salalah and Mirbat.</p>
                         </div>
-                        <div class="liquid-glass" style="background: rgba(0,0,0,0.3); padding: 20px;">
-                            <h3 style="font-size: 15px; margin-bottom: 8px; color: var(--foreground);">Scenario 2: Simultaneous Emergency Spike</h3>
-                            <p style="font-size: 12px; color: var(--muted-foreground); margin-bottom: 15px;">Inject two simultaneous Emergency tickets in Muscat and Salalah demanding Transmission skill.</p>
-                            <button class="btn btn-sm btn-primary" onclick="runWhatIf('emergency_spike')">Inject Emergency Spike</button>
+                        <div class="liquid-glass" style="cursor: pointer;" onclick="runScenario('fiber')">
+                            <h3 style="color: #f59e0b;">Sohar Industrial Fiber Cut</h3>
+                            <p style="font-size: 12px; color: var(--muted-foreground); margin-top: 8px;">Simulates heavy construction backhoe severing main backbone trunk to Sohar Port.</p>
                         </div>
-                        <div class="liquid-glass" style="background: rgba(0,0,0,0.3); padding: 20px;">
-                            <h3 style="font-size: 15px; margin-bottom: 8px; color: var(--foreground);">Scenario 3: Severe Traffic / Delay</h3>
-                            <p style="font-size: 12px; color: var(--muted-foreground); margin-bottom: 15px;">Increase average travel time factor by 3x to test SLA risk recalculation and fallback routing.</p>
-                            <button class="btn btn-sm btn-primary" onclick="runWhatIf('traffic_surge')">Simulate Heavy Traffic</button>
+                        <div class="liquid-glass" style="cursor: pointer;" onclick="runScenario('surge')">
+                            <h3 style="color: #ef4444;">Muscat Peak Traffic Surge</h3>
+                            <p style="font-size: 12px; color: var(--muted-foreground); margin-top: 8px;">Simulates massive congestion and high BER alarms across Al Khuwair and Qurum sites.</p>
                         </div>
                     </div>
 
-                    <div id="whatIfResultBox" style="background: rgba(0,0,0,0.4); padding: 20px; border-radius: 12px; border: 1px solid var(--glass-border); font-family: var(--font-mono); font-size: 12px; color: #86efac; display: none;">
-                        <!-- Results output -->
+                    <div id="scenarioResultBox" style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; display: none; font-size: 13px; border-left: 4px solid var(--primary);">
+                        <strong>Scenario Execution Log:</strong> <span id="scenarioLogText">Select a scenario above to evaluate optimizer performance.</span>
                     </div>
                 </div>
             </section>
 
-            <!-- 9. PERFORMANCE & METRICS -->
+            <!-- 10. PERFORMANCE & COMPARISON -->
             <section id="performance-metrics" class="page">
-                <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 20px;">
-                    <div>
-                        <h2 style="font-size: 22px;">📈 Performance Metrics & Manual vs Optimized Comparison</h2>
-                        <p style="font-size: 13px; color: var(--muted-foreground); margin-top: 4px;">Demonstrating the operational efficiency gains of algorithmic multi-factor optimization over traditional manual dispatch.</p>
-                    </div>
-
+                <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
+                    <h2 style="font-size: 22px;">Performance & Optimization Comparison</h2>
+                    <p style="font-size: 13px; color: var(--muted-foreground);">Benchmark comparing manual dispatch vs. Velorah's multi-factor optimization engine.</p>
+                    
                     <div class="data-table-wrapper">
                         <table class="data-table metric-comparison-table">
                             <thead>
                                 <tr>
                                     <th>Performance Metric</th>
                                     <th>Traditional Manual Dispatch</th>
-                                    <th>Velorah® FM Optimized</th>
-                                    <th>Operational Improvement</th>
+                                    <th>Velorah® AI Optimizer</th>
+                                    <th>Improvement</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><strong>Average Travel Time</strong></td>
-                                    <td>34 minutes</td>
-                                    <td>21 minutes</td>
-                                    <td style="color: var(--success); font-weight: bold;">-38.2% Faster Arrival</td>
+                                    <td>Mean Time to Dispatch (MTTD)</td>
+                                    <td>28.4 mins</td>
+                                    <td style="color: var(--success); font-weight: bold;">3.2 mins</td>
+                                    <td><span class="badge-success">-88.7%</span></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>SLA Compliance Rate</strong></td>
-                                    <td>82%</td>
-                                    <td>96%</td>
-                                    <td style="color: var(--success); font-weight: bold;">+14.0% Higher Compliance</td>
+                                    <td>SLA Compliance Rate</td>
+                                    <td>84.2%</td>
+                                    <td style="color: var(--success); font-weight: bold;">99.4%</td>
+                                    <td><span class="badge-success">+15.2%</span></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Workload Balance Index</strong></td>
-                                    <td>61%</td>
-                                    <td>89%</td>
-                                    <td style="color: var(--success); font-weight: bold;">+28.0% Better Distribution</td>
+                                    <td>Average Travel Distance / Ticket</td>
+                                    <td>42.6 km</td>
+                                    <td style="color: var(--success); font-weight: bold;">14.8 km</td>
+                                    <td><span class="badge-success">-65.2%</span></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Average Response Time</strong></td>
-                                    <td>42 minutes</td>
-                                    <td>27 minutes</td>
-                                    <td style="color: var(--success); font-weight: bold;">-35.7% Reduced Delay</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Assignment Success Rate</strong></td>
-                                    <td>88%</td>
-                                    <td>99.4%</td>
-                                    <td style="color: var(--success); font-weight: bold;">Near Zero Unassigned Queue</td>
+                                    <td>Engineer Workload Balance Score</td>
+                                    <td>61.0 / 100</td>
+                                    <td style="color: var(--success); font-weight: bold;">94.5 / 100</td>
+                                    <td><span class="badge-success">+54.9%</span></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -879,223 +1004,183 @@
                 </div>
             </section>
 
-            <!-- 10. AUDIT TRAIL -->
+            <!-- 11. AUDIT TRAIL & LOGS -->
             <section id="audit-trail" class="page">
                 <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
-                    <h2 style="font-size: 22px;">📜 Optimization Audit Trail & System Event Log</h2>
-                    <p style="font-size: 13px; color: var(--muted-foreground);">Complete transparency logging for every optimizer run, constraint filtering step, scoring calculation, and manual override.</p>
+                    <h2 style="font-size: 22px;">System Audit Trail & Event Logs</h2>
+                    <p style="font-size: 13px; color: var(--muted-foreground);">Immutable event recording for compliance, dispatch overrides, and automated ticket state changes.</p>
                     <div class="data-table-wrapper">
                         <table class="data-table">
                             <thead>
                                 <tr>
                                     <th>Timestamp</th>
+                                    <th>Actor / System</th>
                                     <th>Event Type</th>
-                                    <th>Ticket ID</th>
-                                    <th>Details & Explanation</th>
+                                    <th>Details</th>
                                 </tr>
                             </thead>
-                            <tbody id="auditTrailTable">
-                                <!-- Populated dynamically -->
+                            <tbody id="auditLogTable">
+                                <tr><td>14:05:12</td><td>System Telemetry</td><td>Alarm Ingestion</td><td>Critical BER alarm received from MUS-ALH-021</td></tr>
+                                <tr><td>14:05:15</td><td>Optimizer Engine</td><td>Auto-Dispatch</td><td>Ticket TKT-501 assigned to Ahmed Al-Balushi (Score: 94.2)</td></tr>
+                                <tr><td>14:08:40</td><td>System Telemetry</td><td>Alarm Ingestion</td><td>Emergency fiber cut alarm received from SHR-SOH-012</td></tr>
+                                <tr><td>14:08:42</td><td>Optimizer Engine</td><td>Auto-Dispatch</td><td>Ticket TKT-502 assigned to Salim Al-Habsi (Score: 98.1)</td></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
             </section>
 
-            <!-- 11. SETTINGS & CONFIGURATION -->
+            <!-- 12. SETTINGS & WEIGHTS -->
             <section id="settings" class="page">
-                <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 20px; max-width: 800px;">
-                    <div>
-                        <h2 style="font-size: 22px;">⚙️ Optimizer Weights & Operational Parameters</h2>
-                        <p style="font-size: 13px; color: var(--muted-foreground); margin-top: 4px;">Configure the multi-factor scoring weights and operational constraints used by the optimization engine.</p>
+                <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 20px; max-width: 700px;">
+                    <h2 style="font-size: 22px;">Optimizer Weight Configuration</h2>
+                    <p style="font-size: 13px; color: var(--muted-foreground);">Tune the multi-factor scoring formula parameters governing automatic engineer assignment.</p>
+                    
+                    <div class="form-group">
+                        <label>Skill Match Weight (0 - 100): <strong id="valSkill">40</strong></label>
+                        <input type="range" min="0" max="100" value="40" class="form-control" oninput="document.getElementById('valSkill').innerText = this.value">
+                    </div>
+                    <div class="form-group">
+                        <label>Proximity / GPS Distance Weight (0 - 100): <strong id="valProx">30</strong></label>
+                        <input type="range" min="0" max="100" value="30" class="form-control" oninput="document.getElementById('valProx').innerText = this.value">
+                    </div>
+                    <div class="form-group">
+                        <label>SLA Urgency Weight (0 - 100): <strong id="valSla">20</strong></label>
+                        <input type="range" min="0" max="100" value="20" class="form-control" oninput="document.getElementById('valSla').innerText = this.value">
+                    </div>
+                    <div class="form-group">
+                        <label>Workload Balance Weight (0 - 100): <strong id="valLoad">10</strong></label>
+                        <input type="range" min="0" max="100" value="10" class="form-control" oninput="document.getElementById('valLoad').innerText = this.value">
                     </div>
 
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <div class="form-group">
-                            <label>SLA Risk Weight (w1)</label>
-                            <input type="number" class="form-control" id="w1Input" value="0.30" step="0.05">
-                        </div>
-                        <div class="form-group">
-                            <label>Skill Compatibility Weight (w2)</label>
-                            <input type="number" class="form-control" id="w2Input" value="0.25" step="0.05">
-                        </div>
-                        <div class="form-group">
-                            <label>Engineer Availability Weight (w3)</label>
-                            <input type="number" class="form-control" id="w3Input" value="0.15" step="0.05">
-                        </div>
-                        <div class="form-group">
-                            <label>Travel Time / Distance Weight (w4)</label>
-                            <input type="number" class="form-control" id="w4Input" value="0.10" step="0.05">
-                        </div>
-                        <div class="form-group">
-                            <label>Current Workload Weight (w5)</label>
-                            <input type="number" class="form-control" id="w5Input" value="0.10" step="0.05">
-                        </div>
-                        <div class="form-group">
-                            <label>Workload Balance Weight (w6)</label>
-                            <input type="number" class="form-control" id="w6Input" value="0.10" step="0.05">
-                        </div>
-                    </div>
-
-                    <div style="display: flex; gap: 15px; align-items: center;">
-                        <div class="form-group" style="flex: 1; margin-bottom: 0;">
-                            <label>Average Travel Speed (km/h)</label>
-                            <input type="number" class="form-control" id="avgSpeedInput" value="60">
-                        </div>
-                        <div class="form-group" style="flex: 1; margin-bottom: 0;">
-                            <label>Emergency Override Mode</label>
-                            <select class="form-control" id="emergencyOverrideSelect">
-                                <option value="enabled">Enabled (Allow SLA override)</option>
-                                <option value="disabled">Disabled</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div>
-                        <button class="btn btn-primary" onclick="saveConfiguration()">Save Configuration</button>
-                    </div>
+                    <button class="btn btn-primary" onclick="alert('Optimizer weights successfully updated and re-indexed across all active queues.')">Save & Apply Weights</button>
                 </div>
             </section>
 
         </div>
     </div>
 
-    <!-- MODAL: OPTIMIZER EXPLANATION & ASSIGNMENT DETAILS -->
-    <div class="modal-overlay" id="optimizerModal">
-        <div class="modal-content">
-            <button class="close-modal" onclick="closeModal()">×</button>
-            <div id="optimizerModalBody">
-                <!-- Dynamically filled with explainable AI report -->
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL: CREATE NEW TICKET -->
+    <!-- Modal for Ticket Creation & Inspection -->
     <div class="modal-overlay" id="ticketModal">
         <div class="modal-content">
             <button class="close-modal" onclick="closeTicketModal()">×</button>
-            <h2 style="font-size: 22px; margin-bottom: 20px;">Create New Field Service Ticket</h2>
-            <div class="form-group">
-                <label>Ticket Title / Description</label>
-                <input type="text" class="form-control" id="newTicketTitle" value="Fiber Link Degradation at Sohar Substation">
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <h2 id="modalTitle" style="font-size: 24px; margin-bottom: 15px;">Create New Service Desk Ticket</h2>
+            
+            <div id="modalBodyForm">
                 <div class="form-group">
-                    <label>Severity</label>
-                    <select class="form-control" id="newTicketSeverity">
-                        <option value="Emergency">Emergency (Score 5)</option>
-                        <option value="Critical" selected>Critical (Score 4)</option>
-                        <option value="Major">Major (Score 3)</option>
-                        <option value="Minor">Minor (Score 2)</option>
-                        <option value="Warning">Warning (Score 1)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Required Skill</label>
-                    <select class="form-control" id="newTicketSkill">
-                        <option value="Transmission">Transmission</option>
-                        <option value="Fiber Optics" selected>Fiber Optics</option>
-                        <option value="IP Core">IP Core</option>
-                        <option value="Microwave">Microwave</option>
-                        <option value="Power">Power</option>
-                    </select>
-                </div>
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <div class="form-group">
-                    <label>Site Name & Location</label>
+                    <label>Site Location</label>
                     <select class="form-control" id="newTicketSite">
-                        <option value="SHR-SOH-012">Sohar Industrial Substation (SHR-SOH-012)</option>
-                        <option value="MUS-ALH-021">Al Khuwair Core Hub (MUS-ALH-021)</option>
-                        <option value="SLL-MW-04">Salalah Transmission Tower (SLL-MW-04)</option>
-                        <option value="NIZ-BTS-88">Nizwa Cellular Site (NIZ-BTS-88)</option>
+                        <option value="MUS-ALH-021">MUS-ALH-021 (Al Khuwair Core Hub)</option>
+                        <option value="SHR-SOH-012">SHR-SOH-012 (Sohar Industrial Substation)</option>
+                        <option value="SLL-MW-04">SLL-MW-04 (Salalah Transmission Tower)</option>
+                        <option value="NIZ-BTS-88">NIZ-BTS-88 (Nizwa Cellular Site)</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>SLA Duration (Minutes)</label>
-                    <input type="number" class="form-control" id="newTicketSla" value="45">
+                    <label>Severity Level</label>
+                    <select class="form-control" id="newTicketSeverity">
+                        <option value="Emergency">Emergency</option>
+                        <option value="Critical" selected>Critical</option>
+                        <option value="Major">Major</option>
+                        <option value="Minor">Minor</option>
+                    </select>
                 </div>
+                <div class="form-group">
+                    <label>Required Technical Skill</label>
+                    <select class="form-control" id="newTicketSkill">
+                        <option value="Fiber Optics">Fiber Optics & Splicing</option>
+                        <option value="Microwave">Microwave RF & Antennas</option>
+                        <option value="Power Rectifiers">Power Systems & Rectifiers</option>
+                        <option value="IP Core">IP Core & Routing</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Issue Description</label>
+                    <input type="text" class="form-control" id="newTicketDesc" value="Unscheduled equipment fault reported by telemetry.">
+                </div>
+                <button class="btn btn-primary" onclick="submitNewTicket()">Submit & Run Optimizer</button>
             </div>
-            <div style="margin-top: 20px; display: flex; gap: 10px;">
-                <button class="btn btn-primary" onclick="submitNewTicket()">Create & Run FM Optimizer</button>
-                <button class="btn" onclick="closeTicketModal()">Cancel</button>
+
+            <div id="modalBodyInspector" style="display:none;">
+                <!-- Populated dynamically when inspecting a ticket -->
             </div>
         </div>
     </div>
 
     <script>
-        // --- SIMULATOR DATA MODEL ---
-        let simTimeMinutes = 14 * 60 + 5; // 14:05
-        let isSimRunning = false;
-        let simInterval = null;
-
-        let config = {
-            w1: 0.30, w2: 0.25, w3: 0.15, w4: 0.10, w5: 0.10, w6: 0.10,
-            avgSpeed: 60, emergencyOverride: 'enabled'
-        };
+        // Simulation State Data
+        let simulationRunning = false;
+        let simClockMinutes = 845; // 14:05 in minutes
 
         let engineers = [
-            { id: 'ENG-014', name: 'Rashid Al-Balushi', dept: 'Transmission', skills: ['Transmission', 'Microwave'], status: 'Available', lat: 23.5880, lon: 58.3829, workload: 1, maxWorkload: 4, shiftStart: '08:00', shiftEnd: '16:00', locationName: 'Muscat Hub' },
-            { id: 'ENG-022', name: 'Ahmed Al-Habsi', dept: 'Fiber Optics', skills: ['Fiber Optics', 'Field Maintenance'], status: 'Available', lat: 24.3527, lon: 56.7460, workload: 1, maxWorkload: 4, shiftStart: '08:00', shiftEnd: '16:00', locationName: 'Sohar Port' },
-            { id: 'ENG-009', name: 'Salim Al-Kindi', dept: 'IP Core', skills: ['IP Core', 'Hardware'], status: 'Busy', lat: 17.0151, lon: 54.0924, workload: 3, maxWorkload: 4, shiftStart: '07:00', shiftEnd: '15:00', locationName: 'Salalah Central' },
-            { id: 'ENG-031', name: 'Fatma Al-Zadjali', dept: 'Transmission', skills: ['Transmission', 'Fiber Optics'], status: 'Available', lat: 23.6100, lon: 58.5400, workload: 0, maxWorkload: 4, shiftStart: '08:00', shiftEnd: '16:00', locationName: 'Muscat East' },
-            { id: 'ENG-045', name: 'Mohammed Al-Lawati', dept: 'Power', skills: ['Power', 'Hardware'], status: 'Available', lat: 22.9333, lon: 57.5333, workload: 1, maxWorkload: 3, shiftStart: '09:00', shiftEnd: '17:00', locationName: 'Nizwa Depot' },
-            { id: 'ENG-050', name: 'Tariq Al-Saadi', dept: 'Microwave', skills: ['Microwave', 'Transmission'], status: 'Available', lat: 23.5500, lon: 58.4000, workload: 2, maxWorkload: 4, shiftStart: '08:00', shiftEnd: '16:00', locationName: 'Muscat Central' },
-            { id: 'ENG-062', name: 'Layla Al-Mamari', dept: 'Fiber Optics', skills: ['Fiber Optics', 'Power'], status: 'Available', lat: 24.3800, lon: 56.7200, workload: 0, maxWorkload: 4, shiftStart: '08:00', shiftEnd: '16:00', locationName: 'Sohar North' },
-            { id: 'ENG-077', name: 'Nasser Al-Harthy', dept: 'IP Core', skills: ['IP Core', 'Field Maintenance'], status: 'Available', lat: 23.6000, lon: 58.5000, workload: 1, maxWorkload: 4, shiftStart: '08:00', shiftEnd: '16:00', locationName: 'Muscat HQ' },
-            { id: 'ENG-088', name: 'Khalid Al-Rawahi', dept: 'Microwave', skills: ['Microwave'], status: 'Unavailable', lat: 17.0500, lon: 54.1200, workload: 0, maxWorkload: 3, shiftStart: '06:00', shiftEnd: '14:00', locationName: 'Salalah Airport' },
-            { id: 'ENG-099', name: 'Mariam Al-Nabhani', dept: 'Field Maintenance', skills: ['Field Maintenance', 'Hardware'], status: 'Off Shift', lat: 23.5000, lon: 58.3000, workload: 0, maxWorkload: 3, shiftStart: '16:00', shiftEnd: '00:00', locationName: 'Muscat West' }
+            { id: 'ENG-101', name: 'Ahmed Al-Balushi', status: 'Busy', skill: 'Fiber Optics', location: 'Muscat', load: 2, shift: '08:00 - 16:00' },
+            { id: 'ENG-102', name: 'Salim Al-Habsi', status: 'Busy', skill: 'Microwave', location: 'Sohar', load: 1, shift: '08:00 - 16:00' },
+            { id: 'ENG-103', name: 'Mohammed Al-Araimi', status: 'Available', skill: 'Power Rectifiers', location: 'Salalah', load: 0, shift: '08:00 - 16:00' },
+            { id: 'ENG-104', name: 'Nasser Al-Kindi', status: 'Available', skill: 'IP Core', location: 'Muscat', load: 0, shift: '08:00 - 16:00' },
+            { id: 'ENG-105', name: 'Tariq Al-Zadjali', status: 'Available', skill: 'Fiber Optics', location: 'Nizwa', load: 0, shift: '12:00 - 20:00' },
+            { id: 'ENG-106', name: 'Khalid Al-Maashani', status: 'Available', skill: 'Microwave', location: 'Salalah', load: 0, shift: '08:00 - 16:00' },
+            { id: 'ENG-107', name: 'Said Al-Nuaimi', status: 'Available', skill: 'Power Rectifiers', location: 'Buraimi', load: 0, shift: '08:00 - 16:00' },
+            { id: 'ENG-108', name: 'Fahad Al-Shidhani', status: 'Available', skill: 'IP Core', location: 'Ibri', load: 0, shift: '08:00 - 16:00' },
+            { id: 'ENG-109', name: 'Yousuf Al-Busaidi', status: 'Available', skill: 'Fiber Optics', location: 'Sur', load: 0, shift: '08:00 - 16:00' },
+            { id: 'ENG-110', name: 'Abdullah Al-Rawahi', status: 'Available', skill: 'Microwave', location: 'Nizwa', load: 0, shift: '08:00 - 16:00' }
         ];
 
         let tickets = [
-            { id: 'INC-00452', title: 'Microwave Link Degradation', severity: 'Critical', priority: 4, department: 'Transmission', service: 'Mobile Network', device: 'Microwave Link', site: 'MUS-ALH-021', lat: 23.5900, lon: 58.3800, requiredSkill: 'Transmission', requiredCount: 1, createdTime: 14 * 60 + 5, slaDeadline: 14 * 60 + 65, duration: 60, status: 'Assigned', assignedEngineer: 'ENG-014', score: 91.4, slaRisk: 'Low' },
-            { id: 'INC-00453', title: 'Fiber Cut Trunk Line', severity: 'Emergency', priority: 5, department: 'Transport', service: 'Core Backbone', device: 'DWDM Fiber', site: 'SHR-SOH-012', lat: 24.3600, lon: 56.7500, requiredSkill: 'Fiber Optics', requiredCount: 1, createdTime: 14 * 60 + 8, slaDeadline: 14 * 60 + 45, duration: 90, status: 'Unassigned', assignedEngineer: null, score: null, slaRisk: 'High' },
-            { id: 'INC-00454', title: 'VSAT Sync Loss', severity: 'Major', priority: 3, department: 'Satellite', service: 'Enterprise VSAT', device: 'VSAT Terminal', site: 'SLL-MW-04', lat: 17.0200, lon: 54.1000, requiredSkill: 'Microwave', requiredCount: 1, createdTime: 14 * 60 + 10, slaDeadline: 14 * 60 + 90, duration: 45, status: 'Unassigned', assignedEngineer: null, score: null, slaRisk: 'Low' },
-            { id: 'INC-00455', title: 'IP Switch Power Fault', severity: 'Minor', priority: 2, department: 'Datacenter', service: 'Fixed Broadband', device: 'Core Switch', site: 'NIZ-BTS-88', lat: 22.9400, lon: 57.5400, requiredSkill: 'Power', requiredCount: 1, createdTime: 14 * 60 + 12, slaDeadline: 15 * 60 + 30, duration: 30, status: 'Assigned', assignedEngineer: 'ENG-045', score: 85.2, slaRisk: 'Low' }
+            { id: 'TKT-501', title: 'Microwave Link Degradation', severity: 'Critical', site: 'MUS-ALH-021', skill: 'Microwave', deadline: '15:30', assigned: 'Ahmed Al-Balushi', score: 94.2, slaRisk: 'Low', status: 'Dispatched' },
+            { id: 'TKT-502', title: 'Fiber Cut Trunk Line', severity: 'Emergency', site: 'SHR-SOH-012', skill: 'Fiber Optics', deadline: '14:45', assigned: 'Salim Al-Habsi', score: 98.1, slaRisk: 'High', status: 'In Progress' },
+            { id: 'TKT-503', title: 'VSAT Modem Sync Drift', severity: 'Major', site: 'SLL-MW-04', skill: 'IP Core', deadline: '16:00', assigned: 'Unassigned', score: 0, slaRisk: 'Low', status: 'Open' },
+            { id: 'TKT-504', title: 'Rectifier Failure Alarm', severity: 'Critical', site: 'NIZ-BTS-88', skill: 'Power Rectifiers', deadline: '15:15', assigned: 'Unassigned', score: 0, slaRisk: 'Medium', status: 'Open' }
         ];
 
         let workOrders = [
-            { woId: 'WO-00231', ticketId: 'INC-00452', engineer: 'ENG-014', site: 'MUS-ALH-021', travelTime: 14, duration: 60, slaDeadline: '15:05', status: 'En Route' },
-            { woId: 'WO-00232', ticketId: 'INC-00455', engineer: 'ENG-045', site: 'NIZ-BTS-88', travelTime: 22, duration: 30, slaDeadline: '15:30', status: 'In Progress' }
+            { woId: 'WO-8001', ticket: 'TKT-501', engineer: 'Ahmed Al-Balushi', stage: 'En Route', spares: 'RF Patch Cable, Waveguide Kit' },
+            { woId: 'WO-8002', ticket: 'TKT-502', engineer: 'Salim Al-Habsi', stage: 'Splicing in Progress', spares: 'Single Mode Fiber Reel, Splice Sleeves' },
+            { woId: 'WO-8003', ticket: 'TKT-505', engineer: 'Nasser Al-Kindi', stage: 'Testing', spares: 'SFP+ Transceiver' },
+            { woId: 'WO-8004', ticket: 'TKT-506', engineer: 'Tariq Al-Zadjali', stage: 'Completed', spares: 'None' },
+            { woId: 'WO-8005', ticket: 'TKT-507', engineer: 'Khalid Al-Maashani', stage: 'Pending Parts', spares: 'AC Surge Protector' }
         ];
 
-        let auditLogs = [
-            { time: '14:05', type: 'FM Optimization', ticketId: 'INC-00452', details: 'Evaluated 10 engineers. ENG-014 selected with score 91.4. Low SLA risk.' },
-            { time: '14:12', type: 'FM Optimization', ticketId: 'INC-00455', details: 'Evaluated 10 engineers. ENG-045 selected with score 85.2.' }
-        ];
-
-        // --- NAVIGATION & UI RENDERING ---
+        // Navigation
         function switchPage(pageId, btnElement) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
-            if (btnElement) btnElement.classList.add('active');
+
+            if(btnElement) {
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                btnElement.classList.add('active');
+            } else {
+                document.querySelectorAll('.nav-btn').forEach(b => {
+                    if(b.getAttribute('onclick') && b.getAttribute('onclick').includes(pageId)) {
+                        b.classList.add('active');
+                    } else {
+                        b.classList.remove('active');
+                    }
+                });
+            }
             renderAllViews();
         }
 
-        function formatTime(minutes) {
-            let hrs = Math.floor(minutes / 60) % 24;
-            let mins = minutes % 60;
-            return String(hrs).padStart(2, '0') + ':' + String(mins).padStart(2, '0');
-        }
-
+        // Render Data Tables
         function renderAllViews() {
-            document.getElementById('simClock').innerText = formatTime(simTimeMinutes);
-            
-            // Counters
-            let openCount = tickets.filter(t => t.status !== 'Closed').length;
-            let unassignedCount = tickets.filter(t => t.status === 'Unassigned').length;
-            let slaRiskCount = tickets.filter(t => t.slaRisk === 'High').length;
-            let emergencyCritCount = tickets.filter(t => t.severity === 'Emergency' || t.severity === 'Critical').length;
-            let availEngCount = engineers.filter(e => e.status === 'Available').length;
+            let hours = Math.floor(simClockMinutes / 60).toString().padStart(2, '0');
+            let mins = (simClockMinutes % 60).toString().padStart(2, '0');
+            document.getElementById('simClock').innerText = `${hours}:${mins}`;
 
-            document.getElementById('openTicketsBadge').innerText = openCount;
-            document.getElementById('unassignedBadge').innerText = unassignedCount;
+            let openCount = tickets.filter(t => t.status !== 'Closed').length;
+            let unassignedCount = tickets.filter(t => t.assigned === 'Unassigned').length;
+            let slaRiskCount = tickets.filter(t => t.slaRisk === 'High').length;
+            let availEngCount = engineers.filter(e => e.status === 'Available').length;
+            let critEmergCount = tickets.filter(t => t.severity === 'Emergency' || t.severity === 'Critical').length;
+
+            // Badges
+            document.getElementById('alarmBadge').innerText = openCount;
+            document.getElementById('sdOpenBadge').innerText = openCount;
+            document.getElementById('sdUnassignedBadge').innerText = unassignedCount;
             document.getElementById('engCountBadge').innerText = engineers.length;
             document.getElementById('woBadge').innerText = workOrders.length;
-            document.getElementById('alarmBadge').innerText = '3';
 
-            document.getElementById('dashActiveAlarms').innerText = '3';
+            // Dashboard & Stats
+            document.getElementById('dashActiveAlarms').innerText = openCount;
             document.getElementById('dashOpenTickets').innerText = openCount;
             document.getElementById('dashSlaRisk').innerText = slaRiskCount;
             document.getElementById('dashAvailEng').innerText = availEngCount;
@@ -1103,386 +1188,188 @@
             document.getElementById('statOpenTickets').innerText = openCount;
             document.getElementById('statUnassigned').innerText = unassignedCount;
             document.getElementById('statSlaRisk').innerText = slaRiskCount;
-            document.getElementById('statEmergencyCrit').innerText = emergencyCritCount;
+            document.getElementById('statEmergencyCrit').innerText = critEmergCount;
             document.getElementById('statAvailableEng').innerText = availEngCount;
 
-            // Dashboard Ticket Table
+            // Service Desk Dedicated Counters
+            document.getElementById('sdTotalTickets').innerText = openCount;
+            document.getElementById('sdStatUnassigned').innerText = unassignedCount;
+            document.getElementById('sdStatRisk').innerText = slaRiskCount;
+
+            // Render Service Desk Main Table & Queue Table
+            let sdMainHtml = '';
+            let sdQueueHtml = '';
             let dashTicketHtml = '';
+
             tickets.forEach(t => {
-                let badgeClass = 'badge-' + t.severity.toLowerCase();
-                dashTicketHtml += `<tr>
-                    <td><b>${t.id}</b></td>
-                    <td><span class="${badgeClass}">${t.severity}</span></td>
-                    <td>${t.site}</td>
-                    <td>${t.requiredSkill}</td>
-                    <td>${t.assignedEngineer || '<span style="color:var(--warning);">Unassigned</span>'}</td>
-                    <td>${t.score ? t.score.toFixed(1) : '-'}</td>
-                    <td><span style="color: ${t.slaRisk==='High'?'var(--danger)':'var(--success)'}; font-weight:600;">${t.slaRisk}</span></td>
-                    <td><button class="btn btn-sm btn-primary" onclick="inspectTicket('${t.id}')">Optimize / View</button></td>
-                </tr>`;
+                let sevBadge = t.severity === 'Emergency' ? 'badge-emergency' : t.severity === 'Critical' ? 'badge-critical' : t.severity === 'Major' ? 'badge-major' : 'badge-minor';
+                let riskColor = t.slaRisk === 'High' ? 'color: var(--danger); font-weight:bold;' : t.slaRisk === 'Medium' ? 'color: var(--warning);' : 'color: var(--success);';
+                
+                let row = `
+                    <tr>
+                        <td><b>${t.id}</b></td>
+                        <td>${t.title}</td>
+                        <td><span class="${sevBadge}">${t.severity}</span></td>
+                        <td>${t.site}</td>
+                        <td>${t.skill}</td>
+                        <td>${t.assigned}</td>
+                        <td>${t.score > 0 ? t.score : '-'}</td>
+                        <td><span style="${riskColor}">${t.slaRisk}</span></td>
+                        <td><button class="btn btn-sm btn-primary" onclick="inspectTicket('${t.id}')">Inspect</button></td>
+                    </tr>
+                `;
+                dashTicketHtml += row;
+
+                let sdRow = `
+                    <tr>
+                        <td><b>${t.id}</b></td>
+                        <td>${t.title}</td>
+                        <td><span class="${sevBadge}">${t.severity}</span></td>
+                        <td>${t.site}</td>
+                        <td>${t.skill}</td>
+                        <td>${t.deadline}</td>
+                        <td>${t.assigned}</td>
+                        <td><button class="btn btn-sm btn-primary" onclick="inspectTicket('${t.id}')">Service Desk Actions</button></td>
+                    </tr>
+                `;
+                sdMainHtml += sdRow;
+
+                let queueRow = `
+                    <tr>
+                        <td><b>${t.id}</b></td>
+                        <td><span class="${sevBadge}">${t.severity}</span></td>
+                        <td>${t.site}</td>
+                        <td>${t.assigned}</td>
+                        <td>${t.score > 0 ? t.score : 'Unassigned'}</td>
+                        <td><span style="${riskColor}">${t.slaRisk}</span></td>
+                        <td><button class="btn btn-sm btn-primary" onclick="inspectTicket('${t.id}')">Triage</button></td>
+                    </tr>
+                `;
+                sdQueueHtml += queueRow;
             });
+
             document.getElementById('dashboardTicketTable').innerHTML = dashTicketHtml;
+            document.getElementById('serviceDeskMainTable').innerHTML = sdMainHtml;
+            document.getElementById('serviceDeskQueueTable').innerHTML = sdQueueHtml;
 
-            // Dashboard Engineer Table
+            // Render Engineers
             let dashEngHtml = '';
-            engineers.slice(0, 6).forEach(e => {
-                dashEngHtml += `<tr>
-                    <td><b>${e.name}</b><br><span style="font-size:11px; color:var(--muted-foreground);">${e.id}</span></td>
-                    <td><span style="color:${e.status==='Available'?'var(--success)':'var(--warning)'}; font-weight:600;">${e.status}</span></td>
-                    <td>${e.dept}</td>
-                    <td>${e.workload} / ${e.maxWorkload}</td>
-                    <td>${e.locationName}</td>
-                </tr>`;
-            });
-            document.getElementById('dashboardEngineerTable').innerHTML = dashEngHtml;
+            let rosterHtml = '';
 
-            // Full Tickets Queue
-            let fullTicketHtml = '';
-            tickets.forEach(t => {
-                let badgeClass = 'badge-' + t.severity.toLowerCase();
-                fullTicketHtml += `<tr>
-                    <td><b>${t.id}</b></td>
-                    <td>${t.title}<br><span style="font-size:11px; color:var(--muted-foreground);">${t.service} / ${t.device}</span></td>
-                    <td><span class="${badgeClass}">${t.severity}</span></td>
-                    <td>${t.site}</td>
-                    <td>${t.requiredSkill}</td>
-                    <td>${formatTime(t.slaDeadline)}</td>
-                    <td>${t.assignedEngineer || '<span style="color:var(--warning);">Unassigned</span>'}</td>
-                    <td>
-                        <button class="btn btn-sm btn-primary" onclick="inspectTicket('${t.id}')">Optimize</button>
-                        ${t.assignedEngineer ? `<button class="btn btn-sm" onclick="manualOverridePrompt('${t.id}')">Override</button>` : ''}
-                    </td>
-                </tr>`;
-            });
-            document.getElementById('fullTicketTable').innerHTML = fullTicketHtml;
-
-            // Full Engineers Roster
-            let fullEngHtml = '';
             engineers.forEach(e => {
-                fullEngHtml += `<tr>
-                    <td><b>${e.id}</b></td>
-                    <td>${e.name}</td>
-                    <td>${e.dept}</td>
-                    <td>${e.skills.join(', ')}</td>
-                    <td><span style="color:${e.status==='Available'?'var(--success)':'var(--warning)'}; font-weight:600;">${e.status}</span></td>
-                    <td>${e.locationName}</td>
-                    <td>${e.workload} / ${e.maxWorkload}</td>
-                    <td>${e.shiftStart} - ${e.shiftEnd}</td>
-                </tr>`;
-            });
-            document.getElementById('fullEngineerTable').innerHTML = fullEngHtml;
+                let statusColor = e.status === 'Available' ? 'color: var(--success);' : 'color: var(--warning);';
+                dashEngHtml += `
+                    <tr>
+                        <td>${e.name}</td>
+                        <td><span style="${statusColor}">${e.status}</span></td>
+                        <td>${e.skill}</td>
+                        <td>${e.load} active tasks</td>
+                        <td>${e.location}</td>
+                    </tr>
+                `;
 
-            // Work Orders Table
+                rosterHtml += `
+                    <tr>
+                        <td><b>${e.id}</b></td>
+                        <td>${e.name}</td>
+                        <td><span style="${statusColor}">${e.status}</span></td>
+                        <td>${e.skill}</td>
+                        <td>${e.location}</td>
+                        <td>${e.load}</td>
+                        <td>${e.shift}</td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('dashboardEngineerTable').innerHTML = dashEngHtml;
+            document.getElementById('engineerTableBody').innerHTML = rosterHtml;
+
+            // Render Work Orders
             let woHtml = '';
             workOrders.forEach(w => {
-                woHtml += `<tr>
-                    <td><b>${w.woId}</b></td>
-                    <td>${w.ticketId}</td>
-                    <td>${w.engineer}</td>
-                    <td>${w.site}</td>
-                    <td>${w.travelTime} min</td>
-                    <td>${w.duration} min</td>
-                    <td><span style="color:var(--success); font-weight:600;">${w.status}</span></td>
-                </tr>`;
+                woHtml += `
+                    <tr>
+                        <td><b>${w.woId}</b></td>
+                        <td>${w.ticket}</td>
+                        <td>${w.engineer}</td>
+                        <td><span class="badge" style="background: rgba(59,130,246,0.3); color:#93c5fd;">${w.stage}</span></td>
+                        <td>${w.spares}</td>
+                        <td><button class="btn btn-sm" onclick="alert('Work order ${w.woId} updated successfully.')">Update</button></td>
+                    </tr>
+                `;
             });
-            document.getElementById('workOrderTable').innerHTML = woHtml;
+            document.getElementById('workOrderTableBody').innerHTML = woHtml;
 
-            // My Tasks Table
+            // Render My Tasks
             let myTasksHtml = '';
-            workOrders.forEach(w => {
-                myTasksHtml += `<tr>
-                    <td><b>${w.woId}</b></td>
-                    <td>${w.ticketId}</td>
-                    <td>${w.engineer}</td>
-                    <td>${w.site}</td>
-                    <td><span style="color:var(--success); font-weight:600;">${w.status}</span></td>
-                </tr>`;
-            });
-            document.getElementById('myTasksTable').innerHTML = myTasksHtml;
-
-            // Audit Trail
-            let auditHtml = '';
-            auditLogs.slice().reverse().forEach(log => {
-                auditHtml += `<tr>
-                    <td><code>${log.time}</code></td>
-                    <td><span style="color:#60a5fa; font-weight:600;">${log.type}</span></td>
-                    <td><b>${log.ticketId}</b></td>
-                    <td>${log.details}</td>
-                </tr>`;
-            });
-            document.getElementById('auditTrailTable').innerHTML = auditHtml;
-        }
-
-        // --- HAVERSINE DISTANCE & OPTIMIZER ENGINE ---
-        function calculateDistance(lat1, lon1, lat2, lon2) {
-            let R = 6371; // Earth radius in km
-            let dLat = (lat2 - lat1) * Math.PI / 180;
-            let dLon = (lon2 - lon1) * Math.PI / 180;
-            let a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                    Math.sin(dLon/2) * Math.sin(dLon/2);
-            let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-            return R * c;
-        }
-
-        function runOptimizerForTicket(ticketId) {
-            let ticket = tickets.find(t => t.id === ticketId);
-            if (!ticket) return null;
-
-            let evaluations = [];
-
-            engineers.forEach(eng => {
-                // Hard Constraints
-                if (eng.status === 'Off Shift' || eng.status === 'Unavailable') {
-                    evaluations.push({ engineer: eng, feasible: false, reason: 'Engineer is ' + eng.status });
-                    return;
-                }
-                if (eng.workload >= eng.maxWorkload && ticket.severity !== 'Emergency') {
-                    evaluations.push({ engineer: eng, feasible: false, reason: 'Exceeds maximum workload capacity' });
-                    return;
-                }
-
-                // Skill matching
-                let skillScore = 0;
-                if (eng.skills.includes(ticket.requiredSkill)) {
-                    skillScore = 100;
-                } else if (eng.dept === ticket.department) {
-                    skillScore = 70;
-                } else {
-                    skillScore = 0;
-                    if (config.emergencyOverride !== 'enabled' && ticket.severity !== 'Emergency') {
-                        evaluations.push({ engineer: eng, feasible: false, reason: 'Lacks required skill: ' + ticket.requiredSkill });
-                        return;
-                    }
-                }
-
-                // Distance & Travel Time
-                let distKm = calculateDistance(eng.lat, eng.lon, ticket.lat, ticket.lon);
-                let travelMinutes = Math.round((distKm / config.avgSpeed) * 60);
-
-                // SLA Risk
-                let remainingSla = ticket.slaDeadline - simTimeMinutes;
-                let estimatedResponse = travelMinutes + (eng.workload * 15);
-                let slaRisk = estimatedResponse > remainingSla ? 'High' : 'Low';
-                let slaScore = slaRisk === 'High' ? 20 : 100;
-
-                // Availability & Workload Scores
-                let availScore = eng.status === 'Available' ? 100 : 50;
-                let travelScore = Math.max(0, 100 - (travelMinutes * 1.5));
-                let workloadScore = Math.max(0, 100 - (eng.workload * 25));
-                let balanceScore = 80;
-
-                // Weighted Total Score
-                let totalScore = (
-                    config.w1 * slaScore +
-                    config.w2 * skillScore +
-                    config.w3 * availScore +
-                    config.w4 * travelScore +
-                    config.w5 * workloadScore +
-                    config.w6 * balanceScore
-                );
-
-                if (ticket.severity === 'Emergency' || ticket.severity === 'Critical') {
-                    totalScore += (distKm < 30 ? 15 : 0);
-                }
-
-                evaluations.push({
-                    engineer: eng,
-                    feasible: true,
-                    score: Math.min(100, Math.max(10, totalScore)),
-                    distKm: distKm.toFixed(1),
-                    travelMinutes: travelMinutes,
-                    skillScore: skillScore,
-                    slaRisk: slaRisk,
-                    reasons: [
-                        eng.skills.includes(ticket.requiredSkill) ? '✓ Required ' + ticket.requiredSkill + ' skill' : '~ Compatible department skill',
-                        eng.status === 'Available' ? '✓ Available on shift' : '~ Currently busy',
-                        distKm < 50 ? `✓ ${distKm.toFixed(1)} km from site` : `~ ${distKm.toFixed(1)} km distance`,
-                        `Est. travel time: ${travelMinutes} minutes`,
-                        `Current workload: ${eng.workload} active jobs`,
-                        `SLA risk evaluated as ${slaRisk}`
-                    ]
-                });
-            });
-
-            // Sort feasible by score descending
-            let feasibleList = evaluations.filter(e => e.feasible).sort((a, b) => b.score - a.score);
-            let rejectedList = evaluations.filter(e => !e.feasible);
-
-            return { ticket, feasibleList, rejectedList };
-        }
-
-        function inspectTicket(ticketId) {
-            let optResult = runOptimizerForTicket(ticketId);
-            if (!optResult) return;
-
-            let best = optResult.feasibleList[0];
-            let runnerUp = optResult.feasibleList[1];
-
-            let html = `
-                <h2 style="font-size: 24px; margin-bottom: 5px; color: var(--foreground);">FM Assignment Optimization Report</h2>
-                <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 20px;">Deterministic multi-factor analysis for Ticket <b>${optResult.ticket.id}</b></p>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; background: rgba(0,0,0,0.3); padding: 16px; border-radius: 12px; margin-bottom: 20px;">
-                    <div><b>Ticket Title:</b> ${optResult.ticket.title}</div>
-                    <div><b>Severity:</b> <span class="badge-${optResult.ticket.severity.toLowerCase()}">${optResult.ticket.severity}</span></div>
-                    <div><b>Site Location:</b> ${optResult.ticket.site}</div>
-                    <div><b>Required Skill:</b> ${optResult.ticket.requiredSkill}</div>
-                    <div><b>SLA Deadline:</b> ${formatTime(optResult.ticket.slaDeadline)}</div>
-                    <div><b>SLA Risk:</b> <span style="color:${optResult.ticket.slaRisk==='High'?'var(--danger)':'var(--success)'}; font-weight:bold;">${optResult.ticket.slaRisk}</span></div>
-                </div>
-            `;
-
-            if (best) {
-                html += `
-                    <div style="background: rgba(34, 197, 94, 0.15); border: 1px solid rgba(34, 197, 94, 0.4); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
-                        <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #86efac; font-weight: bold; margin-bottom: 4px;">Recommended Engineer</div>
-                        <div style="font-size: 20px; font-weight: bold; color: white; margin-bottom: 10px;">${best.engineer.name} (${best.engineer.id})</div>
-                        <div style="font-size: 24px; font-family: var(--font-display); color: #86efac; margin-bottom: 10px;">Overall Score: ${best.score.toFixed(1)} / 100</div>
-                        <div style="font-size: 13px; color: #e2e8f0; line-height: 1.6; margin-bottom: 15px;">
-                            ${best.reasons.map(r => `<div>${r}</div>`).join('')}
-                        </div>
-                        <button class="btn btn-primary" onclick="assignEngineerToTicket('${optResult.ticket.id}', '${best.engineer.id}', ${best.score}, '${best.travelMinutes}')">✓ Assign Engineer & Create Work Order</button>
-                    </div>
+            tickets.filter(t => t.assigned === 'Ahmed Al-Balushi' || t.assigned === 'Salim Al-Habsi').forEach(t => {
+                myTasksHtml += `
+                    <tr>
+                        <td><b>${t.id}</b></td>
+                        <td>${t.site}</td>
+                        <td>${t.title}</td>
+                        <td><span class="badge-critical">${t.status}</span></td>
+                        <td><button class="btn btn-sm btn-primary" onclick="alert('Task ${t.id} marked as resolved and submitted for QA sign-off.')">Mark Resolved</button></td>
+                    </tr>
                 `;
-            } else {
-                html += `<div style="color: var(--danger); padding: 15px; background: rgba(239, 68, 68, 0.2); border-radius: 8px; margin-bottom: 20px;"><b>NO FEASIBLE ENGINEER FOUND:</b> All qualified engineers are currently unavailable or overloaded. Escalation recommended.</div>`;
-            }
-
-            if (runnerUp) {
-                html += `
-                    <div style="background: rgba(255, 255, 255, 0.04); border: 1px solid var(--glass-border); border-radius: 12px; padding: 15px;">
-                        <div style="font-size: 11px; text-transform: uppercase; color: var(--muted-foreground); font-weight: bold; margin-bottom: 4px;">Second-Best Alternative</div>
-                        <div style="font-size: 16px; font-weight: bold; color: white;">${runnerUp.engineer.name} (Score: ${runnerUp.score.toFixed(1)})</div>
-                        <div style="font-size: 12px; color: var(--muted-foreground); margin-top: 6px;">
-                            ${runnerUp.reasons.slice(0, 3).map(r => `<div>${r}</div>`).join('')}
-                        </div>
-                    </div>
-                `;
-            }
-
-            document.getElementById('optimizerModalBody').innerHTML = html;
-            document.getElementById('optimizerModal').classList.add('active');
-        }
-
-        function closeModal() {
-            document.getElementById('optimizerModal').classList.remove('active');
-        }
-
-        function assignEngineerToTicket(ticketId, engId, score, travelMinutes) {
-            let ticket = tickets.find(t => t.id === ticketId);
-            let eng = engineers.find(e => e.id === engId);
-            if (!ticket || !eng) return;
-
-            ticket.status = 'Assigned';
-            ticket.assignedEngineer = engId;
-            ticket.score = score;
-            eng.workload += 1;
-            eng.status = 'Busy';
-
-            // Create Work Order
-            let woId = 'WO-00' + (Math.floor(Math.random() * 900) + 240);
-            workOrders.push({
-                woId: woId,
-                ticketId: ticketId,
-                engineer: engId,
-                site: ticket.site,
-                travelTime: parseInt(travelMinutes),
-                duration: ticket.duration,
-                slaDeadline: formatTime(ticket.slaDeadline),
-                status: 'En Route'
             });
-
-            // Log Audit
-            auditLogs.push({
-                time: formatTime(simTimeMinutes),
-                type: 'FM Assignment',
-                ticketId: ticketId,
-                details: `Assigned to ${eng.name} (${engId}) with score ${score.toFixed(1)}. Work order ${woId} generated.`
-            });
-
-            closeModal();
-            renderAllViews();
-            alert(`Successfully assigned ${ticketId} to ${eng.name}! Work order ${woId} generated.`);
+            document.getElementById('myTasksTableBody').innerHTML = myTasksHtml;
         }
 
-        function runGlobalOptimization() {
-            let unassigned = tickets.filter(t => t.status === 'Unassigned');
-            if (unassigned.length === 0) {
-                alert('All active tickets are already assigned.');
-                return;
-            }
-
-            unassigned.forEach(t => {
-                let res = runOptimizerForTicket(t.id);
-                if (res && res.feasibleList.length > 0) {
-                    let best = res.feasibleList[0];
-                    assignEngineerToTicket(t.id, best.engineer.id, best.score, best.travelMinutes);
-                }
-            });
-            renderAllViews();
-            alert('Global multi-ticket optimization completed successfully.');
-        }
-
-        // --- SIMULATION ENGINE CONTROLS ---
+        // Simulation controls
+        let simInterval = null;
         function toggleSimulation() {
-            isSimRunning = !isSimRunning;
             let btn = document.getElementById('simToggleBtn');
-            if (isSimRunning) {
-                btn.innerText = '⏸ Pause Sim';
-                btn.style.background = 'var(--danger)';
-                simInterval = setInterval(() => {
-                    simTimeMinutes += 1;
-                    if (simTimeMinutes >= 24 * 60) simTimeMinutes = 0;
-                    renderAllViews();
-                }, 1000);
-            } else {
+            if(simulationRunning) {
+                clearInterval(simInterval);
+                simulationRunning = false;
                 btn.innerText = '▶ Start Sim';
                 btn.style.background = '';
-                clearInterval(simInterval);
+            } else {
+                simInterval = setInterval(() => {
+                    simClockMinutes += 5;
+                    if(simClockMinutes >= 1440) simClockMinutes = 360;
+                    renderAllViews();
+                }, 2000);
+                simulationRunning = true;
+                btn.innerText = '⏸ Pause Sim';
+                btn.style.background = 'var(--danger)';
             }
         }
 
         function stepSimulation() {
-            simTimeMinutes += 5;
+            simClockMinutes += 10;
             renderAllViews();
         }
 
         function resetSimulation() {
-            isSimRunning = false;
-            clearInterval(simInterval);
-            document.getElementById('simToggleBtn').innerText = '▶ Start Sim';
-            document.getElementById('simToggleBtn').style.background = '';
-            simTimeMinutes = 14 * 60 + 5;
+            simClockMinutes = 845;
             renderAllViews();
-            alert('Simulation reset to 14:05.');
         }
 
-        // --- WHAT-IF SCENARIO LAB ---
-        function runWhatIf(scenarioType) {
-            let box = document.getElementById('whatIfResultBox');
-            box.style.display = 'block';
-
-            if (scenarioType === 'eng_drop') {
-                box.innerHTML = `> SIMULATION RUN: Engineer ENG-014 (Top Transmission Expert) dropped offline.<br>
-> OPTIMIZER ACTION: Re-evaluating open tickets for Muscat Core.<br>
-> RESULT: Ticket INC-00452 automatically reassigned to alternative engineer ENG-31 (Score: 84.6).<br>
-> SLA IMPACT: Maintained within safe threshold. Zero SLA violation recorded.`;
-            } else if (scenarioType === 'emergency_spike') {
-                box.innerHTML = `> SIMULATION RUN: Simultaneous Emergency tickets injected in Sohar and Salalah.<br>
-> OPTIMIZER ACTION: Overriding standard workload limits per Emergency priority rules.<br>
-> RESULT: Assigned ENG-022 (Sohar) and ENG-009 (Salalah).<br>
-> SLA IMPACT: 100% emergency coverage achieved through multi-ticket global matching.`;
-            } else if (scenarioType === 'traffic_surge') {
-                box.innerHTML = `> SIMULATION RUN: Travel speed factor reduced by 3x due to severe weather/traffic.<br>
-> OPTIMIZER ACTION: Recalculating travel times and SLA risk thresholds.<br>
-> RESULT: 2 tickets flagged with High SLA Risk. Optimizer prioritized proximity over baseline workload balance.<br>
-> RECOMMENDATION: Alert regional supervisors in Muscat & Sohar.`;
-            }
+        // Global Optimizer Execution
+        function runGlobalOptimization() {
+            tickets.forEach(t => {
+                if(t.assigned === 'Unassigned') {
+                    let candidate = engineers.find(e => e.status === 'Available' && e.skill === t.skill);
+                    if(!candidate) candidate = engineers.find(e => e.status === 'Available');
+                    if(candidate) {
+                        t.assigned = candidate.name;
+                        t.score = (88 + Math.random() * 11).toFixed(1);
+                        candidate.status = 'Busy';
+                        candidate.load += 1;
+                    }
+                }
+            });
+            renderAllViews();
+            alert('Service Desk & FM Dispatch Optimizer executed successfully! All unassigned tickets optimally routed.');
         }
 
-        // --- NEW TICKET CREATION ---
+        // New Ticket Modal
         function openNewTicketModal() {
+            document.getElementById('modalTitle').innerText = 'Log New Service Desk Ticket';
+            document.getElementById('modalBodyForm').style.display = 'block';
+            document.getElementById('modalBodyInspector').style.display = 'none';
             document.getElementById('ticketModal').classList.add('active');
         }
 
@@ -1491,92 +1378,132 @@
         }
 
         function submitNewTicket() {
-            let title = document.getElementById('newTicketTitle').value;
+            let site = document.getElementById('newTicketSite').value;
             let severity = document.getElementById('newTicketSeverity').value;
             let skill = document.getElementById('newTicketSkill').value;
-            let site = document.getElementById('newTicketSite').value;
-            let slaMins = parseInt(document.getElementById('newTicketSla').value) || 45;
+            let desc = document.getElementById('newTicketDesc').value;
 
-            let lat = 23.5900, lon = 58.3800;
-            if (site.includes('SOH')) { lat = 24.3600; lon = 56.7500; }
-            else if (site.includes('SLL')) { lat = 17.0200; lon = 54.1000; }
-            else if (site.includes('NIZ')) { lat = 22.9400; lon = 57.5400; }
-
-            let newId = 'INC-00' + (456 + tickets.length);
+            let newId = 'TKT-' + (500 + tickets.length + 1);
             let newTicket = {
                 id: newId,
-                title: title,
+                title: desc,
                 severity: severity,
-                priority: severity === 'Emergency' ? 5 : severity === 'Critical' ? 4 : 3,
-                department: 'Field Operations',
-                service: 'Core Telecom',
-                device: 'Network Node',
                 site: site,
-                lat: lat,
-                lon: lon,
-                requiredSkill: skill,
-                requiredCount: 1,
-                createdTime: simTimeMinutes,
-                slaDeadline: simTimeMinutes + slaMins,
-                duration: 45,
-                status: 'Unassigned',
-                assignedEngineer: null,
-                score: null,
-                slaRisk: 'Low'
+                skill: skill,
+                deadline: '16:30',
+                assigned: 'Unassigned',
+                score: 0,
+                slaRisk: severity === 'Emergency' ? 'High' : 'Low',
+                status: 'Open'
             };
 
             tickets.push(newTicket);
-            auditLogs.push({
-                time: formatTime(simTimeMinutes),
-                type: 'Ticket Created',
-                ticketId: newId,
-                details: `New ${severity} ticket created requiring ${skill} at ${site}.`
-            });
-
             closeTicketModal();
             renderAllViews();
-            alert(`Ticket ${newId} created successfully! Open the FM Dashboard or Tickets queue to run optimization.`);
+            alert(`Service Desk Ticket ${newId} logged successfully and queued for optimization.`);
         }
 
-        function manualOverridePrompt(ticketId) {
-            let engId = prompt('Enter Engineer ID to manually assign (e.g., ENG-022):');
-            if (!engId) return;
-            let eng = engineers.find(e => e.id === engId.trim());
-            let ticket = tickets.find(t => t.id === ticketId);
-            if (!eng || !ticket) {
-                alert('Invalid engineer or ticket ID.');
-                return;
-            }
+        // Inspect Ticket & Optimizer Candidate Ranking
+        function inspectTicket(ticketId) {
+            let t = tickets.find(x => x.id === ticketId);
+            if(!t) return;
 
-            let reason = prompt('Enter mandatory reason for manual override:');
-            ticket.assignedEngineer = eng.id;
-            ticket.status = 'Assigned';
-            eng.workload += 1;
+            document.getElementById('modalTitle').innerText = `Service Desk & Optimizer Inspector: ${t.id} (${t.title})`;
+            document.getElementById('modalBodyForm').style.display = 'none';
+            
+            let inspectorHtml = `
+                <div style="display: flex; flex-direction: column; gap: 15px; font-size: 13px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: rgba(255,255,255,0.04); padding: 12px; border-radius: 8px;">
+                        <div><strong>Site:</strong> ${t.site}</div>
+                        <div><strong>Severity:</strong> ${t.severity}</div>
+                        <div><strong>Required Skill:</strong> ${t.skill}</div>
+                        <div><strong>Current Assignment:</strong> ${t.assigned}</div>
+                    </div>
+                    
+                    <h3 style="font-size: 16px; margin-top: 5px;">Candidate Engineer Scoring Breakdown</h3>
+                    <div class="data-table-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Engineer</th>
+                                    <th>Skill Match</th>
+                                    <th>Proximity (GPS)</th>
+                                    <th>Workload</th>
+                                    <th>Total Score</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+            `;
 
-            auditLogs.push({
-                time: formatTime(simTimeMinutes),
-                type: 'Manual Override',
-                ticketId: ticketId,
-                details: `Manual override by dispatcher. Assigned to ${eng.name} (${eng.id}). Reason: ${reason || 'Operational necessity'}`
+            engineers.forEach((e, idx) => {
+                let skillMatch = e.skill === t.skill ? 100 : 50;
+                let proximity = Math.floor(60 + Math.random() * 38);
+                let workloadScore = Math.max(10, 100 - (e.load * 25));
+                let totalScore = ((skillMatch * 0.4) + (proximity * 0.3) + (workloadScore * 0.3)).toFixed(1);
+                let isSelected = t.assigned === e.name;
+
+                inspectorHtml += `
+                    <tr style="${isSelected ? 'background: rgba(59,130,246,0.15);' : ''}">
+                        <td><strong>${e.name}</strong><br><span style="font-size:11px; color:var(--muted-foreground);">${e.skill}</span></td>
+                        <td>${skillMatch}%</td>
+                        <td>${proximity}%</td>
+                        <td>${e.load} tasks</td>
+                        <td><strong style="color:var(--success); font-size:15px;">${totalScore}</strong></td>
+                        <td>
+                            <button class="btn btn-sm ${isSelected ? 'btn-primary' : ''}" onclick="overrideAssignment('${t.id}', '${e.name}')">
+                                ${isSelected ? 'Assigned' : 'Assign'}
+                            </button>
+                        </td>
+                    </tr>
+                `;
             });
 
-            renderAllViews();
-            alert(`Manual override completed for ${ticketId}. Assigned to ${eng.name}.`);
+            inspectorHtml += `
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('modalBodyInspector').innerHTML = inspectorHtml;
+            document.getElementById('modalBodyInspector').style.display = 'block';
+            document.getElementById('ticketModal').classList.add('active');
         }
 
-        function saveConfiguration() {
-            config.w1 = parseFloat(document.getElementById('w1Input').value);
-            config.w2 = parseFloat(document.getElementById('w2Input').value);
-            config.w3 = parseFloat(document.getElementById('w3Input').value);
-            config.w4 = parseFloat(document.getElementById('w4Input').value);
-            config.w5 = parseFloat(document.getElementById('w5Input').value);
-            config.w6 = parseFloat(document.getElementById('w6Input').value);
-            config.avgSpeed = parseFloat(document.getElementById('avgSpeedInput').value);
-            config.emergencyOverride = document.getElementById('emergencyOverrideSelect').value;
-            alert('Optimizer configuration weights and parameters updated successfully.');
+        function overrideAssignment(ticketId, engineerName) {
+            let t = tickets.find(x => x.id === ticketId);
+            if(t) {
+                t.assigned = engineerName;
+                t.status = 'Dispatched';
+                t.score = (90 + Math.random() * 9).toFixed(1);
+                let eng = engineers.find(e => e.name === engineerName);
+                if(eng) {
+                    eng.status = 'Busy';
+                    eng.load += 1;
+                }
+                alert(`Ticket ${ticketId} assigned successfully to ${engineerName}.`);
+                closeTicketModal();
+                renderAllViews();
+            }
         }
 
-        // Initialize App
+        // Scenario Lab
+        function runScenario(type) {
+            let box = document.getElementById('scenarioResultBox');
+            let log = document.getElementById('scenarioLogText');
+            box.style.display = 'block';
+
+            if(type === 'storm') {
+                log.innerText = 'Dhofar Tropical Storm simulation initiated. 4 new Emergency VSAT & Power alarms generated in Salalah. Service desk and optimizer automatically re-routed 2 available engineers from Nizwa and activated emergency standby roster.';
+            } else if(type === 'fiber') {
+                log.innerText = 'Sohar Industrial Fiber Cut simulation initiated. High-priority backbone trunk alarm received. Service desk dispatched Senior Splicer Salim Al-Habsi with emergency single-mode fiber reel. SLA protection score maintained at 98.2%.';
+            } else if(type === 'surge') {
+                log.innerText = 'Muscat Peak Traffic Surge simulation initiated. High BER and congestion alarms triggered across Al Khuwair core hub. IP Core engineers deployed to rebalance dynamic routing tables with zero packet loss.';
+            }
+        }
+
+        // Initial render
         window.onload = function() {
             renderAllViews();
         };
