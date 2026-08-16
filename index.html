@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Velorah® Oman NOC & Field Maintenance (FM) Assignment Optimization Module</title>
+    <title>Velorah® Oman NOC & Service Desk Training Simulator</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -354,7 +354,6 @@
             cursor: pointer;
         }
 
-        /* Split View Layouts */
         .split-grid {
             display: grid;
             grid-template-columns: 1.2fr 1fr;
@@ -405,13 +404,19 @@
     <!-- Sidebar Navigation -->
     <div class="sidebar">
         <div class="sidebar-brand">Velorah<sup style="font-size: 10px;">®</sup></div>
-        <div class="sidebar-subtitle">Oman NOC & Field Operations</div>
+        <div class="sidebar-subtitle">Oman NOC & Service Desk</div>
         
+        <div class="nav-category">Main Operation</div>
+        <button class="nav-btn active" onclick="switchPage('dashboard', this)"><span>📊 NOC Overview Dashboard</span></button>
+        <button class="nav-btn" onclick="switchPage('alarms', this)"><span>🚨 Live Network Alarms</span> <span class="badge" id="alarmBadge">3</span></button>
+        <button class="nav-btn" onclick="switchPage('topology', this)"><span>🗺️ Oman Topology & Sites</span></button>
+
         <div class="nav-category">Service Desk & FM</div>
-        <button class="nav-btn active" onclick="switchPage('fm-dashboard', this)"><span>📊 FM Optimization Dashboard</span> <span class="badge" id="openTicketsBadge">4</span></button>
-        <button class="nav-btn" onclick="switchPage('tickets-queue', this)"><span>🎫 Tickets & FM Dispatch</span> <span class="badge" id="unassignedBadge">2</span></button>
+        <button class="nav-btn" onclick="switchPage('fm-dashboard', this)"><span>⚡ FM Optimization Hub</span> <span class="badge" id="openTicketsBadge">4</span></button>
+        <button class="nav-btn" onclick="switchPage('tickets-queue', this)"><span>🎫 Tickets & Dispatch</span> <span class="badge" id="unassignedBadge">2</span></button>
         <button class="nav-btn" onclick="switchPage('engineer-roster', this)"><span>👷 Field Engineers</span> <span class="badge" id="engCountBadge">10</span></button>
         <button class="nav-btn" onclick="switchPage('work-orders', this)"><span>🔧 Work Orders</span> <span class="badge" id="woBadge">5</span></button>
+        <button class="nav-btn" onclick="switchPage('mytasks', this)"><span>📋 My Tasks</span></button>
 
         <div class="nav-category">Simulation & Analysis</div>
         <button class="nav-btn" onclick="switchPage('what-if', this)"><span>🧪 What-If Scenario Lab</span></button>
@@ -423,7 +428,7 @@
     <!-- Main Workspace Area -->
     <div class="main">
         <div class="header-top">
-            <h1 id="pageTitle">Field Maintenance (FM) Optimization Dashboard</h1>
+            <h1 id="pageTitle">NOC Overview & FM Optimization Dashboard</h1>
             <div class="sim-control-bar">
                 <span>⏱️ Sim Time: <strong id="simClock">14:05</strong></span>
                 <span style="color: var(--muted-foreground);">|</span>
@@ -433,14 +438,174 @@
             </div>
         </div>
         <div class="header-subtitle">
-            <span id="pageSubtitleDesc">Algorithmic matching of open service tickets to qualified field engineers across Oman infrastructure.</span>
+            <span id="pageSubtitleDesc">Integrated Oman National Telecommunications Operations Center & Field Maintenance Dispatch Engine.</span>
             <span style="color: #60a5fa; font-weight: 500;">Status: System Online & Optimizer Active</span>
         </div>
 
         <div class="content">
 
-            <!-- 1. FM OPTIMIZATION DASHBOARD -->
-            <section id="fm-dashboard" class="page active">
+            <!-- 0. NOC OVERVIEW DASHBOARD -->
+            <section id="dashboard" class="page">
+                <div class="cards-grid">
+                    <div class="liquid-glass stat-card">
+                        <h3>Network Health</h3>
+                        <div class="value" style="color: var(--success);">99.82%</div>
+                    </div>
+                    <div class="liquid-glass stat-card">
+                        <h3>Active Alarms</h3>
+                        <div class="value" id="dashActiveAlarms" style="color: var(--danger);">3</div>
+                    </div>
+                    <div class="liquid-glass stat-card">
+                        <h3>Open FM Tickets</h3>
+                        <div class="value" id="dashOpenTickets">4</div>
+                    </div>
+                    <div class="liquid-glass stat-card">
+                        <h3>SLA At Risk</h3>
+                        <div class="value" id="dashSlaRisk" style="color: var(--warning);">1</div>
+                    </div>
+                    <div class="liquid-glass stat-card">
+                        <h3>Available Engineers</h3>
+                        <div class="value" id="dashAvailEng" style="color: var(--success);">7</div>
+                    </div>
+                </div>
+
+                <div class="split-grid">
+                    <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
+                        <h2 style="font-size: 20px;">Recent Critical Network Events</h2>
+                        <div class="data-table-wrapper">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Time</th>
+                                        <th>Element</th>
+                                        <th>Severity</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>14:05</td>
+                                        <td>MUS-ALH-021</td>
+                                        <td><span class="badge-critical">Critical</span></td>
+                                        <td>Microwave Link Degradation - Al Khuwair Hub</td>
+                                    </tr>
+                                    <tr>
+                                        <td>14:08</td>
+                                        <td>SHR-SOH-012</td>
+                                        <td><span class="badge-emergency">Emergency</span></td>
+                                        <td>Fiber Cut Trunk Line - Sohar Port</td>
+                                    </tr>
+                                    <tr>
+                                        <td>14:10</td>
+                                        <td>SLL-MW-04</td>
+                                        <td><span class="badge-major">Major</span></td>
+                                        <td>VSAT Sync Loss - Salalah Tower</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
+                        <h2 style="font-size: 20px;">Regional NOC Nodes (Oman)</h2>
+                        <div class="data-table-wrapper">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Region</th>
+                                        <th>Hub Site</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Muscat Governorate</td><td>Al Khuwair HQ</td><td><span style="color:var(--success);">Optimal</span></td></tr>
+                                    <tr><td>North Al Batinah</td><td>Sohar Industrial</td><td><span style="color:var(--warning);">Degraded</span></td></tr>
+                                    <tr><td>Dhofar Governorate</td><td>Salalah Central</td><td><span style="color:var(--success);">Optimal</span></td></tr>
+                                    <tr><td>Ad Dakhiliyah</td><td>Nizwa Depot</td><td><span style="color:var(--success);">Optimal</span></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 1. LIVE NETWORK ALARMS -->
+            <section id="alarms" class="page">
+                <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
+                    <h2 style="font-size: 22px;">Live Network Alarms & SMA Feed</h2>
+                    <p style="font-size: 13px; color: var(--muted-foreground);">Real-time telemetry and fault alarms automatically converting into Service Desk tickets for FM optimization.</p>
+                    <div class="data-table-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Alarm ID</th>
+                                    <th>Timestamp</th>
+                                    <th>Severity</th>
+                                    <th>Source Node</th>
+                                    <th>Description</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>ALM-9021</td>
+                                    <td>14:08</td>
+                                    <td><span class="badge-emergency">Emergency</span></td>
+                                    <td>SHR-SOH-012</td>
+                                    <td>Optical carrier signal loss on Sohar-Muscat trunk</td>
+                                    <td><button class="btn btn-sm btn-primary" onclick="switchPage('tickets-queue')">View Ticket</button></td>
+                                </tr>
+                                <tr>
+                                    <td>ALM-9020</td>
+                                    <td>14:05</td>
+                                    <td><span class="badge-critical">Critical</span></td>
+                                    <td>MUS-ALH-021</td>
+                                    <td>High BER on 18GHz Microwave Hop</td>
+                                    <td><button class="btn btn-sm btn-primary" onclick="switchPage('tickets-queue')">View Ticket</button></td>
+                                </tr>
+                                <tr>
+                                    <td>ALM-9019</td>
+                                    <td>14:10</td>
+                                    <td><span class="badge-major">Major</span></td>
+                                    <td>SLL-MW-04</td>
+                                    <td>VSAT Modem clock synchronization drift</td>
+                                    <td><button class="btn btn-sm btn-primary" onclick="switchPage('tickets-queue')">View Ticket</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. OMAN TOPOLOGY & SITES -->
+            <section id="topology" class="page">
+                <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
+                    <h2 style="font-size: 22px;">Oman National Infrastructure Topology</h2>
+                    <p style="font-size: 13px; color: var(--muted-foreground);">Geographic distribution of transmission sites, core hubs, and mobile switching centers across Oman.</p>
+                    <div class="data-table-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Site Code</th>
+                                    <th>Site Name</th>
+                                    <th>Region</th>
+                                    <th>Coordinates</th>
+                                    <th>Equipped Technology</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><b>MUS-ALH-021</b></td><td>Al Khuwair Core Hub</td><td>Muscat</td><td>23.5900° N, 58.3800° E</td><td>Microwave, IP Core, DWDM</td></tr>
+                                <tr><td><b>SHR-SOH-012</b></td><td>Sohar Industrial Substation</td><td>North Al Batinah</td><td>24.3600° N, 56.7500° E</td><td>Fiber Optics, Power Rectifiers</td></tr>
+                                <tr><td><b>SLL-MW-04</b></td><td>Salalah Transmission Tower</td><td>Dhofar</td><td>17.0200° N, 54.1000° E</td><td>VSAT, Microwave Backhaul</td></tr>
+                                <tr><td><b>NIZ-BTS-88</b></td><td>Nizwa Cellular Site</td><td>Ad Dakhiliyah</td><td>22.9400° N, 57.5400° E</td><td>Radio Access, Power Systems</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. FM OPTIMIZATION DASHBOARD -->
+            <section id="fm-dashboard" class="page">
                 <div class="cards-grid">
                     <div class="liquid-glass stat-card">
                         <h3>Open Tickets</h3>
@@ -517,7 +682,7 @@
                 </div>
             </section>
 
-            <!-- 2. TICKETS & FM DISPATCH QUEUE -->
+            <!-- 4. TICKETS & FM DISPATCH QUEUE -->
             <section id="tickets-queue" class="page">
                 <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -550,7 +715,7 @@
                 </div>
             </section>
 
-            <!-- 3. FIELD ENGINEERS ROSTER -->
+            <!-- 5. FIELD ENGINEERS ROSTER -->
             <section id="engineer-roster" class="page">
                 <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
                     <h2 style="font-size: 22px;">Field Maintenance Engineering Roster</h2>
@@ -577,7 +742,7 @@
                 </div>
             </section>
 
-            <!-- 4. WORK ORDERS -->
+            <!-- 6. WORK ORDERS -->
             <section id="work-orders" class="page">
                 <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
                     <h2 style="font-size: 22px;">Generated Work Orders</h2>
@@ -603,7 +768,31 @@
                 </div>
             </section>
 
-            <!-- 5. WHAT-IF SCENARIO LAB -->
+            <!-- 7. MY TASKS -->
+            <section id="mytasks" class="page">
+                <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
+                    <h2 style="font-size: 22px;">My Assigned Field Tasks (Engineer View)</h2>
+                    <p style="font-size: 13px; color: var(--muted-foreground);">Active job queue assigned to field technicians in the field.</p>
+                    <div class="data-table-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Work Order</th>
+                                    <th>Ticket</th>
+                                    <th>Assigned Engineer</th>
+                                    <th>Site Location</th>
+                                    <th>Task Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="myTasksTable">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 8. WHAT-IF SCENARIO LAB -->
             <section id="what-if" class="page">
                 <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 20px;">
                     <div>
@@ -635,7 +824,7 @@
                 </div>
             </section>
 
-            <!-- 6. PERFORMANCE & METRICS -->
+            <!-- 9. PERFORMANCE & METRICS -->
             <section id="performance-metrics" class="page">
                 <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 20px;">
                     <div>
@@ -690,7 +879,7 @@
                 </div>
             </section>
 
-            <!-- 7. AUDIT TRAIL -->
+            <!-- 10. AUDIT TRAIL -->
             <section id="audit-trail" class="page">
                 <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 15px;">
                     <h2 style="font-size: 22px;">📜 Optimization Audit Trail & System Event Log</h2>
@@ -713,7 +902,7 @@
                 </div>
             </section>
 
-            <!-- 8. SETTINGS & CONFIGURATION -->
+            <!-- 11. SETTINGS & CONFIGURATION -->
             <section id="settings" class="page">
                 <div class="liquid-glass" style="display: flex; flex-direction: column; gap: 20px; max-width: 800px;">
                     <div>
@@ -902,10 +1091,14 @@
 
             document.getElementById('openTicketsBadge').innerText = openCount;
             document.getElementById('unassignedBadge').innerText = unassignedCount;
-            document.getElementById('openTicketsBadge').innerText = openCount;
-            document.getElementById('unassignedBadge').innerText = unassignedCount;
             document.getElementById('engCountBadge').innerText = engineers.length;
             document.getElementById('woBadge').innerText = workOrders.length;
+            document.getElementById('alarmBadge').innerText = '3';
+
+            document.getElementById('dashActiveAlarms').innerText = '3';
+            document.getElementById('dashOpenTickets').innerText = openCount;
+            document.getElementById('dashSlaRisk').innerText = slaRiskCount;
+            document.getElementById('dashAvailEng').innerText = availEngCount;
 
             document.getElementById('statOpenTickets').innerText = openCount;
             document.getElementById('statUnassigned').innerText = unassignedCount;
@@ -993,6 +1186,19 @@
                 </tr>`;
             });
             document.getElementById('workOrderTable').innerHTML = woHtml;
+
+            // My Tasks Table
+            let myTasksHtml = '';
+            workOrders.forEach(w => {
+                myTasksHtml += `<tr>
+                    <td><b>${w.woId}</b></td>
+                    <td>${w.ticketId}</td>
+                    <td>${w.engineer}</td>
+                    <td>${w.site}</td>
+                    <td><span style="color:var(--success); font-weight:600;">${w.status}</span></td>
+                </tr>`;
+            });
+            document.getElementById('myTasksTable').innerHTML = myTasksHtml;
 
             // Audit Trail
             let auditHtml = '';
